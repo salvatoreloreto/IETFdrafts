@@ -1,0 +1,484 @@
+<?xml version="1.0"?>
+<?rfc symrefs="yes"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc sortrefs="no" ?>
+
+<rfc ipr="trust200902"
+     docName="draft-ietf-rtcweb-data-channel-00.txt" category='info'>
+<front>
+    <title abbrev="data P2P in RTCWEB">
+       RTCWeb Datagram Connection
+    </title>
+
+
+    <author initials="R." surname="Jesup" fullname="Randell Jesup">
+      <organization>Mozilla</organization>
+      <address>
+	<postal>
+          <street></street>
+	  <code></code> 
+	  <city></city> 
+	  <country></country>
+ 	</postal>
+	<email>randell-ietf@jesup.org</email>
+      </address>
+    </author>
+
+
+
+   <author initials="S." surname="Loreto" fullname="Salvatore Loreto">
+    <organization>Ericsson</organization>
+    <address>
+    	<postal>
+        <street>Hirsalantie 11</street>
+        <code>02420</code> 
+     	  <city>Jorvas</city> 
+    	  <country>Finland</country>
+     	</postal>
+    	<email>salvatore.loreto@ericsson.com</email>
+    </address>
+  </author>
+
+
+    <author initials="M." surname="Tuexen" fullname="Michael Tuexen">
+      <organization>Muenster University of Applied Sciences</organization>
+      <address>
+	<postal>
+          <street>Stegerwaldstrasse 39</street>
+	  <code>48565</code> 
+	  <city> Steinfurt</city> 
+	  <country>Germany</country>
+ 	</postal>
+	<email>tuexen@fh-muenster.de</email>
+      </address>
+    </author>
+
+
+
+    <date year="2012" />
+    <area>RAI</area>
+    <workgroup>RTCWeb Working Group</workgroup>
+    <keyword></keyword>
+    <keyword></keyword>
+    <abstract>
+    <t>The Web Real-Time Communication (WebRTC) working group is in charge to provide
+   protocols support for direct interactive rich communication using audio, video,
+   and data between two peers' web-browsers.
+   This document describes the non-media data transport aspects of the WebRTC framework.
+   It provides an architectural overview of how the Stream Control Transmission Protocol (SCTP) is used in
+   the WebRTC context as a generic transport service allowing Web Browser to exchange generic data in a peer to peer way
+    </t>
+    </abstract>
+</front>
+<middle>
+
+<section title="Introduction">
+<t>The issue of how best to handle non-media data types in the context of RTCWEB has  reached a general consensus 
+    on the usage of SCPT <xref target="RFC4960"/> encapsulated on DTLS <xref target="RFC6347"/>:</t>
+
+        <figure title="Basic stack diagram" anchor="fig-stack"><artwork>
+    <![CDATA[
+		                 +------+
+   		                 | SCTP |
+              		         +------+
+                 		 | DTLS |
+                                 +------+ 
+                                 | UDP  | 
+                                 +------+              
+    ]]>
+        </artwork></figure>
+
+<t>The encapsulation of SCTP over DTLS/UDP provides at the same time a friendly NAT traversal solution together with 
+confidentiality, source authenticated, integrity protected transfers.</t>
+
+<t>TBD: do we want also point out that in this way we can multiplex non-media data streams without the media ones?</t>
+
+<t>SCTP provides natively the multi-stream feature and also the possibility to choose if send a datagram in an unreliable
+or reliable way..</t>
+
+<t>This document provides Requirement and use cases for both unreliable and reliable peer to peer datagram base channel,
+provide an overview of how SCTP should be used by the RTCWeb protocol framework for transporting non-media data between browsers.</t>
+
+
+
+</section>
+
+
+<section title="Requirements" anchor="sec-req">
+
+<t>
+This section lists the requirements for P2P data connections between two browsers.
+</t>
+
+<t><list style="hanging">
+   <t hangText="Req. 1">Multiple simultaneous datagram streams must be supported.  Note that there may 0 or more media streams in parallel with the data streams, and the number and state (active/inactive) of the media streams may change at any time.</t><t></t>
+
+   <t hangText="Req. 2">Both reliable and unreliable datagram streams must be supported.</t><t></t>
+
+   <t hangText="Req. 3">Data streams must be congestion controlled; either individually,
+     as a class, or in conjunction with the media streams, to ensure
+     that datagram exchanges don't cause congestion problems for the
+     media streams, and that the rtcweb PeerConnection as a whole is
+     fair with competing streams such as TCP.</t><t></t>
+
+   <t hangText="Req. 4">The application should be able to provide guidance as to the 
+     relative priority of each datagram stream relative to each other,
+     and relative to the media streams. [ TBD: how this is encoded and
+     what the impact of this is. ]  This will interact with the
+     congestion control.</t><t></t>
+
+   <t hangText="Req. 5">Datagram streams must be encrypted; allowing for confidentiality, 
+     integrity and source authentication. See the security spec [xxx] for detailed info.</t><t></t>
+
+
+   <t hangText="Req. 6">Consent and NAT traversal mechanism:  These are handled by the 
+     PeerConnection's ICE <xref target="RFC5245"/> connectivity checks and
+     optional TURN servers.</t><t></t>
+
+   <t hangText="Req. 7"> Data streams MUST provide message fragmentation support such that IP-layer fragmentation does not occur no matter how large a message/buffer the Javascript application passes down to the Browser to be sent out.</t><t></t>
+
+   <t hangText="Rec. 8"> The data stream transport protocol MUST NOT encode local IP addresses inside its protocol fields; doing so reveals potentially private information, and leads to failure if the address is depended upon. </t><t></t>
+
+   <t hangText="Req. 9"> The data stream protocol SHOULD support unbounded-length "messages" (i.e., a virtual socket stream) at the application layer, for such things as image-file-transfer; or else it MUST support at least a maximum application-layer message size of 4GB.</t><t></t>
+
+   <t hangText="Req. 10"> The data stream packet format/encoding MUST be such that it is impossible for a malicious Javascript to generate an application message crafted such that it could be interpreted as a native protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc. </t><t></t>
+
+   <t hangText="Req. 10"> The data stream transport protocol MUST start with the assumption
+   of a PMTU of 1280 [ *** need justification ***] bytes until measured otherwise. </t><t></t>
+
+   <t hangText="Req. 11"> The data stream transport protocol MUST NOT rely on ICMP being generated 
+   or being passed back, such as for PMTU discovery. </t><t></t>
+
+
+</list></t>
+
+</section>
+
+
+<section title="Use cases." anchor="sec-use-cases">
+
+<section title="Use cases for unreliable datagram based channel" anchor="sec-use-cases-unreliable">
+
+<t><list style="hanging">
+
+   <t hangText="U-C 1">A real-time game where position and object state information is
+   sent via one or more unreliable data channels.  Note that at any time there may be no media channels, or all media channels may be inactive.</t><t></t>
+	
+   <t hangText="U-C 2">Non-critical state updates about a user in a video chat or 
+   conference, such as Mute state.</t><t></t>
+
+</list></t>
+
+
+</section>
+
+<section title="Use cases for reliable channels (datagram or stream)." anchor="sec-use-cases-reliable">
+
+<t>Note that either reliable datagrams or streams are possible; reliable streams would be fairly simple to layer on top of SCTP reliable datagrams with in-order delivery.</t><t></t>
+
+<t><list style="hanging">
+
+   <t hangText="U-C 3"> A real-time game where critical state information needs to be
+   transferred, such as control information.  Typically this would be datagrams.  Such a game may
+   have no media channels, or they may be inactive at any given time, or may only be added
+   due to in-game actions.</t><t></t>
+	
+   <t hangText="U-C 4">Non-realtime file transfers between people chatting.  This could be datagrams or streaming; streaming might be an easier fit</t><t></t>
+
+   <t hangText="U-C 5">Realtime text chat while talking with an individual or with multiple people in a 
+   conference.  Typically this would be datagrams.</t><t></t>
+
+   <t hangText="U-C 6">Renegotiation of the set of media streams in the PeerConnection.  Typically this would be datagrams</t><t></t>
+
+
+
+</list></t>
+
+</section>
+
+
+</section>
+
+
+
+<section title="Datagrams over SCTP over DTLS over UDP." anchor="sec-p-a-2">
+
+        <figure title="stack diagram" anchor="fig-2"><artwork>
+    <![CDATA[
+                 +------+
+                 |WEBAPP|
+                 +------+
+                 | SCTP |
+          +-------------+
+          | STUN | DTLS |
+          +-------------+
+          |    ICE      | 
+          +-------------+ 
+          | UDP1 | UDP2 |...
+          +-------------+              
+    ]]>
+        </artwork></figure>
+
+<t>An SCTP <xref target="RFC4960"/> based solution provides natively several interesting features for transporting non-media data between browsers:</t>
+<t>
+<list style="empty">
+<t>Multistreaming</t> 
+<t>Ordered and Unordered delivery</t>
+<t>Reliability and partial-Reliability <xref target="RFC3758"/></t>
+<t>Dynamic Address Reconfiguration <xref target="RFC5061"/>.</t>
+</list></t>
+
+<t>Moreover SCTP provides the possibility to transport different "protocols" over multiple streams and associations using the ppid (Payload Protocol Identifier). 
+An application can set a  different PPID with each send call. This allows the receiving application to look at this information (as well as the stream id/seq) on receiving
+to know what type of protocol the data payload has.</t>
+
+<t>The SCTP features satisfy all the requirements listed in in <xref target='sec-req'/>.</t>
+
+<t>There are SCTP implementations for all the different OS:</t>
+<t>
+<list style="empty">
+<t>Linux (mainline kernel 2.6.36)</t>
+<t>FreeBSD (release kernel 8.2)</t>
+<t>Mac OS X</t> 
+<t>Windows (SctpDrv4)</t> 
+<t>Solaris (OpenSolaris 2009.06)</t>
+<t>and a user-land SCTP implementation (based on the FreeBSD implementation).</t>
+</list></t>
+
+<t>The SCTP solution is analyzed in more detail in the following sections.</t>
+
+
+
+
+<section title="User Space vs Kernel implementation." anchor="sec-sctp-1">
+<t>Even kernel implementation of SCTP are already available for all the different platforms (see <xref target='sec-p-a-2'/> ),
+there are compelling reasons that incline towards for a SCTP stack that works well in user land.</t>
+
+<t>The main reason is deployability.</t>
+
+<t>There are many applications today that are expected to run on a wide range of old and new operating systems. 
+Web browsers are an excellent example. They support operating systems 10 years old or more, they run on mobile and desktop operating systems, 
+and they are highly portable to new operating systems. This is achieved by having a fairly narrow portability layer to minimize what needs 
+to be supported on old operating systems and ported to new ones. This creates a strong desire to implemented as much functionality as possible 
+inside the application instead of relying on the operating system for it.</t>
+
+<t>This leads to a situation where there is a desire for the SCTP stack to be implemented in the user space instead of the kernel space. 
+For many applications that require support of operating systems without SCTP (insert whatever stack order is - UDP, DTLS - whatever), 
+there is no way to deploy this unless it can be implemented in the application.  
+The traditional reasons for kernel implementations, such as mux of many application using transport port numbers, does not particularly apply here 
+where that level of multiplexing between application was provided by the underling UDP that is tunneled over. The requirement is:</t>
+
+<t>It MUST be possible to implement the SCTP and DTLS portion of the stack in the user application space.</t>
+
+
+</section>
+
+
+
+
+<section title="SCTP/DTLS/UDP vs DTLS/SCTP/UDP" anchor="sec-sctp-3">
+<t>The two alternatives being discussed in this subsection are shown
+in the following <xref target='fig-sctp-layering'/>.</t>
+<figure title='Two variants of SCTP and DTLS usage' anchor='fig-sctp-layering'>
+<artwork>
+
+                       +------+                    +------+
+                       |WEBAPP|                    |WEBAPP|
+                       +------+                    +------+
+                       | DTLS |                    | SCTP |
+                +-------------+             +-------------+
+                | SRTP | SCTP |             | SRTP | DTLS |
+                +-------------+             +-------------+
+                |    ICE      |             |     ICE     |
+                +-------------+             +-------------+
+                | UDP1 | UDP2 |...          | UDP1 | UDP2 |...
+                +-------------+             +-------------+
+</artwork>
+</figure>
+<t>The UDP encapsulation of SCTP used in the protocol stack
+shown on the left hand side of <xref target='fig-sctp-layering'/>
+is specified in <xref target='I-D.ietf-tsvwg-sctp-udp-encaps'/> and the
+usage of DTLS over SCTP is specified in <xref target='RFC6083'/>.
+Using the UDP encapsulation of SCTP allows SCTP implementations
+to run in user-land without any special privileges, but still allows
+the support of SCTP kernel implementations.
+This also requires no SCTP specific support in middleboxes like firewalls and
+NATs.  Multihoming and failover support is implemented via the ICE layer, 
+and SCTP associations are single-homed. 
+The SCTP payload is protected by DTLS, which
+provides confidentiality, integrity and source authentication. SCTP-AUTH as
+specified in <xref target='RFC4895'/> is used to provide integrity of
+SCTP control information related to the user messages like the SCTP stream
+identifier. Please note that the SCTP control information
+(like the SCTP stream identifier) is sent unencrypted.</t>
+
+<t>Considering the protocol stack on the right hand side of
+<xref target='fig-sctp-layering'/>, the usage of DTLS over UDP is specified in
+<xref target='I-D.ietf-tls-rfc4347-bis'/>. Using SCTP on top of DTLS is
+currently unspecified. Since DTLS is typically implemented in user-land,
+an SCTP user-land implementation has also to be used. Kernel SCTP implementations
+can't be used. When using DTLS as the lower layer, only single homed SCTP
+associations can be used, since DTLS does not expose any any address management
+to its upper layer. DTLS implementations used for this stack must support
+controlling fields of the IP layer like the DF-bit in case of IPv4 and the
+DSCP field. This is required for performing path MTU discovery.
+The DTLS implementation must also support sending user messages exceeding
+the path MTU. When supporting multiple SCTP associations over a single DTLS
+connection, incoming ICMP or ICMPv6 messages can't be processed by the SCTP
+layer, since there is no way to identify the corresponding association.
+Therefore the number of SCTP associations should be limited to one or ICMP and
+ICMPv6 messages should be ignored.
+In general, the lower layer interface of an SCTP implementation has to be
+adopted to address the differences between IPv4 or IPv6 (being connection-less)
+or DTLS (being connection-oriented).
+When this stack is used, DTLS protects the complete SCTP packet, so it
+provides confidentiality, integrity and source authentication
+of the complete SCTP packet.</t>
+
+<t>It should be noted that both stack alternatives support the usage of
+multiple SCTP streams. A user message can be sent ordered or unordered
+and, if the SCTP implementations support <xref target='RFC3758'/>,
+with partial reliability. When using partial reliability, it might make
+sense to use a policy limiting the number of retransmissions. Limiting
+the number of retransmissions to zero provides a UDP like service where
+each user messages is sent exactly once.</t>
+<t>SCTP provides congestion control on a per-association base. This means
+that all SCTP streams within a single SCTP association share the same
+congestion window. Traffic not being sent over SCTP is not covered by
+the SCTP congestion control.</t>
+</section>
+
+
+</section>
+
+<section title="The envisioned usage of SCTP in the RTCWeb context" anchor="sec-sctp-usage">
+<t>The appealing features of SCTP in the RTCWeb context are:</t>
+<t><list style="hanging">
+   <t hangText="-">the congestion control which is TCP friendly.</t>
+   <t hangText="-">the congestion control is modifiable for integration with media stream congestion control.</t>
+   <t hangText="-">support for multiple channels with different characteristics.</t>
+   <t hangText="-">support for out-of-order delivery.</t>
+   <t hangText="-">support for large datagrams and PMTU-discovery and fragmentation.</t>
+   <t hangText="-">the reliable or partial reliability support.</t>
+   <t hangText="-">Multi streaming.</t>
+</list></t>
+
+<t>Multihoming will not be used in this scenario. The SCTP layer would simply act as if it were running on a single-homed host, 
+since that is the abstraction that the lower layers (e.g. UDP) would expose.</t>
+
+<section title="Association setup" anchor="sec-sctp-setup">
+<t>TBD: how the association will be setup … via Jesup or how and when</t>
+
+<t>TBD: It is implementation specific but each stream take around 24bytes so it would be good to provide an hint about how many channels 
+will be open by default when an association is established. Indeed Section 5.1.1 of <xref target="RFC4960"/> states:</t>
+<t><list style="empty"><t>In the INIT and INIT ACK chunks, the sender of the chunk MUST indicate the number of outbound streams (OSs) it wishes to have in
+the association, as well as the maximum inbound streams (MISs) it will accept from the other endpoint.</t></list></t>
+
+<t><xref target="RFC6525"/> makes possible adding additional (but not removing) streams to an existing to an association.</t>
+
+</section>
+
+
+<section title="Channel definition">
+<t>The SCTP define a Stream as an unidirectional logical channel established from one to
+another associated SCTP endpoint.
+It is also worth to mention that the relationship between stream numbers in opposite directions
+is strictly a matter of how the applications use them.  It is the responsibility of the SCTP user 
+to create and manage these correlations if they are so desired. </t>
+
+<t>OPEN ISSUE: it is yet under discussion if a channel has to be unidirectional or bidirectional,
+and how channels are mapped to streams.</t>
+
+<t>A Bidirectional Data Channel is a relationship of one incoming stream and one outcoming stream.</t>
+</section>
+
+<section title="SCTP streams">
+<t>TBD not sure if we want discuss here or in the actual protocol draft:</t>
+<t><list style="empty">
+<t>signaling the close of a stream resetting the Stream Sequence Numbers (SSN) in a stream to 00</t>
+<t>the fact that all the control message will be transported on stream 0 and usage of stream "0" as 'control stream' vs using
+PPID to include the control information directly in the stream. Reliable, unreliable etc. staff is something that will be set
+only on the sending side via PPID.</t>
+<t>Michael to clarify that "in sequence" or "out of sequence" delivery and "reliable" or "unreliable" transfer are ortoghonal</t>
+<t>how to get the out-of-order and loss data for unreliable data from the stack if the JS API is designed to provide those feedback.</t>
+</list></t>
+
+</section>
+
+</section>
+
+
+
+
+<section title="Message Format." anchor="sec-mes-format">
+
+<t> TBD if we need also to design a framing or not.</t>
+
+<t> At time of writing nobody has identified a real need for masking of UDP,
+and DTLS is a much-preferred solution for encryption/authentication.</t>
+
+<t>More SCTP already provides sequence number information (e.g. stream sequence numbers).
+However there could be a need to support different kind of message (link in WebSocket where there is support
+to distinguish between Unicode text and binary frames), since for SCTP they are all user message.
+In the case there is this need a possibility is to map types to streams.</t>
+
+
+</section>
+
+
+<section title="Security Considerations" anchor="sec-security">
+<t>
+To be done.
+</t>
+</section>
+
+
+<section title="IANA Considerations" anchor="sec-IANA">
+<t>
+This document does not require any actions by the IANA.
+</t>
+</section>
+
+
+<section title="Acknowledgments">
+<t>Many thanks for comments, ideas, and text from Cullen Jennings, Eric Rescorla,
+Randall Stewart and Justin Uberti.</t>
+</section>
+
+
+</middle>
+
+<back>
+<references title="Informational References">
+	<?rfc include="reference.RFC.3758"?>
+	<?rfc include="reference.RFC.4340"?>
+	<?rfc include="reference.RFC.4341"?>
+	<?rfc include="reference.RFC.4342"?>
+	<?rfc include="reference.RFC.5622"?>
+	<?rfc include="reference.RFC.4895"?>
+	<?rfc include="reference.RFC.4960"?>
+	<?rfc include="reference.RFC.5061"?>
+	<?rfc include="reference.RFC.5245"?>
+	<?rfc include="reference.RFC.5389"?>
+	<?rfc include="reference.RFC.5405"?>
+	<?rfc include="reference.RFC.6083"?>
+	<?rfc include="reference.RFC.6347"?>
+	<?rfc include="reference.RFC.6525"?>
+	<?rfc include="reference.I-D.ietf-tls-rfc4347-bis"?>
+	<?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>
+<?rfc include="reference.I-D.baset-tsvwg-tcp-over-udp"?>
+<?rfc include="reference.I-D.denis-udp-transport"?>
+
+</references>
+</back>
+
+</rfc>
+
+<!-- Change log 
+
+
+-->
+
+
