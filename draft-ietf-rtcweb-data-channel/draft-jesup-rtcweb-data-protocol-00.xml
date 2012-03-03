@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<?rfc symrefs="yes"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc sortrefs="no" ?>
+
+<rfc ipr="trust200902"
+     docName="draft-jesup-rtcweb-data-protocol-00.txt" category='std'>
+<front>
+    <title abbrev="data protocol P2P in RTCWEB">
+       RTCWeb Datagram Channel Protocol
+    </title>
+
+
+    <author initials="R." surname="Jesup" fullname="Randell Jesup">
+      <organization>Mozilla</organization>
+      <address>
+	<postal>
+          <street></street>
+	  <code></code> 
+	  <city></city> 
+	  <country></country>
+ 	</postal>
+	<email>randell-ietf@jesup.org</email>
+      </address>
+    </author>
+
+
+
+   <author initials="S." surname="Loreto" fullname="Salvatore Loreto">
+    <organization>Ericsson</organization>
+    <address>
+    	<postal>
+        <street>Hirsalantie 11</street>
+        <code>02420</code> 
+     	  <city>Jorvas</city> 
+    	  <country>Finland</country>
+     	</postal>
+    	<email>salvatore.loreto@ericsson.com</email>
+    </address>
+  </author>
+
+
+    <author initials="M." surname="Tuexen" fullname="Michael Tuexen">
+      <organization>Muenster University of Applied Sciences</organization>
+      <address>
+	<postal>
+          <street>Stegerwaldstrasse 39</street>
+	  <code>48565</code> 
+	  <city> Steinfurt</city> 
+	  <country>Germany</country>
+ 	</postal>
+	<email>tuexen@fh-muenster.de</email>
+      </address>
+    </author>
+
+
+
+    <date year="2012" />
+    <area>RAI</area>
+    <workgroup>RTCWeb Working Group</workgroup>
+    <keyword></keyword>
+    <keyword></keyword>
+    <abstract>
+    <t>The Web Real-Time Communication (WebRTC) working group is in charge to provide
+   protocols support for direct interactive rich communication using audio, video,
+   and data between two peers' web-browsers.
+   This document specifies an actual (minor) protocol for how the JS-layer dataChannel objects. 
+    </t>
+    </abstract>
+</front>
+<middle>
+
+<section title="Introduction">
+<t>
+The Datagram Channel Protocol is designed to provide, in the WebRTC context <xref target='I-D.ietf-rtcweb-overview'/>, a generic transport service
+allowing Web Browser to exchange generic data in a peer to peer way.
+As discussed in <xref target='I-D.jesup-rtcweb-data'/> the protocol uses Stream Control Transmission Protocol (SCTP) <xref target="RFC4960"/> 
+encapsulated on Datagram Transport Layer Security (DTLS) <xref target="RFC6347"/> to benefit from their
+transport and security already standardized features.</t>
+</section>
+
+<section title="Opening handshake">
+<t>The opening handshake is based on the multimedia session description exchange that happens
+between the browsers through the Web Server acting as the signaling service.</t>
+
+<t>The draft <xref target='I-D.ietf-mmusic-sctp-sdp'/> define the protocol identifier, 'SCTP/DTLS', and define how establishing an
+SCTP association over DTLS using the Session Description Protocol (SDP).</t>
+
+
+</section>
+
+
+<section anchor='con' title="Conventions">
+<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+document are to be interpreted as described in <xref target='RFC2119'/>.</t>
+
+<section title='Terminology'>
+	<t>This document uses the following terms:</t>
+	<t><list style='hanging'>
+		<t hangText='Association:'>An SCTP association.</t>
+		<t hangText='Stream:'>A unidirectional stream of an SCTP association.
+		It is uniquely identified by a stream identifier.</t>
+	</list></t>
+</section>
+
+</section>
+
+<section title="Adding and removing a Channel">
+<t>
+TBD
+</t>
+</section>
+
+<section title="ASending and Receiving Data">
+<t>
+TBD
+</t>
+</section>
+
+<section title="Security Considerations" anchor="sec-security">
+<t>
+To be done.
+</t>
+</section>
+
+
+<section title="IANA Considerations" anchor="sec-IANA">
+<t>
+   This document also defines two new SCTP Payload Protocol Identifiers
+   (PPIDs).  RFC 4960 <xref target="RFC4960"/>  creates the registry from which these
+   identifiers have been assigned.  The following values have been
+   reserved:
+</t>
+	<t><list style='hanging'>
+		<t hangText='WebRTC Control  -'> #To Be Assigned</t>
+		<t hangText='DOMString       -'> #To Be Assigned</t>
+		<t hangText='Binary Data     -'> #To Be Assigned</t>
+	</list></t>
+</section>
+
+
+<section title="Acknowledgments">
+<t>Many thanks for comments, ideas, and text ...</t>
+</section>
+
+
+</middle>
+
+<back>
+<references title='Normative References'>
+	<?rfc include="reference.RFC.2119"?>
+	<?rfc include="reference.I-D.ietf-mmusic-sctp-sdp"?>
+	<?rfc include="reference.RFC.4960"?>
+	<?rfc include="reference.RFC.6347"?>
+	<?rfc include="reference.I-D.ietf-tls-rfc4347-bis"?>
+	<?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>	
+</references>
+
+<references title="Informational References">
+	<?rfc include='reference.I-D.ietf-rtcweb-overview' ?>	<?rfc include='reference.I-D.jesup-rtcweb-data' ?>
+</references>
+</back>
+
+</rfc>
+
+<!-- Change log 
+
+
+-->
+
+
