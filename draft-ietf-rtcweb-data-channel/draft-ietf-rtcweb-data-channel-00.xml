@@ -43,7 +43,8 @@
 
 
     <author initials="M." surname="Tuexen" fullname="Michael Tuexen">
-      <organization>Muenster University of Applied Sciences</organization>
+      <organization abbrev='Muenster Univ. of Appl. Sciences'>
+                    Muenster University of Applied Sciences</organization>
       <address>
 	<postal>
           <street>Stegerwaldstrasse 39</street>
