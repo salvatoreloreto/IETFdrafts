@@ -134,7 +134,7 @@ This section lists the requirements for P2P data connections between two browser
    PeerConnection's ICE <xref target="RFC5245"/> connectivity checks and
    optional TURN servers.</t>
 
-   <t>Data streams MUST provide message fragmentation support such that
+   <t>Data streams must provide message fragmentation support such that
    IP-layer fragmentation does not occur no matter how large a message
    the Javascript application passes to be sent.</t>
 
@@ -164,7 +164,7 @@ This section lists the requirements for P2P data connections between two browser
    <t>The data stream transport protocol must not rely on ICMP or ICMPv6
    being generated or being passed back, such as for PMTU discovery.</t>
 
-   <t>It MUST be possible to implement the protocol stack in the user
+   <t>It must be possible to implement the protocol stack in the user
    application space.</t>
 </list>
 </t>
