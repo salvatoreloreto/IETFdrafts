@@ -99,7 +99,8 @@ provide an overview of how SCTP should be used by the RTCWeb protocol framework 
 </section>
 
 
-<section title="Requirements" anchor="sec-req">
+<section title="Requirements"
+         anchor="sec-req">
 
 <t>
 This section lists the requirements for P2P data connections between two browsers.
@@ -171,9 +172,10 @@ This section lists the requirements for P2P data connections between two browser
 </section>
 
 
-<section title="Use cases." anchor="sec-use-cases">
+<section title="Use Cases"
+         anchor="sec-use-cases">
 
-<section title="Use cases for unreliable datagram based channel"
+<section title="Use Cases for Unreliable Datagram Based Channels"
          anchor="sec-use-cases-unreliable">
 
 <t>
@@ -192,7 +194,7 @@ This section lists the requirements for P2P data connections between two browser
 
 </section>
 
-<section title="Use cases for reliable channels (datagram or stream)."
+<section title="Use Cases for Reliable Channels (Datagram or Stream Based)"
          anchor="sec-use-cases-reliable">
 
 <t>Note that either reliable datagrams or streams are possible;
@@ -216,7 +218,7 @@ datagrams with in-order delivery.</t>
    people in a conference. Typically this would be datagrams.</t>
 
    <t>Renegotiation of the set of media streams in the PeerConnection.
-   Typically this would be datagrams</t>
+   Typically this would be datagrams.</t>
 
    <t>Proxy browsing, where a browser uses data channels of a PeerConnection
    to send and receive HTTP/HTTPS requests and data, for example to avoid local
@@ -230,7 +232,8 @@ datagrams with in-order delivery.</t>
 
 
 
-<section title="Datagrams over SCTP over DTLS over UDP." anchor="sec-p-a-2">
+<section title="Datagrams over SCTP over DTLS over UDP"
+         anchor="sec-p-a-2">
 
 <figure title="stack diagram"
         anchor="fig-2">
@@ -279,7 +282,8 @@ to know what type of protocol the data payload has.</t>
 
 
 
-<section title="User Space vs Kernel implementation." anchor="sec-sctp-1">
+<section title="User Space versus Kernel Implementation"
+         anchor="sec-sctp-1">
 <t>Even though kernel implementations of SCTP are already available for most platforms (see <xref target='sec-p-a-2'/> ),
 there are compelling reasons for using an SCTP stack that works well in user land.</t>
 
@@ -298,7 +302,8 @@ inside the application instead of relying on the operating system.</t>
 
 
 
-<section title="SCTP/DTLS/UDP layering" anchor="sec-sctp-3">
+<section title="SCTP/DTLS/UDP Layering"
+         anchor="sec-sctp-3">
 <t>The layering of protocols for WebRTC is shown here <xref target='fig-sctp-layering'/>.</t>
 <figure title='WebRTC protocol layers'
         anchor='fig-sctp-layering'>
@@ -365,7 +370,8 @@ ending up with most or all the channel bandwidth.</t>
 
 </section>
 
-<section title="The envisioned usage of SCTP in the RTCWeb context" anchor="sec-sctp-usage">
+<section title="The Envisioned Usage of SCTP in the RTCWeb Context"
+         anchor="sec-sctp-usage">
 <t>The appealing features of SCTP in the RTCWeb context are:</t>
 <t><list style="hanging">
    <t hangText="-">TCP-friendly congestion control.</t>
@@ -381,7 +387,8 @@ ending up with most or all the channel bandwidth.</t>
 as if it were running on a single-homed host, 
 since that is the abstraction that the lower layers (e.g. UDP) would expose.</t>
 
-<section title="Association setup" anchor="sec-sctp-setup">
+<section title="Association Setup"
+         anchor="sec-sctp-setup">
 <t>The SCTP association would be set up when the two endpoints of the WebRTC 
 PeerConnection agree on opening it, as negotiated by JSEP (typically an 
 exchange of SDP).  It would use the DTLS connection created at the start of the PeerConnection connection</t>
@@ -395,7 +402,7 @@ adding additional (but not removing) streams to an existing association.</t>
 </section>
 
 
-<section title="Channel definition">
+<section title="Channel Definition">
 <t>SCTP defines a Stream as an unidirectional logical channel established from one to
 another associated SCTP endpoint.
 It is also worth to mention that the relationship between stream numbers in opposite directions
@@ -405,7 +412,7 @@ to create and manage these correlations if they are so desired. </t>
 <t>A Bidirectional Data Channel is a relationship of one incoming stream and one outcoming stream.  The W3C seems to have consensus on defining the application API for WebRTC dataChannels to be bidirectional.</t>
 </section>
 
-<section title="SCTP streams">
+<section title="SCTP Streams">
 <t>TBD not sure if we want discuss here or in the actual protocol draft:</t>
 <t><list style="empty">
 <t>signaling the close of a stream resetting the Stream Sequence Numbers (SSN) in a stream to 00</t>
@@ -423,7 +430,8 @@ only on the sending side via PPID.</t>
 
 
 
-<section title="Message Format." anchor="sec-mes-format">
+<section title="Message Format"
+         anchor="sec-mes-format">
 
 <t> Message type identification shall be done via PPID values; 
 values used should be registered.  Currently the types required 
@@ -494,17 +502,15 @@ messages would need to add 'uint32 forward_stream' field.</t>
 </section>
 
 
-<section title="Security Considerations" anchor="sec-security">
-<t>
-To be done.
-</t>
+<section title="Security Considerations"
+         anchor="sec-security">
+<t>To be done.</t>
 </section>
 
 
-<section title="IANA Considerations" anchor="sec-IANA">
-<t>
-This document does not require any actions by the IANA.
-</t>
+<section title="IANA Considerations"
+         anchor="sec-IANA">
+<t>This document does not require any actions by the IANA.</t>
 </section>
 
 
@@ -533,8 +539,6 @@ Randall Stewart, Justin Uberti, and Harald Alvestrand.</t>
 <?rfc include="reference.RFC.6347"?>
 <?rfc include="reference.RFC.6525"?>
 <?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>
-<?rfc include="reference.I-D.baset-tsvwg-tcp-over-udp"?>
-<?rfc include="reference.I-D.denis-udp-transport"?>
 <?rfc include="reference.I-D.tuexen-tsvwg-sctp-dtls-encaps"?>
 </references>
 </back>
