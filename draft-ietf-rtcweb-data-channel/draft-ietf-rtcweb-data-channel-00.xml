@@ -4,6 +4,7 @@
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc sortrefs="no" ?>
+<?rfc strict="yes" ?>
 
 <rfc ipr="trust200902"
      docName="draft-ietf-rtcweb-data-channel-00.txt" category='info'>
@@ -430,7 +431,11 @@ Open message:
 
 Opened message:
               uint8  msg_type;     // WEBRTC_DATA_MSG_OPENED = 1
-	      uint8  error;        // 0 = success, 1 = already opened, 2 = connection lost, others?
+	      uint8  error;        /* 0 = success,
+                                    * 1 = already opened,
+                                    * 2 = connection lost,
+                                    *     others?
+                                    */
 	      uint8  reserved[2];
 	      uint32 stream_opened;
 </artwork>
@@ -488,26 +493,25 @@ Randall Stewart, Justin Uberti, and Harald Alvestrand.</t>
 </middle>
 
 <back>
-<references title="Informational References">
-	<?rfc include="reference.RFC.3758"?>
-	<?rfc include="reference.RFC.4340"?>
-	<?rfc include="reference.RFC.4341"?>
-	<?rfc include="reference.RFC.4342"?>
-	<?rfc include="reference.RFC.5622"?>
-	<?rfc include="reference.RFC.4895"?>
-	<?rfc include="reference.RFC.4960"?>
-	<?rfc include="reference.RFC.5061"?>
-	<?rfc include="reference.RFC.5245"?>
-	<?rfc include="reference.RFC.5389"?>
-	<?rfc include="reference.RFC.5405"?>
-	<?rfc include="reference.RFC.6083"?>
-	<?rfc include="reference.RFC.6347"?>
-	<?rfc include="reference.RFC.6525"?>
-	<?rfc include="reference.I-D.ietf-tls-rfc4347-bis"?>
-	<?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>
+<references title="Informative References">
+<?rfc include="reference.RFC.3758"?>
+<?rfc include="reference.RFC.4340"?>
+<?rfc include="reference.RFC.4341"?>
+<?rfc include="reference.RFC.4342"?>
+<?rfc include="reference.RFC.5622"?>
+<?rfc include="reference.RFC.4895"?>
+<?rfc include="reference.RFC.4960"?>
+<?rfc include="reference.RFC.5061"?>
+<?rfc include="reference.RFC.5245"?>
+<?rfc include="reference.RFC.5389"?>
+<?rfc include="reference.RFC.5405"?>
+<?rfc include="reference.RFC.6083"?>
+<?rfc include="reference.RFC.6347"?>
+<?rfc include="reference.RFC.6525"?>
+<?rfc include="reference.I-D.ietf-tls-rfc4347-bis"?>
+<?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>
 <?rfc include="reference.I-D.baset-tsvwg-tcp-over-udp"?>
 <?rfc include="reference.I-D.denis-udp-transport"?>
-
 </references>
 </back>
 
