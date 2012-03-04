@@ -78,17 +78,18 @@
 <t>The issue of how best to handle non-media data types in the context of RTCWEB has  reached a general consensus 
     on the usage of SCPT <xref target="RFC4960"/> encapsulated on DTLS <xref target="RFC6347"/>:</t>
 
-        <figure title="Basic stack diagram" anchor="fig-stack"><artwork>
-    <![CDATA[
-		                 +----------+
-   		                 |   SCTP   |
-              		         +----------+
-                 		 |   DTLS   |
-                                 +----------+ 
-                                 | ICE/UDP  | 
-                                 +----------+              
-    ]]>
-        </artwork></figure>
+<figure title="Basic stack diagram"
+        anchor="fig-stack">
+<artwork>
+                             +----------+
+                             |   SCTP   |
+                             +----------+
+                             |   DTLS   |
+                             +----------+
+                             | ICE/UDP  |
+                             +----------+
+</artwork>
+</figure>
 
 <t>The encapsulation of SCTP over DTLS over ICE/UDP provides a NAT traversal solution together with 
 confidentiality, source authenticated, integrity protected transfers.  This data transport service operates in parallel to the media transports, and all of them can share a single port.</t>
@@ -206,21 +207,22 @@ This section lists the requirements for P2P data connections between two browser
 
 <section title="Datagrams over SCTP over DTLS over UDP." anchor="sec-p-a-2">
 
-        <figure title="stack diagram" anchor="fig-2"><artwork>
-    <![CDATA[
-                 +------+
-                 |WEBAPP|
-                 +------+
-                 | SCTP |
-          +-------------+
-          | STUN | DTLS |
-          +-------------+
-          |    ICE      | 
-          +-------------+ 
-          | UDP1 | UDP2 |...
-          +-------------+              
-    ]]>
-        </artwork></figure>
+<figure title="stack diagram"
+        anchor="fig-2">
+<artwork>
+                                  +------+
+                                  |WEBAPP|
+                                  +------+
+                                  | SCTP |
+                           +-------------+
+                           | STUN | DTLS |
+                           +-------------+
+                           |     ICE     |
+                           +-------------+
+                           | UDP1 | UDP2 |
+                           +-------------+
+</artwork>
+</figure>
 
 <t>An SCTP <xref target="RFC4960"/> based solution provides natively several interesting features for transporting non-media data between browsers:</t>
 <t>
@@ -273,20 +275,20 @@ inside the application instead of relying on the operating system.</t>
 
 <section title="SCTP/DTLS/UDP layering" anchor="sec-sctp-3">
 <t>The layering of protocols for WebRTC is shown here <xref target='fig-sctp-layering'/>.</t>
-<figure title='WebRTC protocol layers' anchor='fig-sctp-layering'>
+<figure title='WebRTC protocol layers'
+        anchor='fig-sctp-layering'>
 <artwork>
-
-                              +------+
-                              |WEBAPP|
-                              +------+
-                              | SCTP |
-                       +-------------+
-                       | SRTP | DTLS |
-                       +-------------+
-                       |     ICE     |
-                       +-------------+
-                       | UDP1 | UDP2 |...
-                       +-------------+
+                                     +------+
+                                     |WEBAPP|
+                                     +------+
+                                     | SCTP |
+                       +--------------------+
+                       | STUN | SRTP | DTLS |
+                       +--------------------+
+                       |         ICE        |
+                       +--------------------+
+                       | UDP1 | UDP2 | ...  |
+                       +--------------------+
 </artwork>
 </figure>
 <t>Considering the protocol stack on the right hand side of
