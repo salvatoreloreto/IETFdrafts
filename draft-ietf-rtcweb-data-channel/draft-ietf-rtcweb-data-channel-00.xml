@@ -13,64 +13,58 @@
        RTCWeb Datagram Connection
     </title>
 
-
     <author initials="R." surname="Jesup" fullname="Randell Jesup">
       <organization>Mozilla</organization>
       <address>
-	<postal>
+        <postal>
           <street></street>
-	  <code></code> 
-	  <city></city> 
-	  <country>USA</country>
- 	</postal>
-	<email>randell-ietf@jesup.org</email>
+          <code></code> 
+          <city></city> 
+          <country>USA</country>
+        </postal>
+        <email>randell-ietf@jesup.org</email>
       </address>
     </author>
 
-
-
-   <author initials="S." surname="Loreto" fullname="Salvatore Loreto">
-    <organization>Ericsson</organization>
-    <address>
-    	<postal>
-        <street>Hirsalantie 11</street>
-        <code>02420</code> 
-     	  <city>Jorvas</city> 
-    	  <country>Finland</country>
-     	</postal>
-    	<email>salvatore.loreto@ericsson.com</email>
-    </address>
-  </author>
-
+    <author initials="S." surname="Loreto" fullname="Salvatore Loreto">
+      <organization>Ericsson</organization>
+      <address>
+        <postal>
+          <street>Hirsalantie 11</street>
+          <code>02420</code> 
+          <city>Jorvas</city> 
+          <country>Finland</country>
+        </postal>
+        <email>salvatore.loreto@ericsson.com</email>
+      </address>
+    </author>
 
     <author initials="M." surname="Tuexen" fullname="Michael Tuexen">
       <organization abbrev='Muenster Univ. of Appl. Sciences'>
                     Muenster University of Applied Sciences</organization>
       <address>
-	<postal>
+        <postal>
           <street>Stegerwaldstrasse 39</street>
-	  <code>48565</code> 
-	  <city> Steinfurt</city> 
-	  <country>Germany</country>
- 	</postal>
-	<email>tuexen@fh-muenster.de</email>
+          <code>48565</code> 
+          <city> Steinfurt</city> 
+          <country>Germany</country>
+        </postal>
+        <email>tuexen@fh-muenster.de</email>
       </address>
     </author>
 
 
 
-    <date year="2012" />
+    <date/>
     <area>RAI</area>
     <workgroup>RTCWeb Working Group</workgroup>
-    <keyword></keyword>
-    <keyword></keyword>
     <abstract>
     <t>The Web Real-Time Communication (WebRTC) working group is charged to provide
-   protocol support for direct interactive rich communication using audio, video,
-   and data between two peers' web-browsers.
-   This document describes the non-media data transport aspects of the WebRTC framework.
-   It provides an architectural overview of how the Stream Control Transmission Protocol (SCTP) is used in
-   the WebRTC context as a generic transport service allowing Web Browser to exchange generic data from peer to peer.</t>
+    protocol support for direct interactive rich communication using audio, video,
+    and data between two peers' web-browsers.
+    This document describes the non-media data transport aspects of the WebRTC framework.
+    It provides an architectural overview of how the Stream Control Transmission Protocol (SCTP) is used in
+    the WebRTC context as a generic transport service allowing Web Browser to exchange generic data from peer to peer.</t>
     </abstract>
 </front>
 <middle>
@@ -542,6 +536,7 @@ Randall Stewart, Justin Uberti, and Harald Alvestrand.</t>
 <?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>
 <?rfc include="reference.I-D.baset-tsvwg-tcp-over-udp"?>
 <?rfc include="reference.I-D.denis-udp-transport"?>
+<?rfc include="reference.I-D.tuexen-tsvwg-sctp-dtls-encaps"?>
 </references>
 </back>
 
