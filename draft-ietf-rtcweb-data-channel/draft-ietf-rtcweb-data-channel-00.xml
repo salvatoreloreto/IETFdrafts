@@ -318,7 +318,7 @@ inside the application instead of relying on the operating system.</t>
 </figure>
 <t>Considering the protocol stack on the right hand side of
 <xref target='fig-sctp-layering'/>, the usage of DTLS over UDP is specified in
-<xref target='I-D.ietf-tls-rfc4347-bis'/>. Using SCTP on top of DTLS is
+<xref target='RFC6347'/>. Using SCTP on top of DTLS is
 currently unspecified, but a draft is being prepared for the TSVWG.
 Since DTLS is typically implemented in user-land,
 an SCTP user-land implementation must also be used. 
@@ -532,7 +532,6 @@ Randall Stewart, Justin Uberti, and Harald Alvestrand.</t>
 <?rfc include="reference.RFC.6083"?>
 <?rfc include="reference.RFC.6347"?>
 <?rfc include="reference.RFC.6525"?>
-<?rfc include="reference.I-D.ietf-tls-rfc4347-bis"?>
 <?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>
 <?rfc include="reference.I-D.baset-tsvwg-tcp-over-udp"?>
 <?rfc include="reference.I-D.denis-udp-transport"?>
