@@ -316,6 +316,14 @@ requirement 12.</t>
                        +--------------------+
 </artwork>
 </figure>
+<t>This stack (especially in contrast to DTLS over SCTP) has been choosen
+because it
+<list style='symbols'>
+<t>supports the transmission of arbitrary large user messages.</t>
+<t>shares the DTLS connection with the media channels.</t>
+<t>provides pricacy for the SCTP control information.</t>
+</list>
+</t>
 <t>Considering this protocol stack the usage of DTLS over UDP is specified in
 <xref target='RFC6347'/>. Using SCTP on top of DTLS is specified in
 <xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/>.
