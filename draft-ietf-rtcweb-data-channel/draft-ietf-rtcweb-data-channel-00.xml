@@ -235,37 +235,35 @@ datagrams with in-order delivery.</t>
 <section title="Datagrams over SCTP over DTLS over UDP"
          anchor="sec-p-a-2">
 
-<figure title="stack diagram"
-        anchor="fig-2">
-<artwork>
-                                  +------+
-                                  |WEBAPP|
-                                  +------+
-                                  | SCTP |
-                           +-------------+
-                           | STUN | DTLS |
-                           +-------------+
-                           |     ICE     |
-                           +-------------+
-                           | UDP1 | UDP2 |
-                           +-------------+
-</artwork>
-</figure>
+<t>An SCTP based solution as defined in
+<xref target="I-D.tuexen-tsvwg-sctp-dtls-encaps"/> 
+provides natively several interesting features for transporting non-media data
+between browsers:
+<list style="symbols">
+<t>Support of multiple streams.</t> 
+<t>Ordered and unordered delivery of user messages.</t>
+<t>Reliabile and partial-reliable transport of user messages.</t>
+</list>
+</t>
 
-<t>An SCTP <xref target="RFC4960"/> based solution provides natively several interesting features for transporting non-media data between browsers:</t>
-<t>
-<list style="empty">
-<t>Multistreaming</t> 
-<t>Ordered and Unordered delivery</t>
-<t>Reliability and partial-Reliability <xref target="RFC3758"/></t>
-</list></t>
+<t>SCTP transmits a so called Payload Protocol Identifier (PPID)
+with each user message. This can be used to transport multiple protcols
+over a single SCTP association. The sender provides for each protocol a
+specific PPID and the receiver demulitplexes the messages based on the
+received PPID.</t>
+<!--
+<t>Moreover SCTP provides the possibility to transport different "protocols"
+over multiple streams and associations using the PPID
+(Payload Protocol Identifier).
+An application can set a different PPID with each send call.
+This allows the receiving application to look at this information 
+(as well as the stream id/seq) on receiving to know what type of protocol
+the data payload has.</t>
+-->
 
-<t>Moreover SCTP provides the possibility to transport different "protocols" over multiple streams and associations using the ppid (Payload Protocol Identifier). 
-An application can set a  different PPID with each send call. This allows the receiving application to look at this information (as well as the stream id/seq) on receiving
-to know what type of protocol the data payload has.</t>
-
-<t>The SCTP features satisfy all the requirements listed in in <xref target='sec-req'/>.</t>
-
+<t>The SCTP features satisfy all the requirements listed in in 
+<xref target='sec-req'/>.</t>
+<!--
 <t>There are SCTP implementations for most Operating Systems in wide use:</t>
 <t>
 <list style="empty">
@@ -275,36 +273,33 @@ to know what type of protocol the data payload has.</t>
 <t>Windows (SctpDrv4)</t> 
 <t>Solaris (OpenSolaris 2009.06)</t>
 <t>and a user-land SCTP implementation (based on the FreeBSD implementation).</t>
-</list></t>
-
-<t>The SCTP solution is analyzed in more detail in the following sections.</t>
-
-
-
+</list>
+</t>
 
 <section title="User Space versus Kernel Implementation"
          anchor="sec-sctp-1">
-<t>Even though kernel implementations of SCTP are already available for most platforms (see <xref target='sec-p-a-2'/> ),
-there are compelling reasons for using an SCTP stack that works well in user land.</t>
+<t>Even though kernel implementations of SCTP are already available for most
+platforms (see <xref target='sec-p-a-2'/> ), there are compelling reasons for
+using an SCTP stack that works well in user land.</t>
 
 <t>The main reason is deployability.</t>
 
-<t>Web browsers supporting WebRTC are expected to run on a wide range of old and new operating systems. They support operating systems 10 years old or more, they run on mobile and desktop operating systems, 
-and they are highly portable to new operating systems. This is achieved by having a fairly narrow portability layer to minimize what needs 
-to be supported on old operating systems and ported to new ones. This creates a need to implement as much functionality as possible 
+<t>Web browsers supporting WebRTC are expected to run on a wide range of old
+and new operating systems. They support operating systems 10 years old or more,
+they run on mobile and desktop operating systems,
+and they are highly portable to new operating systems.
+This is achieved by having a fairly narrow portability layer to minimize
+what needs  to be supported on old operating systems and ported to new ones.
+This creates a need to implement as much functionality as possible 
 inside the application instead of relying on the operating system.</t>
 
-<t>As a user-land implementation of SCTP is available, this meets requirement 12.</t>
-
-
+<t>As a user-land implementation of SCTP is available, this meets
+requirement 12.</t>
 </section>
+-->
 
-
-
-
-<section title="SCTP/DTLS/UDP Layering"
-         anchor="sec-sctp-3">
-<t>The layering of protocols for WebRTC is shown here <xref target='fig-sctp-layering'/>.</t>
+<t>The layering of protocols for WebRTC is shown in the following
+<xref target='fig-sctp-layering'/>.</t>
 <figure title='WebRTC protocol layers'
         anchor='fig-sctp-layering'>
 <artwork>
@@ -321,12 +316,11 @@ inside the application instead of relying on the operating system.</t>
                        +--------------------+
 </artwork>
 </figure>
-<t>Considering the protocol stack on the right hand side of
-<xref target='fig-sctp-layering'/>, the usage of DTLS over UDP is specified in
-<xref target='RFC6347'/>. Using SCTP on top of DTLS is
-currently unspecified, but a draft is being prepared for the TSVWG.
-Since DTLS is typically implemented in user-land,
-an SCTP user-land implementation must also be used. 
+<t>Considering this protocol stack the usage of DTLS over UDP is specified in
+<xref target='RFC6347'/>. Using SCTP on top of DTLS is specified in
+<xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/>.
+Since DTLS is typically implemented in user-land, an SCTP user-land
+implementation must also be used.
 When using DTLS as the lower layer, only single homed SCTP
 associations can be used, since DTLS does not expose any any address management
 to its upper layer. The ICE/UDP layer can handle IP address changes during a 
@@ -367,67 +361,83 @@ data channels and the media streams to avoid a data channel transfer
 ending up with most or all the channel bandwidth.</t>
 </section>
 
-
-</section>
-
 <section title="The Envisioned Usage of SCTP in the RTCWeb Context"
          anchor="sec-sctp-usage">
-<t>The appealing features of SCTP in the RTCWeb context are:</t>
-<t><list style="hanging">
-   <t hangText="-">TCP-friendly congestion control.</t>
-   <t hangText="-">the congestion control is modifiable for integration with media stream congestion control.</t>
-   <t hangText="-">support for multiple channels with different characteristics.</t>
-   <t hangText="-">support for out-of-order delivery.</t>
-   <t hangText="-">support for large datagrams and PMTU-discovery and fragmentation.</t>
-   <t hangText="-">reliable or partial reliability support.</t>
-   <t hangText="-">Multi streaming.</t>
-</list></t>
+<t>The appealing features of SCTP in the RTCWeb context are:
+<list style="symbols">
+<t>TCP-friendly congestion control.</t>
+<t>The congestion control is modifiable for integration with media stream congestion control.</t>
+<t>Support for multiple channels with different characteristics.</t>
+<t>Support for out-of-order delivery.</t>
+<t>Support for large datagrams and PMTU-discovery and fragmentation.</t>
+<t>Reliable or partial reliability support.</t>
+<t>Support or multiple streams.</t>
+</list>
+</t>
 
-<t>Multihoming will not be used in this scenario. The SCTP layer would simply act 
-as if it were running on a single-homed host, 
-since that is the abstraction that the lower layers (e.g. UDP) would expose.</t>
+<t>Multihoming will not be used in this scenario.
+The SCTP layer would simply act  as if it were running on a single-homed host,
+since that is the abstraction that the lower layer (a connection oriented,
+unreliable datagram service) would expose.</t>
 
 <section title="Association Setup"
          anchor="sec-sctp-setup">
-<t>The SCTP association would be set up when the two endpoints of the WebRTC 
-PeerConnection agree on opening it, as negotiated by JSEP (typically an 
-exchange of SDP).  It would use the DTLS connection created at the start of the PeerConnection connection</t>
+<t>The SCTP association would be set up when the two endpoints of the WebRTC
+PeerConnection agree on opening it, as negotiated by JSEP (typically an
+exchange of SDP). It would use the DTLS connection created at the start of the
+PeerConnection connection.</t>
 
-<t>The application should indicate the number of simultaneous streams 
-required when opening the association, and if no value is supplied the 
-implementation should provide a default, with suggested value of 16.  
-If more simultaneous streams are needed, <xref target="RFC6525"/> allows 
-adding additional (but not removing) streams to an existing association.</t>
-
+<t>The application should indicate the number of simultaneous streams
+required when opening the association, and if no value is supplied, the
+implementation should provide a default, with a suggested value of 16.
+If more simultaneous streams are needed, <xref target="RFC6525"/> allows
+adding additional (but not removing) streams to an existing association.
+There can be up to 65536 SCTP streams per SCTP association in each direction.</t>
 </section>
 
-
 <section title="Channel Definition">
-<t>SCTP defines a Stream as an unidirectional logical channel established from one to
-another associated SCTP endpoint.
-It is also worth to mention that the relationship between stream numbers in opposite directions
-is strictly a matter of how the applications use them.  It is the responsibility of the SCTP user 
-to create and manage these correlations if they are so desired. </t>
+<!--
+It is also worth to mention that the relationship between stream numbers
+in opposite directions is strictly a matter of how the applications use them.
+It is the responsibility of the SCTP user to create and manage these
+correlations if they are so desired.</t>-->
 
-<t>A Bidirectional Data Channel is a relationship of one incoming stream and one outcoming stream.  The W3C seems to have consensus on defining the application API for WebRTC dataChannels to be bidirectional.</t>
+<t>The W3C seems to have consensus on defining the application API for
+WebRTC dataChannels to be bidirectional. They also consider the notions
+of in-sequence, out-of-sequence, reliable and un-reliable as properties
+of Channels.</t>
 </section>
 
 <section title="SCTP Streams">
-<t>TBD not sure if we want discuss here or in the actual protocol draft:</t>
-<t><list style="empty">
-<t>signaling the close of a stream resetting the Stream Sequence Numbers (SSN) in a stream to 00</t>
-<t>the fact that all the control message will be transported on stream 0 and usage of stream "0" as 'control stream' vs using
-PPID to include the control information directly in the stream. Reliable, unreliable etc. staff is something that will be set
-only on the sending side via PPID.</t>
-<t>Michael to clarify that "in sequence" or "out of sequence" delivery and "reliable" or "unreliable" transfer are ortoghonal</t>
-<t>how to get the out-of-order and loss data for unreliable data from the stack if the JS API is designed to provide those feedback. -- it is expected to be available for non-reliable channels (Randell)</t>
-</list></t>
-
+<t>SCTP defines a stream as an unidirectional logical channel exitsting within
+an SCTP association one to another SCTP endpoint. The streams are used to
+provide the notion of in-sequence delivery. Each user message is sent
+on a particular stream, either order or unordered. Ordering is preserved only
+for all ordered messages sent on the same stream.</t>
+<t>A possible realisation of a bidirectional Data Channel is a pair of one
+incoming stream and one outcoming SCTP stream. Closing of a Data Channel
+can be signalled by resetting the correspoing streams. It might be useful
+to use a specific pair of SCTP streams for transporting control information.</t>
 </section>
 
+<section title='Usage of Payload Protocol Identifier'>
+<t>The PPID can be used to signal the type of data, like a string, ASCII or
+binary data.</t>
 </section>
-
-
+<!--
+<t>TBD not sure if we want discuss here or in the actual protocol draft:
+<list style="empty">
+<t>the fact that all the control message will be transported on stream 0
+   and usage of stream "0" as 'control stream' vs using PPID to include the
+   control information directly in the stream. Reliable, unreliable etc. staff
+   is something that will be set only on the sending side via PPID.</t>
+<t>how to get the out-of-order and loss data for unreliable data from
+   the stack if the JS API is designed to provide those feedback. -
+   it is expected to be available for non-reliable channels (Randell)</t>
+</list>
+</t>
+-->
+</section>
 
 
 <section title="Message Format"
