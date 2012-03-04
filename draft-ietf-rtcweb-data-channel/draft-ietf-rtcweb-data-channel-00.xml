@@ -97,7 +97,7 @@ confidentiality, source authenticated, integrity protected transfers.  This data
 
 <t>SCTP provides multiple streams natively with reliable, unreliable and partially-reliable delivery modes.</t>
 
-<t>This document provides Requirement and use cases for both unreliable and reliable peer to peer datagram base channel,
+<t>This document provides requirements and use cases for both unreliable and reliable peer to peer datagram base channel,
 provide an overview of how SCTP should be used by the RTCWeb protocol framework for transporting non-media data between browsers.</t>
 
 
@@ -111,94 +111,124 @@ provide an overview of how SCTP should be used by the RTCWeb protocol framework 
 This section lists the requirements for P2P data connections between two browsers.
 </t>
 
-<t><list style="hanging">
-   <t hangText="Req. 1">Multiple simultaneous datagram streams must be supported.  Note that there may 0 or more media streams in parallel with the data streams, and the number and state (active/inactive) of the media streams may change at any time.</t><t></t>
+<t>
+<list style='format Req. %d'>
+<t>Multiple simultaneous datagram streams must be supported.
+   Note that there may 0 or more media streams in parallel with the data streams,
+   and the number and state (active/inactive) of the media streams may change at
+   any time.</t>
 
-   <t hangText="Req. 2">Both reliable and unreliable datagram streams must be supported.</t><t></t>
+   <t>Both reliable and unreliable datagram streams must be supported.</t>
 
-   <t hangText="Req. 3">Data streams must be congestion controlled; either individually,
-     as a class, or in conjunction with the media streams, to ensure
-     that datagram exchanges don't cause congestion problems for the
-     media streams, and that the rtcweb PeerConnection as a whole is
-     fair with competing streams such as TCP.</t><t></t>
+   <t>Data streams must be congestion controlled; either individually,
+   as a class, or in conjunction with the media streams, to ensure
+   that datagram exchanges don't cause congestion problems for the
+   media streams, and that the rtcweb PeerConnection as a whole is
+   fair with competing streams such as TCP.</t>
 
-   <t hangText="Req. 4">The application should be able to provide guidance as to the 
-     relative priority of each datagram stream relative to each other,
-     and relative to the media streams. [ TBD: how this is encoded and
-     what the impact of this is. ]  This will interact with the
-     congestion control algorithms.</t><t></t>
+   <t>The application should be able to provide guidance as to the 
+   relative priority of each datagram stream relative to each other,
+   and relative to the media streams. [ TBD: how this is encoded and
+   what the impact of this is. ]  This will interact with the
+   congestion control algorithms.</t>
 
-   <t hangText="Req. 5">Datagram streams must be encrypted; allowing for confidentiality, 
-     integrity and source authentication. See the security spec [xxx] for detailed info.</t><t></t>
+   <t>Datagram streams must be encrypted; allowing for confidentiality,
+   integrity and source authentication.
+   See the security spec [xxx] for detailed info.</t>
 
+   <t>Consent and NAT traversal mechanism: These are handled by the
+   PeerConnection's ICE <xref target="RFC5245"/> connectivity checks and
+   optional TURN servers.</t>
 
-   <t hangText="Req. 6">Consent and NAT traversal mechanism:  These are handled by the 
-     PeerConnection's ICE <xref target="RFC5245"/> connectivity checks and
-     optional TURN servers.</t><t></t>
+   <t>Data streams MUST provide message fragmentation support such that
+   IP-layer fragmentation does not occur no matter how large a message
+   the Javascript application passes to be sent.</t>
 
-   <t hangText="Req. 7"> Data streams MUST provide message fragmentation support such that IP-layer fragmentation does not occur no matter how large a message the Javascript application passes to be sent.</t><t></t>
+   <t>The data stream transport protocol must not encode local IP addresses
+   inside its protocol fields; doing so reveals potentially private information,
+   and leads to failure if the address is depended upon.</t>
 
-   <t hangText="Rec. 8"> The data stream transport protocol MUST NOT encode local IP addresses inside its protocol fields; doing so reveals potentially private information, and leads to failure if the address is depended upon. </t><t></t>
+   <t>The data stream protocol should support unbounded-length "messages"
+  (i.e., a virtual socket stream) at the application layer, for such things as
+  image-file-transfer; or else it must support at least a maximum
+  application-layer message size of 4GB.</t>
 
-   <t hangText="Req. 9"> The data stream protocol SHOULD support unbounded-length "messages" (i.e., a virtual socket stream) at the application layer, for such things as image-file-transfer; or else it MUST support at least a maximum application-layer message size of 4GB.</t><t></t>
+   <t>The data stream packet format/encoding must be such
+   that it is impossible for a malicious Javascript to generate an
+   application message crafted such that it could be interpreted as a native
+   protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc.</t>
 
-   <t hangText="Req. 10"> The data stream packet format/encoding MUST be such that it is impossible for a malicious Javascript to generate an application message crafted such that it could be interpreted as a native protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc. </t><t></t>
+   <t>The data stream transport protocol must start with the assumption
+   of a PMTU of 1280 [ *** need justification ***] bytes until measured
+   otherwise.</t>
+   <!-- MT: Why? Shouldn't SCTP just do PMTU discovery? -->
+   <!-- MT: 1280 is the minimum PMTU for IPv6. However, we need to take
+        any IPv6 optional headers, the UDP header (8 bytes) and the DTLS
+        overhead (it depends on the choosen cipher suite) into account.
+        Same for UPv4. -->
 
-   <t hangText="Req. 10"> The data stream transport protocol MUST start with the assumption
-   of a PMTU of 1280 [ *** need justification ***] bytes until measured otherwise. </t><t></t>
+   <t>The data stream transport protocol must not rely on ICMP or ICMPv6
+   being generated or being passed back, such as for PMTU discovery.</t>
 
-   <t hangText="Req. 11"> The data stream transport protocol MUST NOT rely on ICMP being generated 
-   or being passed back, such as for PMTU discovery. </t><t></t>
-
-   <t hangText="Req. 12"> It MUST be possible to implement the protocol stack in the user application space.</t>
-
-
-
-</list></t>
-
+   <t>It MUST be possible to implement the protocol stack in the user
+   application space.</t>
+</list>
+</t>
 </section>
 
 
 <section title="Use cases." anchor="sec-use-cases">
 
-<section title="Use cases for unreliable datagram based channel" anchor="sec-use-cases-unreliable">
+<section title="Use cases for unreliable datagram based channel"
+         anchor="sec-use-cases-unreliable">
 
-<t><list style="hanging">
+<t>
+<list style='format U-C %d' counter='UseCases'>
 
-   <t hangText="U-C 1">A real-time game where position and object state information is
-   sent via one or more unreliable data channels.  Note that at any time there may be no media channels, or all media channels may be inactive, and that there may also be reliable data channels in use.</t><t></t>
+   <t>A real-time game where position and object state information is
+   sent via one or more unreliable data channels.
+   Note that at any time there may be no media channels, or all media channels
+   may be inactive, and that there may also be reliable data channels in use.</t>
 	
-   <t hangText="U-C 2">Non-critical state updates about a user in a video chat or 
-   conference, such as Mute state.</t><t></t>
-
-</list></t>
+   <t>Non-critical state updates about a user in a video chat or 
+   conference, such as Mute state.</t>
+</list>
+</t>
 
 
 </section>
 
-<section title="Use cases for reliable channels (datagram or stream)." anchor="sec-use-cases-reliable">
+<section title="Use cases for reliable channels (datagram or stream)."
+         anchor="sec-use-cases-reliable">
 
-<t>Note that either reliable datagrams or streams are possible; reliable streams would be fairly simple to layer on top of SCTP reliable datagrams with in-order delivery.</t><t></t>
+<t>Note that either reliable datagrams or streams are possible;
+reliable streams would be fairly simple to layer on top of SCTP reliable
+datagrams with in-order delivery.</t>
 
-<t><list style="hanging">
+<t>
+<list style='format U-C %d' counter='UseCases'>
 
-   <t hangText="U-C 3"> A real-time game where critical state information needs to be
-   transferred, such as control information.  Typically this would be datagrams.  Such a game may
-   have no media channels, or they may be inactive at any given time, or may only be added
-   due to in-game actions.</t><t></t>
+   <t> A real-time game where critical state information needs to be
+   transferred, such as control information.  Typically this would be datagrams.
+   Such a game may have no media channels, or they may be inactive at any
+   given time, or may only be added due to in-game actions.</t>
 	
-   <t hangText="U-C 4">Non-realtime file transfers between people chatting.  This could be datagrams or streaming.  Note that this may involve a large number of files to transfer sequentially or in parallel, such as when sharing a folter of images or a directory of files.</t><t></t>
+   <t>Non-realtime file transfers between people chatting.
+   This could be datagrams or streaming.  Note that this may involve a large
+   number of files to transfer sequentially or in parallel, such as when
+   sharing a folder of images or a directory of files.</t>
 
-   <t hangText="U-C 5">Realtime text chat while talking with an individual or with multiple people in a 
-   conference.  Typically this would be datagrams.</t><t></t>
+   <t>Realtime text chat while talking with an individual or with multiple
+   people in a conference. Typically this would be datagrams.</t>
 
-   <t hangText="U-C 6">Renegotiation of the set of media streams in the PeerConnection.  Typically this would be datagrams</t><t></t>
+   <t>Renegotiation of the set of media streams in the PeerConnection.
+   Typically this would be datagrams</t>
 
-   <t hangText="U-C 7">Proxy browsing, where a browser uses data channels of a PeerConnection to send and receive HTTP/HTTPS requests and data, for example to avoid local internet filtering or monitoring.  Typically this would be streams</t><t></t>
-
-
-</list></t>
-
+   <t>Proxy browsing, where a browser uses data channels of a PeerConnection
+   to send and receive HTTP/HTTPS requests and data, for example to avoid local
+   internet filtering or monitoring. Typically this would be streams.</t>
+</list>
+</t>
 </section>
 
 
