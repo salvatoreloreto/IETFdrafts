@@ -496,7 +496,7 @@ interpretation of the "Payload data", like a string, ASCII or binary data.</t>
 <section title="Minor Protocol and Message Format"
          anchor="sec-mes-format">
 
-<t>A separate draft <xref target='I-D.jesup-rtcweb-data-channel'/> is being
+<t>A separate draft (draft-jesup-rtcweb-data-protocol) is being
 submitted to define the minor protocol to set up and manage the
 bidirectional data channels needed to satisify the requirements in this
 document for WebRTC.</t>
@@ -529,16 +529,8 @@ Randall Stewart, Justin Uberti, and Harald Alvestrand.</t>
 <back>
 <references title="Informative References">
 <?rfc include="reference.RFC.3758"?>
-<?rfc include="reference.RFC.4340"?>
-<?rfc include="reference.RFC.4341"?>
-<?rfc include="reference.RFC.4342"?>
-<?rfc include="reference.RFC.5622"?>
-<?rfc include="reference.RFC.4895"?>
 <?rfc include="reference.RFC.4960"?>
-<?rfc include="reference.RFC.5061"?>
 <?rfc include="reference.RFC.5245"?>
-<?rfc include="reference.RFC.5389"?>
-<?rfc include="reference.RFC.5405"?>
 <?rfc include="reference.RFC.6083"?>
 <?rfc include="reference.RFC.6347"?>
 <?rfc include="reference.RFC.6525"?>
@@ -547,7 +539,6 @@ Randall Stewart, Justin Uberti, and Harald Alvestrand.</t>
 <?rfc include="reference.I-D.ietf-rtcweb-jsep"?>
 <?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>
 <?rfc include="reference.I-D.tuexen-tsvwg-sctp-dtls-encaps"?>
-<?rfc include="reference.I-D.jesup-rtcweb-data-channel"?>
 </references>
 </back>
 
