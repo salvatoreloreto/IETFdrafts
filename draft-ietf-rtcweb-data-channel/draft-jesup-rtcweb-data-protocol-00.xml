@@ -88,6 +88,12 @@ between the browsers through the Web Server acting as the signaling service.</t>
 <t>The draft <xref target='I-D.ietf-mmusic-sctp-sdp'/> define the protocol identifier, 'SCTP/DTLS', and define how establishing an
 SCTP association over DTLS using the Session Description Protocol (SDP).</t>
 
+<t>The SCTP association is created with the default number of 16 streams.</t>
+
+<t>TBD: how to (if we want to) indicate the number of simultaneous streams when opening the association?</t>
+<t>TBD: the control message to add additional streams based on <xref target="RFC6525"/>.</t>
+
+
 
 </section>
 
@@ -107,13 +113,63 @@ document are to be interpreted as described in <xref target='RFC2119'/>.</t>
 
 </section>
 
-<section title="Adding and removing a Channel">
+<section title="Control Message">
+
+
+
+ <section title="Open a Channel">
 <t>
-TBD
-</t>
+<figure title='WebRTC control messages: Open Message' anchor='fig-control-msg'>
+<artwork>
+        0                   1                   2                   3
+        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |   Type = 0    | Reserved|U|B|E|    Length                     |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |                              TSN                              |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |      Stream Identifier S      |   Stream Sequence Number n    |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |                        PPID = WebRTC Control                  |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |  msg_type     | channell_type |         flags                 |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |                 reliability parameters                        |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |   flags       |                                               \
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+        
+       \                                                               \
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+
+         'channel_type' contains:
+              WEBRTC_DATA_RELIABLE                 1
+              WEBRTC_DATA_RELIABLE_STREAM          2
+              WEBRTC_DATA_UNRELIABLE               3
+              WEBRTC_DATA_PARTIAL_RELIABLE_REXMIT  4
+              WEBRTC_DATA_PARTIAL_RELIABLE_TIMED   5
+
+	 'flags' contains:
+              WEBRTC_DATA_FLAG_OUT_OF_ORDER_ALLOWED     0x01
+</artwork>
+</figure></t>
+ </section>
+
+ <section title="Adding a Channel">
+  <t>
+   TBD
+  </t>
+ </section>
+
+ <section title="Close a Channel">
+  <t>
+   TBD
+  </t>
+ </section>
+
 </section>
 
-<section title="ASending and Receiving Data">
+<section title="Sending and Receiving Data">
 <t>
 TBD
 </t>
@@ -154,6 +210,7 @@ To be done.
 	<?rfc include="reference.I-D.ietf-mmusic-sctp-sdp"?>
 	<?rfc include="reference.RFC.4960"?>
 	<?rfc include="reference.RFC.6347"?>
+	<?rfc include="reference.RFC.6525"?>
 	<?rfc include="reference.I-D.ietf-tls-rfc4347-bis"?>
 	<?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>	
 </references>
