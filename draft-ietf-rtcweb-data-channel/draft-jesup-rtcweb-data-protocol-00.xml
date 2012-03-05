@@ -219,8 +219,11 @@ DATA_CHANNEL_OPEN_RESPONSE should be ignored.  If a match is found, then if
 the error value is 0 the bidirectional Data Channel is now established and
 ready for use.  If the error value is non-zero, the open failed, and the
 originator should close down the originally-selected Stream and notify the
-application.
-  </t>
+application.</t>
+
+<t>An alternative to embedding the control messages on the Streams used for
+data transfer would be to put them on a reserved Stream (0 for example),
+and add an additional field for the forward_direction_stream.</t>
 
 <t>The channel_type and reliability_parameters fields of the
 DATA_CHANNEL_OPEN message MUST be used to set up the reverse side of the
