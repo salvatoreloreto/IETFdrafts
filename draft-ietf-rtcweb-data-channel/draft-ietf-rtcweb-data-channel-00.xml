@@ -237,22 +237,27 @@ datagrams with in-order delivery.</t>
 <section title="Datagrams over SCTP over DTLS over UDP"
          anchor="sec-p-a-2">
 
-<t>An SCTP based solution as defined in
-<xref target="I-D.tuexen-tsvwg-sctp-dtls-encaps"/> 
-provides natively several interesting features for transporting non-media data
-between browsers:</t>
+<t>The encapsulation of SCTP over DTLS as defined in
+<xref target="I-D.tuexen-tsvwg-sctp-dtls-encaps"/> provides a NAT traversal solution 
+together with  confidentiality, source authenticated, integrity protected transfers.
+SCTP provides also natively several interesting features for transporting 
+non-media data between browsers:</t>
 
 <t><list style="symbols">
 <t>Support of multiple streams.</t> 
 <t>Ordered and unordered delivery of user messages.</t>
-<t>Reliabile and partial-reliable transport of user messages.</t>
+<t>Reliable and partial-reliable transport of user messages.</t>
 </list></t>
 
-<t>SCTP transmits a so called Payload Protocol Identifier (PPID)
-with each user message. This can be used to transport multiple protcols
+
+<t>Each SCTP user message contains a so called Payload Protocol Identifier (PPID)
+that is passed to SCTP by its upper layer and sent to its peer.
+This value represents an application (or upper layer) specified
+protocol identifier and be used to transport multiple protocols
 over a single SCTP association. The sender provides for each protocol a
-specific PPID and the receiver demulitplexes the messages based on the
+specific PPID and the receiver demultiplexes the messages based on the
 received PPID.</t>
+
 <!--
 <t>Moreover SCTP provides the possibility to transport different "protocols"
 over multiple streams and associations using the PPID
@@ -263,8 +268,10 @@ This allows the receiving application to look at this information
 the data payload has.</t>
 -->
 
-<t>The SCTP features satisfy all the requirements listed in in 
+<t>The encapsulation of SCTP over DTLS,
+together with the SCTP features listed above satisfies all the requirements listed in in 
 <xref target='sec-req'/>.</t>
+
 <!--
 <t>There are SCTP implementations for most Operating Systems in wide use:</t>
 <t>
@@ -280,6 +287,7 @@ the data payload has.</t>
 
 <section title="User Space versus Kernel Implementation"
          anchor="sec-sctp-1">
+
 <t>Even though kernel implementations of SCTP are already available for most
 platforms (see <xref target='sec-p-a-2'/> ), there are compelling reasons for
 using an SCTP stack that works well in user land.</t>
@@ -318,7 +326,7 @@ requirement 12.</t>
                        +--------------------+
 </artwork>
 </figure>
-<t>This stack (especially in contrast to DTLS over SCTP) has been choosen
+<t>This stack (especially in contrast to DTLS over SCTP <xref target="RFC6083"/>) has been chosen
 because it</t>
 
 <t><list style='symbols'>
@@ -327,34 +335,41 @@ because it</t>
 <t>provides privacy for the SCTP control information.</t>
 </list></t>
 
-<t>Considering this protocol stack the usage of DTLS over UDP is specified in
-<xref target='RFC6347'/>. Using SCTP on top of DTLS is specified in
-<xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/>.
-Since DTLS is typically implemented in user-land, an SCTP user-land
-implementation must also be used.
-When using DTLS as the lower layer, only single homed SCTP
-associations can be used, since DTLS does not expose any any address management
+<t>Considering the protocol stack of <xref target='fig-sctp-layering'/> the usage of DTLS over UDP is specified in
+<xref target='RFC6347'/>, while the usage of SCTP on top of DTLS is specified in
+<xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/>.</t>
+
+
+<t>Since DTLS is typically implemented in user-land, an SCTP user-land
+implementation must also be used.</t>
+
+<t>When using DTLS as the lower layer, only single homed SCTP
+associations can be used, since DTLS does not expose any address management
 to its upper layer. The ICE/UDP layer can handle IP address changes during a 
 session without needing to notify the DTLS and SCTP layers, though it would 
 be advantageous to retest path MTU on an IP address change.</t>
 
 <t>DTLS implementations used for this stack must support
-controlling fields of the IP layer like the DF-bit in case of IPv4 and the
-DSCP field. This is required for performing path MTU discovery.
+controlling fields of the IP layer like the Don't fragment (DF)-bit in case of IPv4 and the
+Differentiated Services Code Point (DSCP) field. This is required for performing path MTU discovery.
 The DTLS implementation must also support sending user messages exceeding
-the path MTU. When supporting multiple SCTP associations over a single DTLS
+the path MTU.</t>
+
+<t>When supporting multiple SCTP associations over a single DTLS
 connection, incoming ICMP or ICMPv6 messages can't be processed by the SCTP
 layer, since there is no way to identify the corresponding association.
 Therefore the number of SCTP associations should be limited to one or ICMP and
 ICMPv6 messages should be ignored.
 In general, the lower layer interface of an SCTP implementation has to be
 adapted to address the differences between IPv4 or IPv6 (being connection-less)
-or DTLS (being connection-oriented).
-When this stack is used, DTLS protects the complete SCTP packet, so it
+or DTLS (being connection-oriented).</t>
+
+<t>When protocol stack of <xref target='fig-sctp-layering'/> is used, 
+DTLS protects the complete SCTP packet, so it
 provides confidentiality, integrity and source authentication
 of the complete SCTP packet.</t>
 
-<t>This protocol supports the usage of
+<t>This protocol stack supports the usage of
 multiple SCTP streams. A user message can be sent ordered or unordered
 and, if the SCTP implementations support <xref target='RFC3758'/>,
 with partial reliability. When using partial reliability, it might make
@@ -365,7 +380,7 @@ each user messages is sent exactly once.</t>
 <t>SCTP provides congestion control on a per-association base. This means
 that all SCTP streams within a single SCTP association share the same
 congestion window. Traffic not being sent over SCTP is not covered by
-the SCTP congestion control.  Due to the typical parallel SRTP media
+the SCTP congestion control. Due to the typical parallel SRTP media
 streams, it will be advantageous to select a delay-sensitive congestion
 control algorithm or to at least coordinate congestion control between the
 data channels and the media streams to avoid a data channel transfer 
@@ -383,7 +398,7 @@ ending up with most or all the channel bandwidth.</t>
 <t>Support for out-of-order delivery.</t>
 <t>Support for large datagrams and PMTU-discovery and fragmentation.</t>
 <t>Reliable or partial reliability support.</t>
-<t>Support or multiple streams.</t>
+<t>Support of multiple streams.</t>
 </list></t>
 
 <t>Multihoming will not be used in this scenario.
@@ -395,7 +410,8 @@ unreliable datagram service) would expose.</t>
          anchor="sec-sctp-setup">
 <t>The SCTP association would be set up when the two endpoints of the WebRTC
 PeerConnection agree on opening it, as negotiated by JSEP (typically an
-exchange of SDP). It would use the DTLS connection created at the start of the
+exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>. 
+It would use the DTLS connection created at the start of the
 PeerConnection connection.</t>
 
 <t>The application should indicate the number of simultaneous streams
@@ -420,20 +436,24 @@ of Channels.</t>
 </section>
 
 <section title="SCTP Streams">
-<t>SCTP defines a stream as an unidirectional logical channel exitsting within
+<t>SCTP defines a stream as an unidirectional logical channel existing within
 an SCTP association one to another SCTP endpoint. The streams are used to
 provide the notion of in-sequence delivery. Each user message is sent
 on a particular stream, either order or unordered. Ordering is preserved only
 for all ordered messages sent on the same stream.</t>
-<t>A possible realisation of a bidirectional Data Channel is a pair of one
+<t>A possible realization of a bidirectional Data Channel is a pair of one
 incoming stream and one outcoming SCTP stream. Closing of a Data Channel
-can be signalled by resetting the correspoing streams. It might be useful
-to use a specific pair of SCTP streams for transporting control information.</t>
+can be signalled resetting the corresponding streams <xref target="RFC6525"/>.
+Resetting a stream set the Stream Sequence Numbers (SSNs) of the stream back to
+'zero' with a corresponding notification to the application layer
+that the reset has been performed.</t>
+
+<t>It might be useful to use a specific pair of SCTP streams for transporting control information.</t>
 </section>
 
 <section title='Usage of Payload Protocol Identifier'>
-<t>The PPID can be used to signal the type of data, like a string, ASCII or
-binary data.</t>
+<t>The PPID can be used to signal the interpretation of the "Payload data", 
+like a string, ASCII or binary data.</t>
 </section>
 <!--
 <t>TBD not sure if we want discuss here or in the actual protocol draft:
@@ -561,6 +581,7 @@ Randall Stewart, Justin Uberti, and Harald Alvestrand.</t>
 <?rfc include="reference.RFC.6525"?>
 <?rfc include="reference.I-D.ietf-rtcweb-security"?>
 <?rfc include="reference.I-D.ietf-rtcweb-security-arch"?>
+<?rfc include="reference.I-D.ietf-rtcweb-jsep"?>
 <?rfc include="reference.I-D.ietf-tsvwg-sctp-udp-encaps"?>
 <?rfc include="reference.I-D.tuexen-tsvwg-sctp-dtls-encaps"?>
 </references>
