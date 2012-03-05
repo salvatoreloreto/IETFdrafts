@@ -120,7 +120,7 @@ document are to be interpreted as described in <xref target='RFC2119'/>.</t>
 
 </section>
 
-<section title="Control Message">
+<section title="Control Messages">
 <t>Data Channel Control Messages are sent to manage opening bidirectional
 channels.  A DATA_CHANNEL_OPEN is sent on the Stream that is intended to be
 used to send in that direction, and a response (DATA_CHANNEL_OPEN_RESPONSE)
@@ -133,7 +133,6 @@ Streams that define the bidirectional channel.</t>
 field to a non-0 value.  In this case the original sender of
 DATA_CHANNEL_OPEN shall close the channel.</t>
 
-<section title="Open a Channel">
 <t>
 <figure title='Data Channel control messages: OPEN and OPEN_RESPONSE Messages' anchor='fig-control-msg'>
 <artwork>
@@ -195,8 +194,6 @@ time, and the protocol does not require they be the same.</t>
 
 <t>Control messages shall be sent on the relevant Streams, and shall be
 sent using reliable, in-order delivery.</t>
-
- </section>
 
  <section title="Adding a Channel">
   <t>
