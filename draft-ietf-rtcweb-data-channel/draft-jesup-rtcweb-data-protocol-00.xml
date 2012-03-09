@@ -4,13 +4,12 @@
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc sortrefs="no" ?>
+<?rfc strict="yes" ?>
 
 <rfc ipr="trust200902"
-     docName="draft-jesup-rtcweb-data-protocol-00.txt" category='std'>
+     docName="draft-jesup-rtcweb-data-protocol-01.txt" category='std'>
 <front>
-    <title abbrev="data protocol P2P in RTCWEB">
-       WebRTC Data Channel Protocol
-    </title>
+    <title>WebRTC Data Channel Protocol</title>
 
     <author initials="R." surname="Jesup" fullname="Randell Jesup">
       <organization>Mozilla</organization>
