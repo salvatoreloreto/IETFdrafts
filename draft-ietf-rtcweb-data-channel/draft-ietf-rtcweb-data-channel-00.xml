@@ -8,7 +8,7 @@
 <?rfc strict="yes" ?>
 
 <rfc ipr="trust200902"
-     docName="draft-ietf-rtcweb-data-channel-00.txt" category='info'>
+     docName="draft-ietf-rtcweb-data-channel-01.txt" category='info'>
 <front>
     <title abbrev="data P2P in RTCWEB">
        RTCWeb Datagram Connection
