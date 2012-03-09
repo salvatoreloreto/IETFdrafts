@@ -12,71 +12,65 @@
        WebRTC Data Channel Protocol
     </title>
 
-
     <author initials="R." surname="Jesup" fullname="Randell Jesup">
       <organization>Mozilla</organization>
       <address>
-	<postal>
+        <postal>
           <street></street>
-	  <code></code> 
-	  <city></city> 
-	  <country>USA</country>
- 	</postal>
-	<email>randell-ietf@jesup.org</email>
+          <code></code> 
+          <city></city> 
+          <country>USA</country>
+        </postal>
+        <email>randell-ietf@jesup.org</email>
       </address>
     </author>
 
-
-
-   <author initials="S." surname="Loreto" fullname="Salvatore Loreto">
-    <organization>Ericsson</organization>
-    <address>
-    	<postal>
-        <street>Hirsalantie 11</street>
-        <code>02420</code> 
-     	  <city>Jorvas</city> 
-    	  <country>Finland</country>
-     	</postal>
-    	<email>salvatore.loreto@ericsson.com</email>
-    </address>
-  </author>
-
+    <author initials="S." surname="Loreto" fullname="Salvatore Loreto">
+      <organization>Ericsson</organization>
+      <address>
+        <postal>
+          <street>Hirsalantie 11</street>
+          <code>02420</code> 
+          <city>Jorvas</city> 
+          <country>Finland</country>
+        </postal>
+        <email>salvatore.loreto@ericsson.com</email>
+      </address>
+    </author>
 
     <author initials="M." surname="Tuexen" fullname="Michael Tuexen">
-      <organization>Muenster University of Applied Sciences</organization>
+      <organization abbrev='Muenster Univ. of Appl. Sciences'>
+                    Muenster University of Applied Sciences</organization>
       <address>
-	<postal>
+        <postal>
           <street>Stegerwaldstrasse 39</street>
-	  <code>48565</code> 
-	  <city> Steinfurt</city> 
-	  <country>Germany</country>
- 	</postal>
-	<email>tuexen@fh-muenster.de</email>
+          <code>48565</code> 
+          <city> Steinfurt</city> 
+          <country>Germany</country>
+        </postal>
+        <email>tuexen@fh-muenster.de</email>
       </address>
     </author>
 
-
-
-    <date year="2012" />
+    <date />
     <area>RAI</area>
     <workgroup>RTCWeb Working Group</workgroup>
     <keyword></keyword>
     <keyword></keyword>
     <abstract>
     <t>The Web Real-Time Communication (WebRTC) working group is charged to provide
-   protocols to support for direct interactive rich communication using
-   audio, video, and data between two peers' web-browsers.  This document
-   specifies an actual (minor) protocol for how the JS-layer dataChannel
-   objects provide the data channels between the peers.</t>
+    protocols to support for direct interactive rich communication using
+    audio, video, and data between two peers' web-browsers.  This document
+    specifies an actual (minor) protocol for how the JS-layer dataChannel
+    objects provide the data channels between the peers.</t>
 
-   <t>This minor protocol has applicability to other bidirectional uses of SCTP. </t>
+    <t>This minor protocol has applicability to other bidirectional uses of SCTP.</t>
     </abstract>
 </front>
 <middle>
 
 <section title="Introduction">
-<t>
-The Data Channel Protocol is designed to provide, in the WebRTC context
+<t>The Data Channel Protocol is designed to provide, in the WebRTC context
 <xref target='I-D.ietf-rtcweb-overview'/>, a generic transport service
 allowing Web Browser to exchange generic data in a bidirectional peer to
 peer fashion.  As discussed in <xref target='I-D.jesup-rtcweb-data'/> the
@@ -84,6 +78,21 @@ protocol uses Stream Control Transmission Protocol (SCTP) <xref
 target="RFC4960"/> encapsulated on Datagram Transport Layer Security (DTLS)
 <xref target="RFC6347"/> to benefit from their transport and security
 already standardized features.</t>
+</section>
+
+<section anchor='con' title="Conventions">
+<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
+interpreted as described in <xref target='RFC2119'/>.</t>
+</section>
+
+<section title='Terminology'>
+	<t>This document uses the following terms:
+	<list style='hanging'>
+		<t hangText='Association:'>An SCTP association.</t>
+		<t hangText='Stream:'>A unidirectional stream of an SCTP association.
+		It is uniquely identified by a stream identifier.</t>
+	</list></t>
 </section>
 
 <section title="Opening handshake">
@@ -101,22 +110,6 @@ streams.</t>
 
 <t>It is recommended that additional streams be available dynamically based
 on <xref target="RFC6525"/>.</t>
-
-</section>
-
-
-<section anchor='con' title="Conventions">
-<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in <xref target='RFC2119'/>.</t>
-
-<section title='Terminology'>
-	<t>This document uses the following terms:</t>
-	<t><list style='hanging'>
-		<t hangText='Association:'>An SCTP association.</t>
-		<t hangText='Stream:'>A unidirectional stream of an SCTP association.
-		It is uniquely identified by a stream identifier.</t>
-	</list></t>
-</section>
 
 </section>
 
@@ -139,27 +132,19 @@ DATA_CHANNEL_OPEN shall close the channel.</t>
         0                   1                   2                   3
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |   Type = 0    | Reserved|U|B|E|    Length                     |
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |                              TSN                              |
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |      Stream Identifier S      |   Stream Sequence Number n    |
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |                        PPID = Data Channel Control            |
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        |  msg_type     | channel_type  |         flags                 |
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        |   reverse_direction_stream    |   reliability_parameters      |
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+        
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        |   msg_type_data                                               \
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+        
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        \                                                               \
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 
          'msg_type' contains:
-	      DATA_CHANNEL_OPEN                     0
-	      DATA_CHANNEL_OPEN_RESPONSE            1	      
+              DATA_CHANNEL_OPEN                     0
+              DATA_CHANNEL_OPEN_RESPONSE            1
 
          'channel_type' contains:
               DATA_CHANNEL_RELIABLE                 0
@@ -168,22 +153,22 @@ DATA_CHANNEL_OPEN shall close the channel.</t>
               DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT  3
               DATA_CHANNEL_PARTIAL_RELIABLE_TIMED   4
 
-	 'flags' contains:
-	      DATA_CHANNEL_FLAG_OUT_OF_ORDER_ALLOWED 0x0001
-	      all other bits are reserved
+         'flags' contains:
+              DATA_CHANNEL_FLAG_OUT_OF_ORDER_ALLOWED 0x0001
+              all other bits are reserved
 
-	 'msg_type_data' contains:
-	      for DATA_CHANNEL_OPEN:
-	          a DOMString label for the data channel 
-	      for DATA_CHANNEL_OPEN_RESPONSE: 
-	          a 16-bit value for errors or 0 for no error
+         'msg_type_data' contains:
+              for DATA_CHANNEL_OPEN:
+                  a DOMString label for the data channel 
+              for DATA_CHANNEL_OPEN_RESPONSE: 
+                  a 16-bit value for errors or 0 for no error
 
-	 'reliability_parameters' contains (as unsigned 16-bit numbers):
-	      for DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT: 
+         'reliability_parameters' contains (as unsigned 16-bit numbers):
+              for DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT: 
                   the maximum number of retransmits or 0 for none
-	      for DATA_CHANNEL_PARTIAL_RELIABLE_TIMED:
-	          the maximum time in ms to attempt to deliver the data
-		  or 0 for no attempts.
+              for DATA_CHANNEL_PARTIAL_RELIABLE_TIMED:
+                  the maximum time in ms to attempt to deliver the data
+                  or 0 for no attempts.
 
 </artwork>
 </figure></t>
@@ -260,17 +245,15 @@ To be done.
 
 
 <section title="IANA Considerations" anchor="sec-IANA">
-<t>
-   This document also defines three new SCTP Payload Protocol Identifiers
-   (PPIDs).  RFC 4960 <xref target="RFC4960"/>  creates the registry from which these
-   identifiers have been assigned.  The following values have been
-   reserved:
-</t>
-	<t><list style='hanging'>
-		<t hangText='WebRTC Control  -'> #To Be Assigned</t>
-		<t hangText='DOMString       -'> #To Be Assigned</t>
-		<t hangText='Binary Data     -'> #To Be Assigned</t>
-	</list></t>
+<t>This document also defines three new SCTP Payload Protocol Identifiers
+(PPIDs).  RFC 4960 <xref target="RFC4960"/>  creates the registry from which these
+identifiers have been assigned.  The following values have been
+reserved:
+<list style='hanging'>
+	<t hangText='WebRTC Control  -'> #To Be Assigned</t>
+	<t hangText='DOMString       -'> #To Be Assigned</t>
+	<t hangText='Binary Data     -'> #To Be Assigned</t>
+</list></t>
 </section>
 
 
@@ -291,7 +274,8 @@ To be done.
 </references>
 
 <references title="Informational References">
-	<?rfc include='reference.I-D.ietf-rtcweb-overview' ?>	<?rfc include='reference.I-D.jesup-rtcweb-data' ?>
+	<?rfc include='reference.I-D.ietf-rtcweb-overview' ?>
+	<?rfc include='reference.I-D.jesup-rtcweb-data' ?>
 </references>
 </back>
 
