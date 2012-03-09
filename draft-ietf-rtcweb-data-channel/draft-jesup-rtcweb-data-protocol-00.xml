@@ -244,14 +244,14 @@ opened.</t>
                         +--------+
              +--------->| CLOSED |----------+
              |          +--------+          |  createDataChannel
-     rcv     |     rcv                      |  snd open-req
-   rst-i evnt|  rst-o evnt                  |
-+--------+   |                              |
-|       \/   |                              \/
-| rcv   +---------+                    +---------+
-|rst-o  | CLOSING |                    | OPENING |
-| evnt  +---------+                    +---------+
-+---------|  ^                              |
+     rcv     |     rcv                      |
+   rst-i evnt|  rst-o evnt       snd add-o  |  snd open-req
++-------+    |            +-------------+   |
+|       \/   |            |     rcv     \/  \/
+| rcv   +---------+       | add-o evnt +---------+
+|rst-o  | CLOSING |       |     snd    | OPENING |
+| evnt  +---------+       |  open-req  +---------+
++---------|  ^            +-------------|   |
              |                              |
    close()   |    rcv                       |  rcv open-resp
      snd     | rst-i evnt                   |
