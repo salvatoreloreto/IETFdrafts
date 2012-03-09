@@ -240,8 +240,29 @@ opened.</t>
 <figure title='A state diagram'
         anchor='state-diagram'>
 <artwork>
+<![CDATA[
+                        +--------+
+             +--------->| CLOSED |----------+
+             |          +--------+          |  createDataChannel
+     rcv     |     rcv                      |  snd open-req
+   rst-i evnt|  rst-o evnt                  |
++--------+   |                              |
+|       \/   |                              \/
+| rcv   +---------+                    +---------+
+|rst-o  | CLOSING |                    | OPENING |
+| evnt  +---------+                    +---------+
++---------|  ^                              |
+             |                              |
+   close()   |    rcv                       |  rcv open-resp
+     snd     | rst-i evnt                   |
+    rst-o    |    snd                       |
+             |   rst-o   +------+           |
+             +-----------| OPEN |<----------+
+                         +------+</artwork>
+]]>
 </artwork>
 </figure>
+<!-- MT: adding streams is missing on the right hand side -->
 </section>
 
 <section title="Security Considerations" anchor="sec-security">
