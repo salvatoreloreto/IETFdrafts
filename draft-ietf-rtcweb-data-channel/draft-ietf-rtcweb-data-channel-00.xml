@@ -75,16 +75,17 @@
 RTCWEB has reached a general consensus on the usage of
 SCTP <xref target="RFC4960"/> encapsulated on DTLS <xref target="RFC6347"/>:</t>
 
-<figure title="Basic stack diagram"
-        anchor="fig-stack">
+<figure title='Basic stack diagram'
+        anchor='fig-stack'
+        align='center'>
 <artwork>
-                             +----------+
-                             |   SCTP   |
-                             +----------+
-                             |   DTLS   |
-                             +----------+
-                             | ICE/UDP  |
-                             +----------+
++----------+
+|   SCTP   |
++----------+
+|   DTLS   |
++----------+
+| ICE/UDP  |
++----------+
 </artwork>
 </figure>
 
@@ -319,19 +320,20 @@ requirement 12.</t>
 <t>The layering of protocols for WebRTC is shown in the following
 <xref target='fig-sctp-layering'/>.</t>
 <figure title='WebRTC protocol layers'
-        anchor='fig-sctp-layering'>
+        anchor='fig-sctp-layering'
+        align='center'>
 <artwork>
-                                     +------+
-                                     |WEBAPP|
-                                     +------+
-                                     | SCTP |
-                       +--------------------+
-                       | STUN | SRTP | DTLS |
-                       +--------------------+
-                       |         ICE        |
-                       +--------------------+
-                       | UDP1 | UDP2 | ...  |
-                       +--------------------+
+              +------+
+              |WEBAPP|
+              +------+
+              | SCTP |
++--------------------+
+| STUN | SRTP | DTLS |
++--------------------+
+|         ICE        |
++--------------------+
+| UDP1 | UDP2 | ...  |
++--------------------+
 </artwork>
 </figure>
 <t>This stack (especially in contrast to DTLS over SCTP <xref target="RFC6083"/>)
