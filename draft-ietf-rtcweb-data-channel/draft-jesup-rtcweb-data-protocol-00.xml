@@ -99,13 +99,9 @@ interpreted as described in <xref target='RFC2119'/>.</t>
 exchange that happens between the browsers, typically through a Web Server
 acting as the signaling service.</t>
 
-<!--
-MT: I think this is wrong, since the ID talks about DTLS over SCTP,
-         not SCTP over DTLS.
 <t>The draft <xref target='I-D.ietf-mmusic-sctp-sdp'/> defines the protocol
 identifier, 'SCTP/DTLS', and defines how to establish an SCTP association
 over DTLS using the Session Description Protocol (SDP).</t>
--->
 
 <t>The SCTP association is created with the number of streams specified by
 the application, and if not specified, then it shall default to 16
