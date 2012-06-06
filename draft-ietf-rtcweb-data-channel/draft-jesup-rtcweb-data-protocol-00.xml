@@ -234,36 +234,6 @@ opened.</t>
 <t>It is recommended that message size be kept within certain bounds (TBD).</t>
 </section>
 
-<section title='A State Diagram'>
-<figure title='A state diagram'
-        anchor='state-diagram'
-        align='center'>
-<artwork>
-<![CDATA[
-                        +--------+
-             +--------->| CLOSED |----------+
-             |          +--------+          |  createDataChannel
-     rcv     |     rcv                      |
-   rst-i evnt|  rst-o evnt       snd add-o  |  snd open-req
-+-------+    |            +-------------+   |
-|       \/   |            |     rcv     \/  \/
-| rcv   +---------+       | add-o evnt +---------+
-|rst-o  | CLOSING |       |     snd    | OPENING |
-| evnt  +---------+       |  open-req  +---------+
-+---------|  ^            +-------------|   |
-             |                              |
-   close()   |    rcv                       |  rcv open-resp
-     snd     | rst-i evnt                   |
-    rst-o    |    snd                       |
-             |   rst-o   +------+           |
-             +-----------| OPEN |<----------+
-                         +------+
-]]>
-</artwork>
-</figure>
-<!-- MT: adding streams is missing on the right hand side -->
-</section>
-
 <section title="Security Considerations" anchor="sec-security">
 <t>
 To be done.
