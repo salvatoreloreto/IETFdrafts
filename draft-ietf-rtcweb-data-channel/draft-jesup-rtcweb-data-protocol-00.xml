@@ -128,53 +128,6 @@ Streams that define the bidirectional channel.</t>
 field to a non-0 value.  In this case the original sender of
 DATA_CHANNEL_OPEN shall close the channel.</t>
 
-<figure title='Data Channel control messages: OPEN and OPEN_RESPONSE Messages'
-        anchor='fig-control-msg'
-        align='center'>
-<artwork>
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  msg_type     | channel_type  |         flags                 |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|   reverse_direction_stream    |   reliability_parameters      |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|   msg_type_data                                               \
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-\                                                               \
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-
- 'msg_type' contains:
-      DATA_CHANNEL_OPEN                     0
-      DATA_CHANNEL_OPEN_RESPONSE            1
-
- 'channel_type' contains:
-      DATA_CHANNEL_RELIABLE                 0
-      DATA_CHANNEL_RELIABLE_STREAM          1
-      DATA_CHANNEL_UNRELIABLE               2
-      DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT  3
-      DATA_CHANNEL_PARTIAL_RELIABLE_TIMED   4
-
- 'flags' contains:
-      DATA_CHANNEL_FLAG_OUT_OF_ORDER_ALLOWED 0x0001
-      all other bits are reserved
-
- 'msg_type_data' contains:
-      for DATA_CHANNEL_OPEN:
-          a DOMString label for the data channel
-      for DATA_CHANNEL_OPEN_RESPONSE:
-          a 16-bit value for errors or 0 for no error
-
- 'reliability_parameters' contains (as unsigned 16-bit numbers):
-      for DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT:
-          the maximum number of retransmits or 0 for none
-      for DATA_CHANNEL_PARTIAL_RELIABLE_TIMED:
-          the maximum time in ms to attempt to deliver the data
-          or 0 for no attempts.
-</artwork>
-</figure>
-
 <!-- Open questions:
      * Should we reserve stream 0 in both directions for control messages
        dealing with errors?
