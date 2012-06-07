@@ -292,40 +292,36 @@ message. The suggested value of this field for IANA is 0x03.</t>
 
 <section title='Procedures'>
 <section title="Adding a Channel">
-<t>When one side wants to add a channel, it picks an unused Stream, and if
-need be, negotiates an increase in the number of Streams available.  It
-then sends a DATA_CHANNEL_OPEN control message on the Stream, with
-reverse_direction_stream set to 0, though that value MUST be ignored by the
-recipient.</t>
+<t>When one side wants to add a channel, it picks an unused outgoing stream,
+and if need be, negotiates an increase in the number of outgoing streams
+available.
+It then sends a OPEN_REQEUEST control message on the outgoing stream.</t>
 
-<t>When a DATA_CHANNEL_OPEN is received on a Stream, an unused Stream is
-picked, and if need be, negotiates an increase in the number of Streams
-available. A DATA_CHANNEL_OPEN_RESPONSE is sent on the Stream, with
-reverse_direction_stream set to the Stream the DATA_CHANNEL_OPEN request
+<t>When an OPEN_REQEUEST is received on an incoming stream, an unused outgoing
+stream is picked, and if need be, negotiates an increase in the number of
+outgoing streams available.
+A OPEN_RESPONSE message is sent on the outgoing stream, with the
+Reverse Stream field set to the incoming stream the OPEN_REQEUEST message
 came in on.</t>
 
-<t>When a DATA_CHANNEL_OPEN_RESPONSE is received, the
-reverse_direction_stream value is matched against all pending
-DATA_CHANNEL_OPENs.  If no match can be found, the
-DATA_CHANNEL_OPEN_RESPONSE should be ignored.  If a match is found, then if
-the error value is 0 the bidirectional Data Channel is now established and
-ready for use.  If the error value is non-zero, the open failed, and the
-originator should close down the originally-selected Stream and notify the
-application.</t>
-
-<t>An alternative to embedding the control messages on the Streams used for
-data transfer would be to put them on a reserved Stream (0 for example),
-and add an additional field for the forward_direction_stream.</t>
+<t>When a OPEN_RESPONSE is received, the Reverse Stream value is matched
+against all pending OPEN_REQEUEST messages.  If no match can be found, the
+OPEN_RESPONSE message SHOULD be ignored. If a match is found, then if
+the error value is 0 the bidirectional Data Channel an OPEN_ACKNOWLEDGEMENT
+message is sent.  If the error value is non-zero, the open failed, and the
+originator SHOULD close down the originally-selected outgoing stream and
+notify the application.</t>
 
 <t>The channel_type and reliability_parameters fields of the
-DATA_CHANNEL_OPEN message MUST be used to set up the reverse side of the
+OPEN_REQEUEST message MUST be used to set up the reverse side of the
 Data Channel so that both directions use the same options.</t>
  </section>
 
 <section title="Closing a Channel">
-<t>Data Channels shall be closed by doing an SCTP Stream Sequence Number
-reset, which should guarantee that all data sent before closing is
-delivered or has been abandoned (for partially-reliable Data Channels).</t>
+<t>Data Channels shall be closed by resetting the outgoing stream
+If an incoming stream is reset by the peer, an corresponding outgoing
+stream reset SHOULD be issued. If both streams of a channel are reset,
+the channel is closed.</t>
 </section>
 
 <section title="Sending and Receiving Data">
