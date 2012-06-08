@@ -117,22 +117,23 @@ on <xref target="RFC6525"/>.</t>
 
 <section title="Control Messages">
 <t>Data Channel Control Messages are sent to manage opening bidirectional
-channels.  A DATA_CHANNEL_OPEN is sent on the Stream that is intended to be
+channels.  A DATA_CHANNEL_OPEN message is sent on the Stream that is intended to be
 used to send in that direction, and a response (DATA_CHANNEL_OPEN_RESPONSE)
-using the same structure is sent back on the Stream to be used for the
+is sent back on the Stream to be used for the
 other direction, with a reverse_direction_stream entry holding the Stream
 number the DATA_CHANNEL_OPEN was sent on.  This allows association of the
-Streams that define the bidirectional channel.</t>
+Streams that define the bidirectional channel. Finally, a DATA_CHANNEL_ACK
+is sent on the original Stream to complete the 3-way handshake.</t>
 
-<t>Errors are returned by setting the first 16 bits of the msg_type_data
-field to a non-0 value.  In this case the original sender of
+<t>Errors are returned by setting the error field of the DATA_CHANNEL_OPEN_RESPONSE
+message to a non-0 value.  In this case the original sender of
 DATA_CHANNEL_OPEN shall close the channel.</t>
 
 <!-- Open questions:
      * Should we reserve stream 0 in both directions for control messages
        dealing with errors?
      * Should we add an ERROR message. This would make the handling
-       of OPEN_RESPONSE messages easier?
+       of DATA_CHANNEL_OPEN_RESPONSE messages easier?
      * Should we get rid on unused message fields?
      * Should we integrate the unordered capability in the Channel Type?
        Then we would have:
@@ -146,7 +147,7 @@ DATA_CHANNEL_OPEN shall close the channel.</t>
      All of this can simply be changed in the code...
 -->
 
-<section title='OPEN_REQEUEST Message'>
+<section title='DATA_CHANNEL_OPEN Message'>
 <t>This message is sent initially on the stream used for user messages
 using the channel.</t>
 <figure align='center'>
@@ -169,30 +170,30 @@ using the channel.</t>
 
 <t hangText="Message Type: 1 byte (unsigned integer)">
 <vspace blankLines="0"/>
-This field holds the IANA defined message type for the the OPEN_REQEUEST
-message. The suggested value of this field for IANA is 0x01.</t>
+This field holds the IANA defined message type for the the DATA_CHANNEL_OPEN
+message. The suggested value of this field for IANA is 0x00.</t>
 
 <t hangText="Channel Type: 1 byte (unsigned integer)">
 <vspace blankLines="0"/>
 This field specifies the type of the channel to be opened:
 <list style='hanging'>
-<t hangText='DATA_CHANNEL_RELIABLE (0x01):'>
+<t hangText='DATA_CHANNEL_RELIABLE (0x00):'>
 The channel provides a reliable bi-directional communication channel.</t>
-<t hangText='DATA_CHANNEL_RELIABLE_STREAM (0x02):'>
+<t hangText='DATA_CHANNEL_RELIABLE_STREAM (0x01):'>
 <!-- Should we remove this? What does it mean? -->
 TBD.</t>
-<t hangText='DATA_CHANNEL_UNRELIABLE (0x03):'>
+<t hangText='DATA_CHANNEL_UNRELIABLE (0x02):'>
 <!-- Should we remove this? What does it mean? -->
 TBD.</t>
-<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT (0x04):'>
+<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT (0x03):'>
 The channel provides a partial reliable bi-directional Communication
 channel. User messages will not be retransmitted more times than
 specified in the Reliability Parameter.</t>
-<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED (0x05):'>
+<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED (0x04):'>
 The channel provides a partial reliable bi-directional Communication
 channel. User messages might not be transmitted or retransmitted
 after a specified life-time given in milli-seconds in the Reliability Parameter.
-The life-time starts when providing the user message to the Javascript engine.</t>
+This life-time starts when providing the user message to the Javascript engine.</t>
 </list>
 </t>
 
@@ -224,10 +225,11 @@ The name of the channel.</t>
 </t>
 </section>
 
-<section title='OPEN_RESPONSE Message'>
-<t>This message is sent in response to an OPEN_REQEUEST message on
-the stream used for user messages using the channel. In case of
-an error a different stream might be used.</t>
+<section title='DATA_CHANNEL_OPEN_RESPONSE Message'>
+<t>This message is sent in response to an DATA_CHANNEL_OPEN message on
+the stream used for user messages using the channel.  Messages with the
+error field set to non-0 values can be sent on any stream; it is suggested
+that they be sent (if possible) on an unused stream.</t>
 <figure align='center'>
 <artwork>
  0                   1                   2                   3
@@ -244,8 +246,8 @@ an error a different stream might be used.</t>
 
 <t hangText="Message Type: 1 byte (unsigned integer)">
 <vspace blankLines="0"/>
-This field holds the IANA defined message type for the the OPEN_RESPONSE
-message. The suggested value of this field for IANA is 0x02.</t>
+This field holds the IANA defined message type for the the DATA_CHANNEL_OPEN_RESPONSE
+message. The suggested value of this field for IANA is 0x01.</t>
 
 <t hangText="Error: 1 byte (unsigned integer)">
 <!-- Should we have a separate ERROR message? -->
@@ -260,14 +262,15 @@ TBD.</t>
 <t hangText="Reverse Stream: 2 bytes (unsigned integer)">
 <vspace blankLines="0"/>
 The identifier for the incoming stream of the channel. The corresponding
-OPEN_REQEUEST message was received on this stream.</t>
+DATA_CHANNEL_OPEN message was received on this stream.</t>
 </list>
 </t>
 </section>
 
-<section title='OPEN_ACKNOWLEDGEMENT Message'>
-<t>This message is sent in response to an OPEN_RESPONSE message on
-the stream used for user messages using the channel.</t>
+<section title='DATA_CHANNEL_ACK Message'>
+<t>This message is sent in response to an DATA_CHANNEL_OPEN_RESPONSE message on
+the stream used for user messages using the channel.  Reception of this message
+tells the opener that the channel setup handshake is complete.</t>
 <figure align='center'>
 <artwork>
  0                   1                   2                   3
@@ -282,8 +285,8 @@ the stream used for user messages using the channel.</t>
 
 <t hangText="Message Type: 1 byte (unsigned integer)">
 <vspace blankLines="0"/>
-This field holds the IANA defined message type for the the OPEN_ACKNOWLEDGEMENT
-message. The suggested value of this field for IANA is 0x03.</t>
+This field holds the IANA defined message type for the the DATA_CHANNEL_ACK
+message. The suggested value of this field for IANA is 0x02.</t>
 </list>
 </t>
 </section>
@@ -292,28 +295,28 @@ message. The suggested value of this field for IANA is 0x03.</t>
 
 <section title='Procedures'>
 <section title="Adding a Channel">
-<t>When one side wants to add a channel, it picks an unused outgoing stream,
-and if need be, negotiates an increase in the number of outgoing streams
-available.
-It then sends a OPEN_REQEUEST control message on the outgoing stream.</t>
+<t>When one side wants to add a channel, it picks an unused outgoing stream;
+if no unused streams are available a negotiation to increase the number
+is done.
+It then sends a DATA_CHANNEL_OPEN control message on the outgoing stream.</t>
 
-<t>When an OPEN_REQEUEST is received on an incoming stream, an unused outgoing
-stream is picked, and if need be, negotiates an increase in the number of
-outgoing streams available.
-A OPEN_RESPONSE message is sent on the outgoing stream, with the
-Reverse Stream field set to the incoming stream the OPEN_REQEUEST message
+<t>When an DATA_CHANNEL_OPEN is received on an incoming stream, an unused outgoing
+stream is picked; if no unused streams are available a negotiation to
+increase the number is done.
+A DATA_CHANNEL_OPEN_RESPONSE message is sent on the outgoing stream, with the
+Reverse Stream field set to the incoming stream the DATA_CHANNEL_OPEN message
 came in on.</t>
 
-<t>When a OPEN_RESPONSE is received, the Reverse Stream value is matched
-against all pending OPEN_REQEUEST messages.  If no match can be found, the
-OPEN_RESPONSE message SHOULD be ignored. If a match is found, then if
-the error value is 0 the bidirectional Data Channel an OPEN_ACKNOWLEDGEMENT
-message is sent.  If the error value is non-zero, the open failed, and the
+<t>When a DATA_CHANNEL_OPEN_RESPONSE is received, the Reverse Stream value is matched
+against all pending DATA_CHANNEL_OPEN messages.  If no match can be found, the
+DATA_CHANNEL_OPEN_RESPONSE message SHOULD be ignored. If a match is found, then if
+the error value is 0 a DATA_CHANNEL_ACK message is sent on the originator's outgoing
+Stream for the channel.  If the error value is non-zero, the open failed, and the
 originator SHOULD close down the originally-selected outgoing stream and
 notify the application.</t>
 
 <t>The channel_type and reliability_parameters fields of the
-OPEN_REQEUEST message MUST be used to set up the reverse side of the
+DATA_CHANNEL_OPEN message MUST be used to set up the reverse side of the
 Data Channel so that both directions use the same options.</t>
  </section>
 
@@ -321,7 +324,7 @@ Data Channel so that both directions use the same options.</t>
 <t>Data Channels shall be closed by resetting the outgoing stream
 If an incoming stream is reset by the peer, an corresponding outgoing
 stream reset SHOULD be issued. If both streams of a channel are reset,
-the channel is closed.</t>
+the channel is closed and the streams are available for reuse for new channel opens.</t>
 </section>
 
 <section title="Sending and Receiving Data">
@@ -336,6 +339,11 @@ layers to allow proper decoding of the data.</t>
 <t>All data sent on a Data Channel in both directions MUST be sent over the
 underlying Stream using the reliability defined when the Data Channel was
 opened.</t>
+
+<t>Data may be sent before the 3-way handshake is complete; if so it must be
+sent with in-order delivery set in order to avoid race conditions cause by a
+handshake message being lost.  This is an exception to the requirement to send
+all data using the channel reliability settings.</t>
 
 <t>It is recommended that message size be kept within certain bounds (TBD).</t>
 </section>
