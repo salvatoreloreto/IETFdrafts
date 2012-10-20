@@ -8,7 +8,7 @@
 <?rfc strict="yes" ?>
 
 <rfc ipr="trust200902"
-     docName="draft-ietf-rtcweb-data-channel-01.txt" category='info'>
+     docName="draft-ietf-rtcweb-data-channel-02.txt" category='info'>
 <front>
     <title abbrev="data P2P in RTCWEB">
        RTCWeb Datagram Connection
@@ -279,7 +279,7 @@ the data payload has.</t>
 -->
 
 <t>The encapsulation of SCTP over DTLS, together with the SCTP features listed
-above satisfies all the requirements listed in in <xref target='sec-req'/>.</t>
+above satisfies all the requirements listed in <xref target='sec-req'/>.</t>
 
 <!--
 <t>There are SCTP implementations for most Operating Systems in wide use:</t>
@@ -434,7 +434,7 @@ required when opening the association, and if no value is supplied, the
 implementation should provide a default, with a suggested value of 16.
 If more simultaneous streams are needed, <xref target="RFC6525"/> allows
 adding additional (but not removing) streams to an existing association.
-There can be up to 65535 SCTP streams per SCTP association in each direction.</t>
+There can be up to 65536 SCTP streams per SCTP association in each direction.</t>
 </section>
 
 
@@ -495,9 +495,9 @@ transporting control information.</t>
 <t>The SCTP Payload Protocol Identifiers (PPIDs) can be used to signal the 
 interpretation of the "Payload data", like a string, ASCII or binary data.</t>
 
-<t>RFC 4960 <xref target="RFC4960"/> creates the registry from which these
-identifiers have been assigned. Eventual PPIDs defined within the RTCWeb Context
-have to be registered with IANA.</t>
+<t><xref target="RFC4960"/> creates the registry from which these identifiers
+have been assigned. Eventual PPIDs defined within the RTCWeb Context have to
+be registered with IANA.</t>
 </section>
 
 
@@ -544,12 +544,13 @@ with DTLS.</t>
 
 <section title="Acknowledgments">
 <t>Many thanks for comments, ideas, and text from
+Harald Alvestrand,
+Adam Bergkvist,
 Cullen Jennings,
 Eric Rescorla,
 Randall Stewart,
-Justin Uberti,
-Adam Bergkvist
-and Harald Alvestrand.</t>
+and Justin Uberti.
+</t>
 </section>
 
 
