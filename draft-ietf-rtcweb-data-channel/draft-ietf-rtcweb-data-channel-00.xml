@@ -54,8 +54,6 @@
 </author>
 
 <date/>
-<area>RAI</area>
-<workgroup>RTCWeb Working Group</workgroup>
 
 <abstract>
 <t>The Web Real-Time Communication (WebRTC) working group is charged to provide
@@ -71,9 +69,8 @@ peer.</t>
 
 <middle>
 <section title='Introduction'>
-<t>The issue of how best to handle non-media data types in the context of
-RTCWEB has reached a general consensus on the usage of SCTP
-<xref target='RFC4960'/> encapsulated on DTLS <xref target='RFC6347'/>:</t>
+<t>Non-media data types in the context of RTCWEB are handled by using SCTP
+<xref target='RFC4960'/> encapsulated in DTLS <xref target='RFC6347'/>.</t>
 
 <figure title='Basic stack diagram'
         anchor='fig-stack'
@@ -95,8 +92,9 @@ integrity protected transfers.
 This data transport service operates in parallel to the media transports,
 and all of them can eventually share a single transport-layer port number.</t>
 
-<t>SCTP provides multiple streams natively with reliable, unreliable and
-partially-reliable delivery modes.</t>
+<t>SCTP as specified in <xref target='RFC4960'/> with the extension defined in
+<xref target='RFC3758'/> provides multiple streams natively with reliable,
+and partially-reliable delivery modes.</t>
 
 <t>The remainder of this document is organized as follows:
 <xref target='sec-req'/> and <xref target='sec-use-cases'/>  provide requirements
@@ -105,6 +103,13 @@ and use cases for both unreliable and reliable peer to peer datagram base channe
 <xref target='sec-sctp-usage'/> provides an overview of how SCTP should be
 used by the RTCWeb protocol framework for transporting non-media data between
 browsers.</t>
+</section>
+
+<section title='Conventions'>
+<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
+in this document are to be interpreted as described in
+<xref target='RFC2119'/>.</t>
 </section>
 
 <section title='Requirements'
@@ -226,26 +231,28 @@ internet filtering or monitoring. Typically this would be streams.</t>
 </section>
 </section>
 
-<section title='Datagrams over SCTP over DTLS over UDP'
+<section title='SCTP over DTLS over UDP Considerations'
          anchor='sec-p-a-2'>
 
-<t>The encapsulation of SCTP over DTLS as defined in <xref
-target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/> provides a NAT traversal solution
-together with  confidentiality, source authenticated, integrity protected
-transfers. SCTP provides also natively several interesting features for
-transporting non-media data between browsers:
+<t>The encapsulation of SCTP over DTLS as defined in
+<xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/> provides a NAT traversal
+solution together with confidentiality, source authenticated, integrity protected
+transfers. SCTP as specified in <xref target='RFC4960'/> MUST be used in
+combination with the extension defined in <xref target='RFC3758'/> and 
+provides the following interesting features for transporting non-media
+data between browsers:
 <list style='symbols'>
 <t>Support of multiple streams.</t> 
 <t>Ordered and unordered delivery of user messages.</t>
 <t>Reliable and partial-reliable transport of user messages.</t>
 </list></t>
 
-<t>Each SCTP user message contains a so called Payload Protocol Identifier (PPID)
-that is passed to SCTP by its upper layer and sent to its peer.
+<t>Each SCTP user message contains a so called Payload Protocol
+Identifier (PPID) that is passed to SCTP by its upper layer and sent to its peer.
 This value represents an application (or upper layer) specified
 protocol identifier and be used to transport multiple protocols
 over a single SCTP association. The sender provides for each protocol a
-specific PPID and the receiver demultiplexes the messages based on the
+specific PPID and the receiver MAY demultiplex the messages based on the
 received PPID.</t>
 
 <!--
@@ -330,62 +337,64 @@ usage of DTLS over UDP is specified in <xref target='RFC6347'/>, while the
 usage of SCTP on top of DTLS is specified in
 <xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/>.</t>
 
-<t>Since DTLS is typically implemented in user-land, an SCTP user-land
-implementation must also be used.</t>
+<t>Since DTLS is typically implemented in user-land, the SCTP stack also
+needs to be a user-land stack.</t>
 
-<t>When using DTLS as the lower layer, only single homed SCTP
-associations can be used, since DTLS does not expose any address management
-to its upper layer. The ICE/UDP layer can handle IP address changes during a 
-session without needing to notify the DTLS and SCTP layers, though it would 
-be advantageous to retest path MTU on an IP address change.</t>
+<t>When using DTLS as the lower layer, only single homed SCTP associations
+SHOULD be used, since DTLS does not expose any address management to its upper
+layer.
+The ICE/UDP layer can handle IP address changes during a session without needing
+to notify the DTLS and SCTP layers, though it would be advantageous to retest
+path MTU on an IP address change.</t>
 
-<t>DTLS implementations used for this stack must support controlling fields of
+<t>DTLS implementations used for this stack SHOULD support controlling fields of
 the IP layer like the Don't fragment (DF)-bit in case of IPv4 and the
-Differentiated Services Code Point (DSCP) field.
-This is required for performing path MTU discovery.
-The DTLS implementation must also support sending user messages exceeding
-the path MTU.</t>
+Differentiated Services Code Point (DSCP) field required for supporting
+<xref target='I-D.ietf-rtcweb-qos'/>.
+Being able to set the (DF)-bit in case of IPv4 is required for performing
+path MTU discovery. The DTLS implementation SHOULD also support sending
+user messages exceeding the path MTU.</t>
 
-<t>When supporting multiple SCTP associations over a single DTLS
-connection, incoming ICMP or ICMPv6 messages can't be processed by
+<t>Incoming ICMP or ICMPv6 messages can't be processed by
 the SCTP layer, since there is no way to identify the corresponding	
-association.  Therefore the number of SCTP associations should be	
-limited to one or ICMP and ICMPv6 messages should be ignored.
-In general, the lower layer interface of an SCTP implementation has to be
+association. Therefore SCTP MUST support performing Path MTU discovery
+without relying on ICMP or ICMPv6.
+In general, the lower layer interface of an SCTP implementation SHOULD be
 adapted to address the differences between IPv4 or IPv6 (being connection-less)
 or DTLS (being connection-oriented).</t>
 
-<t>When protocol stack of <xref target='fig-sctp-layering'/>
-is used, DTLS protects the complete SCTP packet, so it
-provides confidentiality, integrity and source authentication
-of the complete SCTP packet.</t>
+<t>When protocol stack of <xref target='fig-sctp-layering'/> is used, DTLS
+protects the complete SCTP packet, so it provides confidentiality, integrity and
+source authentication of the complete SCTP packet.</t>
 
-<t>This protocol stack supports the usage of multiple SCTP streams.
-A user message can be sent ordered or unordered and,
-if the SCTP implementations support <xref target='RFC3758'/>,
-with partial reliability. When using partial reliability, it might make
-sense to use a policy limiting the number of retransmissions by time or number.
-Limiting the number of retransmissions to zero provides a UDP-like service where
-each user message is sent exactly once.</t>
+<t>This protocol stack MUST support the usage of multiple SCTP streams.
+A user message can be sent ordered or unordered and with partial reliability.
+The partial reliability extension MUST support policies to limit
+<list style='symbols'>
+<t>the transmission and retransmission by time.</t>
+<t>the number of retransmissions.</t>
+</list>
+Limiting the number of retransmissions to zero provides a UDP-like service
+where each user message is sent exactly once.</t>
 
 <t>SCTP provides congestion control on a per-association base. This means
 that all SCTP streams within a single SCTP association share the same
 congestion window. Traffic not being sent over SCTP is not covered by
 the SCTP congestion control. Due to the typical parallel SRTP media
-streams, it will be advantageous to select a delay-sensitive congestion
-control algorithm or to at least coordinate congestion control between the
+streams, a delay-sensitive congestion control algorithm MUST be supported
+and the congestion control MAY be coordinated between the
 data channels and the media streams to avoid a data channel transfer 
-ending up with most or all the channel bandwidth.
-Since SCTP does not have an internal negotiaton mechanism	
-for selecting a congestion control algorithm, the algorithm should be	
-negotiated before establishment of the SCTP association.</t>
+ending up with most or all the channel bandwidth.</t>
+<t>Since SCTP does not support the negotiaton of a congestion control algorithm,
+the algorithm either MUST be negotiated before establishment of the
+SCTP association or MUST not require any negotiation because it only requires
+sender side behavior.</t>
 </section>
 
-<section title='The Envisioned Usage of SCTP in the RTCWeb Context'
+<section title='The Usage of SCTP in the RTCWeb Context'
          anchor='sec-sctp-usage'>
-<t>The appealing features of SCTP in the RTCWeb context are:</t>
-
-<t><list style='symbols'>
+<t>The appealing features of SCTP in the RTCWeb context are:
+<list style='symbols'>
 <t>TCP-friendly congestion control.</t>
 <t>The congestion control is modifiable for integration with media stream congestion control.</t>
 <t>Support for multiple channels with different characteristics.</t>
@@ -405,13 +414,13 @@ unreliable datagram service) would expose.</t>
 <t>The SCTP association would be set up when the two endpoints of the WebRTC
 PeerConnection agree on opening it, as negotiated by JSEP (typically an
 exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>. Additionally,
-the negotiation should include some type of congestion control selection.
-It would use the DTLS connection created at the start of the
-PeerConnection connection.</t>
+the negotiation SHOULD include some type of congestion control selection.
+It would use the DTLS connection created at the start of the PeerConnection
+ connection.</t>
 
-<t>The application should indicate the number of simultaneous streams
+<t>The application SHOULD indicate the initial number of streams
 required when opening the association, and if no value is supplied, the
-implementation should provide a default, with a suggested value of 16.
+implementation SHOULD provide a default, with a suggested value of 16.
 If more simultaneous streams are needed, <xref target='RFC6525'/> allows
 adding additional (but not removing) streams to an existing association.
 There can be up to 65536 SCTP streams per SCTP association in each direction.</t>
@@ -433,23 +442,25 @@ It is the responsibility of the SCTP user to create and manage these
 correlations if they are so desired.</t>
 -->
 
-<t>The W3C has consensus on defining the application API for
-WebRTC dataChannels to be bidirectional. They also consider the notions
-of in-sequence, out-of-sequence, reliable and un-reliable as properties
-of Channels. One strong wish is for the application-level API to be	
-close to the API for WebSockets, which implies bidirectional streams	
-of data and waiting for onopen to fire before sending, a textual	
-label used to identify the meaning of the stream, among other things.</t>
+<t>The W3C has consensus on defining the application API for WebRTC dataChannels
+to be bidirectional. They also consider the notions of in-sequence,
+out-of-sequence, reliable and un-reliable as properties of Channels. One strong
+wish is for the application-level API to be close to the API for WebSockets,
+which implies bidirectional streams of data and waiting for onopen to fire
+before sending, a textual label used to identify the meaning of the stream,
+among other things.</t>
 
-<t>A possible realization of a bidirectional Data Channel is a pair of one
+<t>The realization of a bidirectional Data Channel is a pair of one
 incoming stream and one outgoing SCTP stream.</t>
- 
-<t>Note that there's no requirement for the SCTP streams used to create	
-a bidirectional channel have the same number in each direction.  How	
-stream values are selected and used to provide this functionality is	
-up to the protocol.</t>
 
-<t>Closing of a Data Channel can be signalled resetting the corresponding
+<t>The simple protocol specified in <xref target='I-D.jesup-rtcweb-data-protocol'/>
+MUST be used to set up and manage the bidirectional data channels.</t>
+
+<t>Note that there's no requirement for the SCTP streams used to create	
+a bidirectional channel have the same number in each direction. 
+How stream values are selected is implementation dependent.</t>
+
+<t>Closing of a Data Channel MUST be signalled resetting the corresponding
 streams <xref target='RFC6525'/>.
 Resetting a stream set the Stream Sequence Numbers (SSNs) of the stream back to
 'zero' with a corresponding notification to the application layer
@@ -464,12 +475,11 @@ transporting control information.</t>
 </section>
 
 <section title='Usage of Payload Protocol Identifier'>
-<t>The SCTP Payload Protocol Identifiers (PPIDs) can be used to signal the 
-interpretation of the "Payload data", like a string, ASCII or binary data.</t>
+<t>The SCTP Payload Protocol Identifiers (PPIDs) MUST used to signal the 
+interpretation of the "Payload data", like the protocol specified in
+<xref target='I-D.jesup-rtcweb-data-protocol'/>, a Javascript string,
+a Javascript array or a a Javascript blob.</t>
 
-<t><xref target='RFC4960'/> creates the registry from which these identifiers
-have been assigned. Eventual PPIDs defined within the RTCWeb Context have to
-be registered with IANA.</t>
 </section>
 <!--
 <t>TBD not sure if we want discuss here or in the actual protocol draft:
@@ -486,6 +496,7 @@ be registered with IANA.</t>
 -->
 </section>
 
+<!--
 <section title='Minor Protocol and Message Format'
          anchor='sec-mes-format'>
 <t>A separate draft (draft-jesup-rtcweb-data-protocol) proposes
@@ -494,6 +505,7 @@ needed to satisfy the requirements in this document for WebRTC.</t>
 <t> Masking of the protocol is not needed if the lower layer always encrypts
 with DTLS.</t>
 </section>
+-->
 
 <section title='Security Considerations'
          anchor='sec-security'>
@@ -518,6 +530,7 @@ and Justin Uberti.</t>
 
 <back>
 <references title='Informative References'>
+<?rfc include='reference.RFC.2119' ?>
 <?rfc include='reference.RFC.3758'?>
 <?rfc include='reference.RFC.4960'?>
 <?rfc include='reference.RFC.5245'?>
@@ -527,7 +540,9 @@ and Justin Uberti.</t>
 <?rfc include='reference.I-D.ietf-rtcweb-security'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security-arch'?>
 <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
+<?rfc include='reference.I-D.ietf-rtcweb-qos'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-udp-encaps'?>
+<?rfc include='reference.I-D.jesup-rtcweb-data-protocol'?>
 <?rfc include='reference.I-D.tuexen-tsvwg-sctp-dtls-encaps'?>
 </references>
 </back>
