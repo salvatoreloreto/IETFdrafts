@@ -9,7 +9,7 @@
 
 <rfc category='std'
      ipr='trust200902'
-     docName='draft-ietf-rtcweb-data-channel-02.txt'>
+     docName='draft-ietf-rtcweb-data-channel-03.txt'>
 <front>
 <title>RTCWeb Datagram Connection</title>
 
@@ -484,7 +484,7 @@ interpretation of the "Payload data", like the protocol specified in
 <xref target='I-D.jesup-rtcweb-data-protocol'/> uses them to identify
 a Javascript string,
 a Javascript array or
-a a Javascript blob.</t>
+a Javascript blob.</t>
 
 </section>
 <!--
