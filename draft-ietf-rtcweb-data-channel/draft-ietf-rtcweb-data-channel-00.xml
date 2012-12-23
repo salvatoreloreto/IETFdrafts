@@ -118,26 +118,26 @@ in this document are to be interpreted as described in
 two browsers.</t>
 
 <t><list style='format Req. %d'>
-<t>Multiple simultaneous datagram streams must be supported.
+<t>Multiple simultaneous datagram streams MUST be supported.
 Note that there may 0 or more media streams in parallel with the data streams,
 and the number and state (active/inactive) of the media streams may change at
 any time.</t>
 
-<t>Both reliable and unreliable datagram streams must be supported.</t>
+<t>Both reliable and unreliable datagram streams MUST be supported.</t>
 
-<t>Data streams must be congestion controlled; either individually,
+<t>Data streams MUST be congestion controlled; either individually,
 as a class, or in conjunction with the media streams, to ensure
 that datagram exchanges don't cause congestion problems for the
 media streams, and that the rtcweb PeerConnection as a whole is
 fair with competing streams such as TCP.</t>
 
-<t>The application should be able to provide guidance as to the 
+<t>The application SHOULD be able to provide guidance as to the 
 relative priority of each datagram stream relative to each other,
 and relative to the media streams. [ TBD: how this is encoded and
 what the impact of this is. ]  This will interact with the
 congestion control algorithms.</t>
 
-<t>Datagram streams must be encrypted; allowing for confidentiality,
+<t>Datagram streams MUST be encrypted; allowing for confidentiality,
 integrity and source authentication.
 See <xref target='I-D.ietf-rtcweb-security'/> and 
 <xref target='I-D.ietf-rtcweb-security-arch'/> for detailed info.</t>
@@ -146,25 +146,25 @@ See <xref target='I-D.ietf-rtcweb-security'/> and
 PeerConnection's ICE <xref target='RFC5245'/> connectivity checks and
 optional TURN servers.</t>
 
-<t>Data streams must provide message fragmentation support such that
+<t>Data streams MUST provide message fragmentation support such that
 IP-layer fragmentation does not occur no matter how large a message
 the Javascript application passes to be sent.</t>
 
-<t>The data stream transport protocol must not encode local IP addresses
+<t>The data stream transport protocol MUST not encode local IP addresses
 inside its protocol fields; doing so reveals potentially private information,
 and leads to failure if the address is depended upon.</t>
 
-<t>The data stream protocol should support unbounded-length "messages"
+<t>The data stream protocol SHOULD support unbounded-length "messages"
 (i.e., a virtual socket stream) at the application layer, for such things as
-image-file-transfer; or else it must support at least a maximum
-application-layer message size of 2GB.</t>
+image-file-transfer; or it MUST support a maximum application-layer
+message size of at least 2GB.</t>
 
-<t>The data stream packet format/encoding must be such
+<t>The data stream packet format/encoding MUST be such
 that it is impossible for a malicious Javascript to generate an
 application message crafted such that it could be interpreted as a native
 protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc.</t>
 
-<t>The data stream transport protocol must start with the assumption
+<t>The data stream transport protocol MUST start with the assumption
 of a PMTU of 1280 [ *** need justification ***] bytes until measured
 otherwise.</t>
 <!-- MT: Why? Shouldn't SCTP just do PMTU discovery? -->
@@ -173,10 +173,10 @@ otherwise.</t>
          overhead (it depends on the choosen cipher suite) into account.
          Same for UPv4. -->
 
-<t>The data stream transport protocol must not rely on ICMP or ICMPv6
+<t>The data stream transport protocol MUST NOT rely on ICMP or ICMPv6
 being generated or being passed back, such as for PMTU discovery.</t>
 
-<t>It must be possible to implement the protocol stack in the user
+<t>It MUST be possible to implement the protocol stack in the user
 application space.</t>
 </list></t>
 </section>
@@ -368,14 +368,16 @@ protects the complete SCTP packet, so it provides confidentiality, integrity and
 source authentication of the complete SCTP packet.</t>
 
 <t>This protocol stack MUST support the usage of multiple SCTP streams.
-A user message can be sent ordered or unordered and with partial reliability.
+A user message can be sent ordered or unordered and with partial or full
+reliability.
 The partial reliability extension MUST support policies to limit
 <list style='symbols'>
 <t>the transmission and retransmission by time.</t>
 <t>the number of retransmissions.</t>
 </list>
-Limiting the number of retransmissions to zero provides a UDP-like service
-where each user message is sent exactly once.</t>
+Limiting the number of retransmissions to zero combined with unordered delivery
+provides a UDP-like service where each user message is sent exactly once
+and delivered in the order received.</t>
 
 <t>SCTP provides congestion control on a per-association base. This means
 that all SCTP streams within a single SCTP association share the same
@@ -385,15 +387,15 @@ streams, a delay-sensitive congestion control algorithm MUST be supported
 and the congestion control MAY be coordinated between the
 data channels and the media streams to avoid a data channel transfer 
 ending up with most or all the channel bandwidth.</t>
-<t>Since SCTP does not support the negotiaton of a congestion control algorithm,
+<t>Since SCTP does not support the negotiation of a congestion control algorithm,
 the algorithm either MUST be negotiated before establishment of the
 SCTP association or MUST not require any negotiation because it only requires
-sender side behavior.</t>
+sender side behavior using existing information carried in the association.</t>
 </section>
 
 <section title='The Usage of SCTP in the RTCWeb Context'
          anchor='sec-sctp-usage'>
-<t>The appealing features of SCTP in the RTCWeb context are:
+<t>The important features of SCTP in the RTCWeb context are:
 <list style='symbols'>
 <t>TCP-friendly congestion control.</t>
 <t>The congestion control is modifiable for integration with media stream congestion control.</t>
@@ -404,34 +406,36 @@ sender side behavior.</t>
 <t>Support of multiple streams.</t>
 </list></t>
 
-<t>Multihoming will not be used in this scenario.
-The SCTP layer would simply act  as if it were running on a single-homed host,
+<t>SCTP multihoming will not be used in RTCWeb.
+The SCTP layer will simply act  as if it were running on a single-homed host,
 since that is the abstraction that the lower layer (a connection oriented,
-unreliable datagram service) would expose.</t>
+unreliable datagram service) exposes.</t>
 
 <section title='Association Setup'
          anchor='sec-sctp-setup'>
-<t>The SCTP association would be set up when the two endpoints of the WebRTC
+<t>The SCTP association will be set up when the two endpoints of the WebRTC
 PeerConnection agree on opening it, as negotiated by JSEP (typically an
 exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>. Additionally,
 the negotiation SHOULD include some type of congestion control selection.
-It would use the DTLS connection created at the start of the PeerConnection
- connection.</t>
+It will use the DTLS connection selected via SDP; typically this will be
+shared via BUNDLE with DTLS connections used to key the DTLS-SRTP media
+streams.</t>
 
 <t>The application SHOULD indicate the initial number of streams
 required when opening the association, and if no value is supplied, the
 implementation SHOULD provide a default, with a suggested value of 16.
 If more simultaneous streams are needed, <xref target='RFC6525'/> allows
 adding additional (but not removing) streams to an existing association.
-There can be up to 65536 SCTP streams per SCTP association in each direction.</t>
+Note there can be up to 65536 SCTP streams per SCTP association in each
+direction.</t>
 </section>
 
 <section title='SCTP Streams'>
 <t>SCTP defines a stream as an unidirectional logical channel existing within
 an SCTP association one to another SCTP endpoint. The streams are used to
-provide the notion of in-sequence delivery. Each user message is sent
-on a particular stream, either order or unordered. Ordering is preserved only
-for all ordered messages sent on the same stream.</t>
+provide the notion of in-sequence delivery and for multiplexing.
+Each user message is sent on a particular stream, either order or unordered.
+Ordering is preserved only for all ordered messages sent on the same stream.</t>
 </section>
 
 <section title='Channel Definition'>
@@ -458,9 +462,9 @@ MUST be used to set up and manage the bidirectional data channels.</t>
 
 <t>Note that there's no requirement for the SCTP streams used to create	
 a bidirectional channel have the same number in each direction. 
-How stream values are selected is implementation dependent.</t>
+How stream values are selected is protocol and implementation dependent.</t>
 
-<t>Closing of a Data Channel MUST be signalled resetting the corresponding
+<t>Closing of a Data Channel MUST be signalled by resetting the corresponding
 streams <xref target='RFC6525'/>.
 Resetting a stream set the Stream Sequence Numbers (SSNs) of the stream back to
 'zero' with a corresponding notification to the application layer
@@ -477,8 +481,10 @@ transporting control information.</t>
 <section title='Usage of Payload Protocol Identifier'>
 <t>The SCTP Payload Protocol Identifiers (PPIDs) MUST used to signal the 
 interpretation of the "Payload data", like the protocol specified in
-<xref target='I-D.jesup-rtcweb-data-protocol'/>, a Javascript string,
-a Javascript array or a a Javascript blob.</t>
+<xref target='I-D.jesup-rtcweb-data-protocol'/> uses them to identify
+a Javascript string,
+a Javascript array or
+a a Javascript blob.</t>
 
 </section>
 <!--
