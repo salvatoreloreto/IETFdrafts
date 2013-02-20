@@ -387,7 +387,7 @@ data channels and the media streams to avoid a data channel transfer
 ending up with most or all the channel bandwidth.</t>
 <t>Since SCTP does not support the negotiation of a congestion control algorithm,
 the algorithm either MUST be negotiated before establishment of the
-SCTP association or MUST not require any negotiation because it only requires
+SCTP association or MUST NOT require any negotiation because it only requires
 sender side behavior using existing information carried in the association.</t>
 </section>
 
