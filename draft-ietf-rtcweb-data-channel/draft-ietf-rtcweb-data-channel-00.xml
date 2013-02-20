@@ -11,7 +11,7 @@
      ipr='trust200902'
      docName='draft-ietf-rtcweb-data-channel-03.txt'>
 <front>
-<title>RTCWeb Datagram Connection</title>
+<title>RTCWeb Data Channels</title>
 
 <author initials='R.' surname='Jesup' fullname='Randell Jesup'>
 <organization>Mozilla</organization>
@@ -20,7 +20,7 @@
 <street></street>
 <code></code> 
 <city></city> 
-<country>USA</country>
+<country>US</country>
 </postal>
 <email>randell-ietf@jesup.org</email>
 </address>
@@ -33,7 +33,7 @@
 <street>Hirsalantie 11</street>
 <code>02420</code> 
 <city>Jorvas</city> 
-<country>Finland</country>
+<country>FI</country>
 </postal>
 <email>salvatore.loreto@ericsson.com</email>
 </address>
@@ -47,7 +47,7 @@
 <street>Stegerwaldstrasse 39</street>
 <code>48565</code> 
 <city> Steinfurt</city> 
-<country>Germany</country>
+<country>DE</country>
 </postal>
 <email>tuexen@fh-muenster.de</email>
 </address>
@@ -59,7 +59,7 @@
 <t>The Web Real-Time Communication (WebRTC) working group is charged to provide
 protocol support for direct interactive rich communication using audio, video,
 and data between two peers' web-browsers.
-This document describes the non-media data transport aspects of the WebRTC
+This document specifies the non-media data transport aspects of the WebRTC
 framework. It provides an architectural overview of how the Stream Control
 Transmission Protocol (SCTP) is used in the WebRTC context as a generic
 transport service allowing Web Browser to exchange generic data from peer to
@@ -92,15 +92,15 @@ integrity protected transfers.
 This data transport service operates in parallel to the media transports,
 and all of them can eventually share a single transport-layer port number.</t>
 
-<t>SCTP as specified in <xref target='RFC4960'/> with the extension defined in
-<xref target='RFC3758'/> provides multiple streams natively with reliable,
-and partially-reliable delivery modes.</t>
+<t>SCTP as specified in <xref target='RFC4960'/> with the partial reliability
+extension defined in <xref target='RFC3758'/> provides multiple streams
+natively with reliable, and partially-reliable delivery modes.</t>
 
 <t>The remainder of this document is organized as follows:
 <xref target='sec-req'/> and <xref target='sec-use-cases'/>  provide requirements
 and use cases for both unreliable and reliable peer to peer datagram base channel;
 <xref target='sec-p-a-2'/> arguments SCTP over DTLS over UDP;
-<xref target='sec-sctp-usage'/> provides an overview of how SCTP should be
+<xref target='sec-sctp-usage'/> provides an specification of how SCTP should be
 used by the RTCWeb protocol framework for transporting non-media data between
 browsers.</t>
 </section>
@@ -114,30 +114,30 @@ in this document are to be interpreted as described in
 
 <section title='Requirements'
          anchor='sec-req'>
-<t>This section lists the requirements for P2P data connections between
+<t>This section lists the requirements for P2P data channels between
 two browsers.</t>
 
 <t><list style='format Req. %d'>
-<t>Multiple simultaneous datagram streams MUST be supported.
-Note that there may 0 or more media streams in parallel with the data streams,
+<t>Multiple simultaneous data channels MUST be supported.
+Note that there may 0 or more media streams in parallel with the data channels,
 and the number and state (active/inactive) of the media streams may change at
 any time.</t>
 
-<t>Both reliable and unreliable datagram streams MUST be supported.</t>
+<t>Both reliable and unreliable data channels MUST be supported.</t>
 
-<t>Data streams MUST be congestion controlled; either individually,
+<t>Data channels MUST be congestion controlled; either individually,
 as a class, or in conjunction with the media streams, to ensure
-that datagram exchanges don't cause congestion problems for the
+that data channels don't cause congestion problems for the
 media streams, and that the rtcweb PeerConnection as a whole is
-fair with competing streams such as TCP.</t>
+fair with competing traffic such as TCP.</t>
 
 <t>The application SHOULD be able to provide guidance as to the 
-relative priority of each datagram stream relative to each other,
-and relative to the media streams. [ TBD: how this is encoded and
-what the impact of this is. ]  This will interact with the
-congestion control algorithms.</t>
+relative priority of each data channel relative to each other,
+and relative to the media streams.
+[ TBD: how this is encoded and what the impact of this is. ]
+This will interact with the congestion control algorithms.</t>
 
-<t>Datagram streams MUST be encrypted; allowing for confidentiality,
+<t>Data channels MUST be secured; allowing for confidentiality,
 integrity and source authentication.
 See <xref target='I-D.ietf-rtcweb-security'/> and 
 <xref target='I-D.ietf-rtcweb-security-arch'/> for detailed info.</t>
@@ -146,25 +146,26 @@ See <xref target='I-D.ietf-rtcweb-security'/> and
 PeerConnection's ICE <xref target='RFC5245'/> connectivity checks and
 optional TURN servers.</t>
 
-<t>Data streams MUST provide message fragmentation support such that
-IP-layer fragmentation does not occur no matter how large a message
+<t>Data channels MUST provide message fragmentation support such that
+IP-layer fragmentation can be avoided no matter how large a message
 the Javascript application passes to be sent.</t>
 
-<t>The data stream transport protocol MUST not encode local IP addresses
+<t>The data channel transport protocol MUST NOT encode local IP addresses
 inside its protocol fields; doing so reveals potentially private information,
 and leads to failure if the address is depended upon.</t>
 
-<t>The data stream protocol SHOULD support unbounded-length "messages"
+<t>The data channel transport protocol SHOULD support unbounded-length "messages"
 (i.e., a virtual socket stream) at the application layer, for such things as
 image-file-transfer; or it MUST support a maximum application-layer
 message size of at least 2GB.</t>
+<!-- FIXME: Why this limit? Is it enough?-->
 
-<t>The data stream packet format/encoding MUST be such
+<t>The data channel packet format/encoding MUST be such
 that it is impossible for a malicious Javascript to generate an
 application message crafted such that it could be interpreted as a native
 protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc.</t>
 
-<t>The data stream transport protocol MUST start with the assumption
+<t>The data channel transport protocol MUST start with the assumption
 of a PMTU of 1280 [ *** need justification ***] bytes until measured
 otherwise.</t>
 <!-- MT: Why? Shouldn't SCTP just do PMTU discovery? -->
@@ -173,8 +174,9 @@ otherwise.</t>
          overhead (it depends on the choosen cipher suite) into account.
          Same for UPv4. -->
 
-<t>The data stream transport protocol MUST NOT rely on ICMP or ICMPv6
-being generated or being passed back, such as for PMTU discovery.</t>
+<t>The data channel transport protocol SHOULD avoid IP fragmentation. It
+MUST support PMTU discovery and MUST NOT rely on ICMP or ICMPv6
+being generated or being passed back, especially for PMTU discovery.</t>
 
 <t>It MUST be possible to implement the protocol stack in the user
 application space.</t>
@@ -184,7 +186,7 @@ application space.</t>
 <section title='Use Cases'
          anchor='sec-use-cases'>
 
-<section title='Use Cases for Unreliable Datagram Based Channels'
+<section title='Use Cases for Unreliable Data Channels'
          anchor='sec-use-cases-unreliable'>
 
 <t><list style='format U-C %d' counter='UseCases'>
@@ -199,34 +201,28 @@ conference, such as Mute state.</t>
 </list></t>
 </section>
 
-<section title='Use Cases for Reliable Channels (Datagram or Stream Based)'
+<section title='Use Cases for Reliable Data Channels'
          anchor='sec-use-cases-reliable'>
-
-<t>Note that either reliable datagrams or streams are possible;
-reliable streams would be fairly simple to layer on top of SCTP reliable
-datagrams with in-order delivery.</t>
 
 <t><list style='format U-C %d' counter='UseCases'>
 
 <t> A real-time game where critical state information needs to be
-transferred, such as control information.  Typically this would be datagrams.
+transferred, such as control information.
 Such a game may have no media channels, or they may be inactive at any
 given time, or may only be added due to in-game actions.</t>
 
 <t>Non-realtime file transfers between people chatting.
-This could be datagrams or streaming.  Note that this may involve a large
-number of files to transfer sequentially or in parallel, such as when
-sharing a folder of images or a directory of files.</t>
+Note that this may involve a large number of files to transfer sequentially
+or in parallel, such as when sharing a folder of images or a directory of files.</t>
 
 <t>Realtime text chat while talking with an individual or with multiple
-people in a conference. Typically this would be datagrams.</t>
+people in a conference.</t>
 
-<t>Renegotiation of the set of media streams in the PeerConnection.
-Typically this would be datagrams.</t>
+<t>Renegotiation of the set of media streams in the PeerConnection.</t>
 
 <t>Proxy browsing, where a browser uses data channels of a PeerConnection
 to send and receive HTTP/HTTPS requests and data, for example to avoid local
-internet filtering or monitoring. Typically this would be streams.</t>
+internet filtering or monitoring.</t>
 </list></t>
 </section>
 </section>
@@ -234,25 +230,25 @@ internet filtering or monitoring. Typically this would be streams.</t>
 <section title='SCTP over DTLS over UDP Considerations'
          anchor='sec-p-a-2'>
 
-<t>The encapsulation of SCTP over DTLS as defined in
-<xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/> provides a NAT traversal
-solution together with confidentiality, source authenticated, integrity protected
-transfers. SCTP as specified in <xref target='RFC4960'/> MUST be used in
+<t>The encapsulation of SCTP over DTLS defined in
+<xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> confidentiality,
+source authenticated, and integrity protected transfers. Using DTLS
+over UDP in combination with ICE enables NAT traversal in IPv4 based networks.
+SCTP as specified in <xref target='RFC4960'/> MUST be used in
 combination with the extension defined in <xref target='RFC3758'/> and 
 provides the following interesting features for transporting non-media
 data between browsers:
 <list style='symbols'>
-<t>Support of multiple streams.</t> 
+<t>Support of multiple unidirectional streams.</t> 
 <t>Ordered and unordered delivery of user messages.</t>
 <t>Reliable and partial-reliable transport of user messages.</t>
 </list></t>
 
 <t>Each SCTP user message contains a so called Payload Protocol
 Identifier (PPID) that is passed to SCTP by its upper layer and sent to its peer.
-This value represents an application (or upper layer) specified
-protocol identifier and be used to transport multiple protocols
+This value can be used to multiplex multiple protocols
 over a single SCTP association. The sender provides for each protocol a
-specific PPID and the receiver MAY demultiplex the messages based on the
+specific PPID and the receiver can demultiplex the messages based on the
 received PPID.</t>
 
 <!--
@@ -324,7 +320,8 @@ requirement 12.</t>
 +--------------------+
 </artwork>
 </figure>
-<t>This stack (especially in contrast to DTLS over SCTP <xref target='RFC6083'/>)
+<t>This stack (especially in contrast to DTLS over SCTP <xref target='RFC6083'/>
+in combination with SCTP over UDP <xref target='I-D.ietf-tsvwg-sctp-udp-encaps'/>)
 has been chosen because it
 <list style='symbols'>
 <t>supports the transmission of arbitrary large user messages.</t>
@@ -335,13 +332,13 @@ has been chosen because it
 <t>Considering the protocol stack of <xref target='fig-sctp-layering'/> the
 usage of DTLS over UDP is specified in <xref target='RFC6347'/>, while the
 usage of SCTP on top of DTLS is specified in
-<xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/>.</t>
+<xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>.</t>
 
 <t>Since DTLS is typically implemented in user-land, the SCTP stack also
 needs to be a user-land stack.</t>
 
 <t>When using DTLS as the lower layer, only single homed SCTP associations
-SHOULD be used, since DTLS does not expose any address management to its upper
+MUST be used, since DTLS does not expose any address management to its upper
 layer.
 The ICE/UDP layer can handle IP address changes during a session without needing
 to notify the DTLS and SCTP layers, though it would be advantageous to retest
@@ -358,7 +355,8 @@ user messages exceeding the path MTU.</t>
 <t>Incoming ICMP or ICMPv6 messages can't be processed by
 the SCTP layer, since there is no way to identify the corresponding	
 association. Therefore SCTP MUST support performing Path MTU discovery
-without relying on ICMP or ICMPv6.
+without relying on ICMP or ICMPv6 as specified in <xref target='RFC4821'/>
+using probing messages specified in <xref target='RFC4820'/>.
 In general, the lower layer interface of an SCTP implementation SHOULD be
 adapted to address the differences between IPv4 or IPv6 (being connection-less)
 or DTLS (being connection-oriented).</t>
@@ -468,7 +466,7 @@ How stream values are selected is protocol and implementation dependent.</t>
 streams <xref target='RFC6525'/>.
 Resetting a stream set the Stream Sequence Numbers (SSNs) of the stream back to
 'zero' with a corresponding notification to the application layer
-that the reset has been performed. Closed streams are available to reuse.</t>
+that the reset has been performed. Resetted streams are available to reuse.</t>
 
 <t><xref target='RFC6525'/> also guarantees that all the messages are delivered
 (or expired) before resetting the stream.</t> 
@@ -479,7 +477,7 @@ transporting control information.</t>
 </section>
 
 <section title='Usage of Payload Protocol Identifier'>
-<t>The SCTP Payload Protocol Identifiers (PPIDs) MUST used to signal the 
+<t>The SCTP Payload Protocol Identifiers (PPIDs) can be used to signal the 
 interpretation of the "Payload data", like the protocol specified in
 <xref target='I-D.jesup-rtcweb-data-protocol'/> uses them to identify
 a Javascript string,
@@ -515,7 +513,9 @@ with DTLS.</t>
 
 <section title='Security Considerations'
          anchor='sec-security'>
-<t>To be done.</t>
+<t>This document does not add any additional considerations to the ones given in
+<xref target='I-D.ietf-rtcweb-security'/> and
+<xref target='I-D.ietf-rtcweb-security-arch'/>.</t>
 </section>
 
 <section title='IANA Considerations'
@@ -530,26 +530,31 @@ Adam Bergkvist,
 Cullen Jennings,
 Eric Rescorla,
 Randall Stewart,
-and Justin Uberti.</t>
+Justin Uberti,
+and Magnus Westerlund.</t>
 </section>
 </middle>
 
 <back>
-<references title='Informative References'>
+<references title='Normative References'>
 <?rfc include='reference.RFC.2119' ?>
 <?rfc include='reference.RFC.3758'?>
+<?rfc include='reference.RFC.4820'?>
+<?rfc include='reference.RFC.4821'?>
 <?rfc include='reference.RFC.4960'?>
 <?rfc include='reference.RFC.5245'?>
-<?rfc include='reference.RFC.6083'?>
 <?rfc include='reference.RFC.6347'?>
 <?rfc include='reference.RFC.6525'?>
+<?rfc include='reference.I-D.jesup-rtcweb-data-protocol'?>
+<?rfc include='reference.I-D.ietf-tsvwg-sctp-dtls-encaps'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security-arch'?>
 <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
 <?rfc include='reference.I-D.ietf-rtcweb-qos'?>
+</references>
+<references title='Informative References'>
+<?rfc include='reference.RFC.6083'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-udp-encaps'?>
-<?rfc include='reference.I-D.jesup-rtcweb-data-protocol'?>
-<?rfc include='reference.I-D.tuexen-tsvwg-sctp-dtls-encaps'?>
 </references>
 </back>
 
