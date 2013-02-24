@@ -69,7 +69,7 @@ peer.</t>
 
 <middle>
 <section title='Introduction'>
-<t>Non-media data types in the context of RTCWEB are handled by using SCTP
+<t>Non-media data types in the context of RTCWeb are handled by using SCTP
 <xref target='RFC4960'/> encapsulated in DTLS <xref target='RFC6347'/>.</t>
 
 <figure title='Basic stack diagram'
@@ -86,8 +86,10 @@ peer.</t>
 </artwork>
 </figure>
 
-<t>The encapsulation of SCTP over DTLS over ICE/UDP provides a NAT traversal
-solution together with  confidentiality, source authenticated,
+<t>The encapsulation of SCTP over DTLS
+(see <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>) over ICE/UDP 
+(see <xref target='RFC5245'/>) provides a NAT traversal
+solution together with confidentiality, source authentication, and
 integrity protected transfers.
 This data transport service operates in parallel to the media transports,
 and all of them can eventually share a single transport-layer port number.</t>
@@ -112,79 +114,12 @@ in this document are to be interpreted as described in
 <xref target='RFC2119'/>.</t>
 </section>
 
-<section title='Requirements'
-         anchor='sec-req'>
-<t>This section lists the requirements for P2P data channels between
-two browsers.</t>
-
-<t><list style='format Req. %d'>
-<t>Multiple simultaneous data channels MUST be supported.
-Note that there may 0 or more media streams in parallel with the data channels,
-and the number and state (active/inactive) of the media streams may change at
-any time.</t>
-
-<t>Both reliable and unreliable data channels MUST be supported.</t>
-
-<t>Data channels MUST be congestion controlled; either individually,
-as a class, or in conjunction with the media streams, to ensure
-that data channels don't cause congestion problems for the
-media streams, and that the rtcweb PeerConnection as a whole is
-fair with competing traffic such as TCP.</t>
-
-<t>The application SHOULD be able to provide guidance as to the 
-relative priority of each data channel relative to each other,
-and relative to the media streams.
-[ TBD: how this is encoded and what the impact of this is. ]
-This will interact with the congestion control algorithms.</t>
-
-<t>Data channels MUST be secured; allowing for confidentiality,
-integrity and source authentication.
-See <xref target='I-D.ietf-rtcweb-security'/> and 
-<xref target='I-D.ietf-rtcweb-security-arch'/> for detailed info.</t>
-
-<t>Consent and NAT traversal mechanism: These are handled by the
-PeerConnection's ICE <xref target='RFC5245'/> connectivity checks and
-optional TURN servers.</t>
-
-<t>Data channels MUST provide message fragmentation support such that
-IP-layer fragmentation can be avoided no matter how large a message
-the Javascript application passes to be sent.</t>
-
-<t>The data channel transport protocol MUST NOT encode local IP addresses
-inside its protocol fields; doing so reveals potentially private information,
-and leads to failure if the address is depended upon.</t>
-
-<t>The data channel transport protocol SHOULD support unbounded-length "messages"
-(i.e., a virtual socket stream) at the application layer, for such things as
-image-file-transfer; or it MUST support a maximum application-layer
-message size of at least 2GB.</t>
-<!-- FIXME: Why this limit? Is it enough?-->
-
-<t>The data channel packet format/encoding MUST be such
-that it is impossible for a malicious Javascript to generate an
-application message crafted such that it could be interpreted as a native
-protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc.</t>
-
-<t>The data channel transport protocol MUST start with the assumption
-of a PMTU of 1280 [ *** need justification ***] bytes until measured
-otherwise.</t>
-<!-- MT: Why? Shouldn't SCTP just do PMTU discovery? -->
-<!-- MT: 1280 is the minimum PMTU for IPv6. However, we need to take
-         any IPv6 optional headers, the UDP header (8 bytes) and the DTLS
-         overhead (it depends on the choosen cipher suite) into account.
-         Same for UPv4. -->
-
-<t>The data channel transport protocol SHOULD avoid IP fragmentation. It
-MUST support PMTU discovery and MUST NOT rely on ICMP or ICMPv6
-being generated or being passed back, especially for PMTU discovery.</t>
-
-<t>It MUST be possible to implement the protocol stack in the user
-application space.</t>
-</list></t>
-</section>
-
 <section title='Use Cases'
          anchor='sec-use-cases'>
+
+<t>This section defined use cases specific to data channels.
+For general use cases see
+<xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>.</t>
 
 <section title='Use Cases for Unreliable Data Channels'
          anchor='sec-use-cases-unreliable'>
@@ -196,8 +131,8 @@ sent via one or more unreliable data channels.
 Note that at any time there may be no media channels, or all media channels
 may be inactive, and that there may also be reliable data channels in use.</t>
 	
-<t>Non-critical state updates about a user in a video chat or 
-conference, such as Mute state.</t>
+<t>Providing non-critical information to a user about the reason for a state
+update in a video chat or conference, such as Mute state.</t>
 </list></t>
 </section>
 
@@ -227,11 +162,88 @@ internet filtering or monitoring.</t>
 </section>
 </section>
 
+<section title='Requirements'
+         anchor='sec-req'>
+<t>This section lists the requirements for P2P data channels between
+two browsers.</t>
+
+<t><list style='format Req. %d'>
+<t>Multiple simultaneous data channels MUST be supported.
+Note that there may 0 or more media streams in parallel with the data channels,
+and the number and state (active/inactive) of the media streams may change at
+any time.</t>
+
+<t>Both reliable and unreliable data channels MUST be supported.</t>
+
+<t>Data channels MUST be congestion controlled; either individually,
+as a class, or in conjunction with the media streams, to ensure
+that data channels don't cause congestion problems for the
+media streams, and that the RTCWeb PeerConnection as a whole is
+fair with competing traffic such as TCP.</t>
+
+<t>The application SHOULD be able to provide guidance as to the 
+relative priority of each data channel relative to each other,
+and relative to the media streams.
+[ TBD: how this is encoded and what the impact of this is. ]
+This will interact with the congestion control algorithms.</t>
+
+<t>Data channels MUST be secured; allowing for confidentiality,
+integrity and source authentication.
+See <xref target='I-D.ietf-rtcweb-security'/> and 
+<xref target='I-D.ietf-rtcweb-security-arch'/> for detailed info.</t>
+
+<!--<t>Consent and NAT traversal mechanism: These are handled by the
+PeerConnection's ICE <xref target='RFC5245'/> connectivity checks and
+optional TURN servers.</t>-->
+
+<t>Data channels MUST provide message fragmentation support such that
+IP-layer fragmentation can be avoided no matter how large a message
+the Javascript application passes to be sent.</t>
+
+<t>The data channel transport protocol MUST NOT encode local IP addresses
+inside its protocol fields; doing so reveals potentially private information,
+and leads to failure if the address is depended upon.</t>
+
+<t>The data channel transport protocol SHOULD support unbounded-length "messages"
+(i.e., a virtual socket stream) at the application layer, for such things as
+image-file-transfer; Implementations might enforce a reasonable message size
+limit.</t>
+<!-- FIXME: Why this limit? Is it enough?-->
+
+<t>The data channel packet format/encoding MUST be such
+that it is impossible for a malicious Javascript to generate an
+application message crafted such that it could be interpreted as a native
+protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc.</t>
+
+<t>The data channel transport protocol SHOULD avoid IP fragmentation. It
+MUST support PMTU discovery and MUST NOT rely on ICMP or ICMPv6
+being generated or being passed back, especially for PMTU discovery.</t>
+
+<t>It MUST be possible to implement the protocol stack in the user
+application space.</t>
+</list></t>
+</section>
+
 <section title='SCTP over DTLS over UDP Considerations'
          anchor='sec-p-a-2'>
 
+<t>The important features of SCTP in the RTCWeb context are:
+<list style='symbols'>
+<t>TCP-friendly congestion control.</t>
+<t>The congestion control is modifiable for integration with media stream congestion control.</t>
+<t>Support for multiple channels with different characteristics.</t>
+<t>Support for out-of-order delivery.</t>
+<t>Support for large datagrams and PMTU-discovery and fragmentation.</t>
+<t>Reliable or partial reliability support.</t>
+<t>Support of multiple streams.</t>
+</list></t>
+
+<t>SCTP multihoming will not be used in RTCWeb.
+The SCTP layer will simply act  as if it were running on a single-homed host,
+since that is the abstraction that the lower layer (a connection oriented,
+unreliable datagram service) exposes.</t>
 <t>The encapsulation of SCTP over DTLS defined in
-<xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> confidentiality,
+<xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> provides confidentiality,
 source authenticated, and integrity protected transfers. Using DTLS
 over UDP in combination with ICE enables NAT traversal in IPv4 based networks.
 SCTP as specified in <xref target='RFC4960'/> MUST be used in
@@ -357,7 +369,14 @@ the SCTP layer, since there is no way to identify the corresponding
 association. Therefore SCTP MUST support performing Path MTU discovery
 without relying on ICMP or ICMPv6 as specified in <xref target='RFC4821'/>
 using probing messages specified in <xref target='RFC4820'/>.
-In general, the lower layer interface of an SCTP implementation SHOULD be
+The initial Path MTU MUST NOT exceed 1280 [ *** need justification ***] bytes
+until measured otherwise.</t>
+<!-- MT: Why? Shouldn't SCTP just do PMTU discovery? -->
+<!-- MT: 1280 is the minimum PMTU for IPv6. However, we need to take
+         any IPv6 optional headers, the UDP header (8 bytes) and the DTLS
+         overhead (it depends on the choosen cipher suite) into account.
+         Same for UPv4. -->
+<t>In general, the lower layer interface of an SCTP implementation SHOULD be
 adapted to address the differences between IPv4 or IPv6 (being connection-less)
 or DTLS (being connection-oriented).</t>
 
@@ -385,6 +404,7 @@ streams, a delay-sensitive congestion control algorithm MUST be supported
 and the congestion control MAY be coordinated between the
 data channels and the media streams to avoid a data channel transfer 
 ending up with most or all the channel bandwidth.</t>
+<!-- FIXME: We need to be more specific here... -->
 <t>Since SCTP does not support the negotiation of a congestion control algorithm,
 the algorithm either MUST be negotiated before establishment of the
 SCTP association or MUST NOT require any negotiation because it only requires
@@ -393,21 +413,6 @@ sender side behavior using existing information carried in the association.</t>
 
 <section title='The Usage of SCTP in the RTCWeb Context'
          anchor='sec-sctp-usage'>
-<t>The important features of SCTP in the RTCWeb context are:
-<list style='symbols'>
-<t>TCP-friendly congestion control.</t>
-<t>The congestion control is modifiable for integration with media stream congestion control.</t>
-<t>Support for multiple channels with different characteristics.</t>
-<t>Support for out-of-order delivery.</t>
-<t>Support for large datagrams and PMTU-discovery and fragmentation.</t>
-<t>Reliable or partial reliability support.</t>
-<t>Support of multiple streams.</t>
-</list></t>
-
-<t>SCTP multihoming will not be used in RTCWeb.
-The SCTP layer will simply act  as if it were running on a single-homed host,
-since that is the abstraction that the lower layer (a connection oriented,
-unreliable datagram service) exposes.</t>
 
 <section title='Association Setup'
          anchor='sec-sctp-setup'>
@@ -418,10 +423,12 @@ the negotiation SHOULD include some type of congestion control selection.
 It will use the DTLS connection selected via SDP; typically this will be
 shared via BUNDLE with DTLS connections used to key the DTLS-SRTP media
 streams.</t>
+<!-- FIXME: Negotiation of CC. -->
+<!-- FIXME: Bundle Issue. -->
 
 <t>The application SHOULD indicate the initial number of streams
 required when opening the association, and if no value is supplied, the
-implementation SHOULD provide a default, with a suggested value of 16.
+implementation SHOULD provide an appropriate default.
 If more simultaneous streams are needed, <xref target='RFC6525'/> allows
 adding additional (but not removing) streams to an existing association.
 Note there can be up to 65536 SCTP streams per SCTP association in each
@@ -462,11 +469,12 @@ MUST be used to set up and manage the bidirectional data channels.</t>
 a bidirectional channel have the same number in each direction. 
 How stream values are selected is protocol and implementation dependent.</t>
 
-<t>Closing of a Data Channel MUST be signalled by resetting the corresponding
+<t>Closing of a Data Channel MUST be signaled by resetting the corresponding
 streams <xref target='RFC6525'/>.
 Resetting a stream set the Stream Sequence Numbers (SSNs) of the stream back to
 'zero' with a corresponding notification to the application layer
-that the reset has been performed. Resetted streams are available to reuse.</t>
+that the reset has been performed. Streams are available to reuse after a reset
+has been performed.</t>
 
 <t><xref target='RFC6525'/> also guarantees that all the messages are delivered
 (or expired) before resetting the stream.</t> 
@@ -554,6 +562,7 @@ and Magnus Westerlund.</t>
 </references>
 <references title='Informative References'>
 <?rfc include='reference.RFC.6083'?>
+<?rfc include='reference.I-D.ietf-rtcweb-use-cases-and-requirements'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-udp-encaps'?>
 </references>
 </back>
