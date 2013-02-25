@@ -197,8 +197,10 @@ PeerConnection's ICE <xref target='RFC5245'/> connectivity checks and
 optional TURN servers.</t>-->
 
 <t>Data channels MUST provide message fragmentation support such that
-IP-layer fragmentation can be avoided no matter how large a message
-the Javascript application passes to be sent.</t>
+IP-layer fragmentation can be avoided no matter how large a message the
+Javascript application passes to be sent.  It also MUST ensure that large
+data channel transfers don't unduely delay traffic on other data
+channels.</t>
 
 <t>The data channel transport protocol MUST NOT encode local IP addresses
 inside its protocol fields; doing so reveals potentially private information,
@@ -209,11 +211,16 @@ and leads to failure if the address is depended upon.</t>
 image-file-transfer; Implementations might enforce a reasonable message size
 limit.</t>
 <!-- FIXME: Why this limit? Is it enough?-->
+<!-- FIXME: If there is a limit, does this need to be exposed to the other
+side and application so it can adapt (and application-layer-fragment if
+need be)?  Or do we want to provide a partial-delivery option to help
+remove memory limitations on message size? -->
 
+<!-- Mooted by running over DTLS:
 <t>The data channel packet format/encoding MUST be such
 that it is impossible for a malicious Javascript to generate an
 application message crafted such that it could be interpreted as a native
-protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc.</t>
+protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc.</t> -->
 
 <t>The data channel transport protocol SHOULD avoid IP fragmentation. It
 MUST support PMTU discovery and MUST NOT rely on ICMP or ICMPv6
@@ -421,8 +428,8 @@ PeerConnection agree on opening it, as negotiated by JSEP (typically an
 exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>. Additionally,
 the negotiation SHOULD include some type of congestion control selection.
 It will use the DTLS connection selected via SDP; typically this will be
-shared via BUNDLE with DTLS connections used to key the DTLS-SRTP media
-streams.</t>
+shared via BUNDLE or equivalent with DTLS connections used to key the
+DTLS-SRTP media streams.</t>
 <!-- FIXME: Negotiation of CC. -->
 <!-- FIXME: Bundle Issue. -->
 
@@ -440,17 +447,10 @@ direction.</t>
 an SCTP association one to another SCTP endpoint. The streams are used to
 provide the notion of in-sequence delivery and for multiplexing.
 Each user message is sent on a particular stream, either order or unordered.
-Ordering is preserved only for all ordered messages sent on the same stream.</t>
+Ordering is preserved only for ordered messages sent on the same stream.</t>
 </section>
 
 <section title='Channel Definition'>
-<!--
-<t>It is also worth to mention that the relationship between stream numbers
-in opposite directions is strictly a matter of how the applications use them.
-It is the responsibility of the SCTP user to create and manage these
-correlations if they are so desired.</t>
--->
-
 <t>The W3C has consensus on defining the application API for WebRTC dataChannels
 to be bidirectional. They also consider the notions of in-sequence,
 out-of-sequence, reliable and un-reliable as properties of Channels. One strong
@@ -489,8 +489,9 @@ transporting control information.</t>
 interpretation of the "Payload data", like the protocol specified in
 <xref target='I-D.jesup-rtcweb-data-protocol'/> uses them to identify
 a Javascript string,
-a Javascript array or
-a Javascript blob.</t>
+a Javascript binary data (ArrayBuffer or Blob) and to provide fragmentation
+support for large messages that may cause the message to monopolize the
+SCTP association.</t>
 
 </section>
 <!--
