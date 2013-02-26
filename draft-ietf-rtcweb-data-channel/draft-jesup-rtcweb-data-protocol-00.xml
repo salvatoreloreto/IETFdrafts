@@ -7,7 +7,7 @@
 <?rfc strict="yes" ?>
 
 <rfc ipr="trust200902"
-     docName="draft-jesup-rtcweb-data-protocol-01.txt" category='std'>
+     docName="draft-jesup-rtcweb-data-protocol-04.txt" category='std'>
 <front>
 <title>WebRTC Data Channel Protocol</title>
 
@@ -55,11 +55,11 @@
 <area>RAI</area>
 <workgroup>RTCWeb Working Group</workgroup>
 <abstract>
-<t>The Web Real-Time Communication (WebRTC) working group is charged to provide
-protocols to support for direct interactive rich communication using
-audio, video, and data between two peers' web-browsers.  This document
-specifies an actual (minor) protocol for how the JS-layer dataChannel
-objects provide the data channels between the peers.</t>
+<t>The Web Real-Time Communication (WebRTC) working group is charged to
+provide protocols to support for direct interactive rich communication
+using audio, video, and data between two peers' web-browsers.  This
+document specifies an actual (minor) protocol for how the JS-layer
+DataChannel objects provide the data channels between the peers.</t>
 </abstract>
 </front>
 
@@ -67,7 +67,7 @@ objects provide the data channels between the peers.</t>
 <middle>
 
 <section title="Introduction">
-<t>The Data Channel Protocol is designed to provide, in the WebRTC context
+<t>The DataChannel Protocol is designed to provide, in the WebRTC context
 <xref target='I-D.ietf-rtcweb-overview'/>, a generic transport service
 allowing Web Browser to exchange generic data in a bidirectional peer to
 peer fashion.
@@ -93,8 +93,41 @@ An SCTP association.</t>
 A unidirectional stream of an SCTP association. It is uniquely identified
 by a stream identifier.</t>
 <t hangText='Channel:'>
-A bidirectional channel consisting of two SCTP streams.</t>
+Two Streams with the same identifier, one in each direction, that are managed together.</t>
 </list></t>
+</section>
+
+<section title="Protocol Overview">
+<t>This protocol is a simple, low-overhead way to establish bidirectional
+Channels over an SCTP association with a consistent set of properties.</t>
+
+<t>Channels are created by sending an DATA_CHANNEL_OPEN message on an
+unused Stream.  There is no handshake, and the channel is available to send
+on as soon as the DATA_CHANNEL_OPEN has been sent.</t>
+
+<t>To avoid glare in opening Channels, each side must use either even or
+odd Streams when sending a DATA_CHANNEL_OPEN message.  The method used to
+determine which side uses odd or even is TBD and may be based on DTLS
+connection roles when used in rtcweb.</t>
+
+<t>There is no attempt to resolve label glare; if both sides open a Channel
+labelled "x" at the same time, there will be two Channels labelled "x" -
+one on an even Stream pair, one on an odd pair.</t>
+
+<t>The protocol field is to ease cross-application interoperation
+("federation") by identifying the data being passed with an IANA-registered
+string.</t>
+
+<t>Data that arrives which on an unused Stream MUST be held <!-- FIXME: for
+how long? --> until a DATA_CHANNEL_OPEN arrived for that Channel, or if the
+protocol stack had been told to expect data on that Stream and deliver it
+immediately, or until [TBD - report error].  This allows for external
+negotiation of streams (or assumption of negotiation by cooperating
+applications).  If a later DATA_CHANNEL_OPEN arrives that conflicts with
+the pre-set properties of the Channel, an error should be signaled to
+higher levels.</t>
+
+<t>Channels are closed by resetting the Stream.</t>
 </section>
 
 <section title="Opening Handshake">
@@ -116,177 +149,112 @@ on <xref target="RFC6525"/>.</t>
 </section>
 
 <section title="Control Messages">
-<t>Data Channel Control Messages are sent to manage opening bidirectional
-channels.  A DATA_CHANNEL_OPEN_REQUEST message is sent on the Stream that is intended to be
-used to send in that direction, and a response (DATA_CHANNEL_OPEN_RESPONSE)
-is sent back on the Stream to be used for the
-other direction, with a reverse_direction_stream entry holding the Stream
-number the DATA_CHANNEL_OPEN_REQUEST was sent on.  This allows association of the
-Streams that define the bidirectional channel. Finally, a DATA_CHANNEL_ACK
-is sent on the original Stream to complete the 3-way handshake.</t>
+<t>Control Messages are sent to manage opening bidirectional channels.</t>
 
-<t>Errors are returned by setting the error field of the DATA_CHANNEL_OPEN_RESPONSE
-message to a non-0 value.  In this case the original sender of
-DATA_CHANNEL_OPEN_REQUEST shall close the channel.</t>
+<t>A DATA_CHANNEL_OPEN message is sent on the Stream that is intended to be
+used to send in that direction, and this creates a bidirectional Channel
+that may be used by both sides to send data.</t>
 
-<!-- Open questions:
-     * Should we reserve stream 0 in both directions for control messages
-       dealing with errors?
-     * Should we add an ERROR message. This would make the handling
-       of DATA_CHANNEL_OPEN_RESPONSE messages easier?
-     * Should we get rid on unused message fields?
-     * Should we integrate the unordered capability in the Channel Type?
-       Then we would have:
-       - Reliable, ordered.
-       - Reliable, unordered.
-       - Partially TTL Reliable, ordered.
-       - Partially TTL Reliable, unordered.
-       - Partially RTX Reliable, ordered.
-       - Partially RTX Reliable, unordered.
-       This would be not too much for a byte...
-     All of this can simply be changed in the code...
--->
-
-<section title='DATA_CHANNEL_OPEN_REQUEST Message'>
+<section title="DATA_CHANNEL_OPEN Message">
 <t>This message is sent initially on the stream used for user messages
-using the channel.</t>
+using the channel.  All DATA_CHANNEL_OPEN messages MUST be sent reliably
+and in-order.</t>
+
+<t>
 <figure align='center'>
 <artwork>
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  Message Type |  Channel Type |           Flags               |
+|  Message Type |  Channel Type |     Reliability Parameter     |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|     Reliability Parameter     |          Priority             |
+|          Priority       r     |         Label Length          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Protocol Length         |                               /
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |
+\                                                               |
+|                             Label                             |
+/                                                               \
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 \                                                               /
-|                             Label                             |
+|                            Protocol                           |
 /                                                               \
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 </artwork>
 </figure>
+</t>
 
-<t><list style="hanging">
+<t><list style='hanging'>
 
 <t hangText="Message Type: 1 byte (unsigned integer)">
 <vspace blankLines="0"/>
-This field holds the IANA defined message type for the the DATA_CHANNEL_OPEN_REQUEST
-message. The suggested value of this field for IANA is 0x00.</t>
+This field holds the IANA defined message type for the the DATA_CHANNEL_OPEN
+message. The suggested value of this field for IANA is 0x03. NOTE: values
+0x00-0x02 were used in an older draft with incompatible structures.  Any
+future incompatible message changes should define new message types.</t>
 
 <t hangText="Channel Type: 1 byte (unsigned integer)">
 <vspace blankLines="0"/>
 This field specifies the type of the channel to be opened:
 <list style='hanging'>
 <t hangText='DATA_CHANNEL_RELIABLE (0x00):'>
-The channel provides a reliable bi-directional communication channel.</t>
-<t hangText='DATA_CHANNEL_RELIABLE_STREAM (0x01):'>
-<!-- Should we remove this? What does it mean? -->
-TBD.</t>
-<t hangText='DATA_CHANNEL_UNRELIABLE (0x02):'>
-<!-- Should we remove this? What does it mean? -->
-TBD.</t>
-<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT (0x03):'>
-The channel provides a partial reliable bi-directional Communication
-channel. User messages will not be retransmitted more times than
-specified in the Reliability Parameter.</t>
-<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED (0x04):'>
-The channel provides a partial reliable bi-directional Communication
-channel. User messages might not be transmitted or retransmitted
-after a specified life-time given in milli-seconds in the Reliability Parameter.
-This life-time starts when providing the user message to the Javascript engine.</t>
+The channel provides a reliable in-order bi-directional communication
+channel.</t>
+<t hangText='DATA_CHANNEL_RELIABLE_UNORDERED (0x80):'>
+The channel provides a reliable unordered bi-directional communication
+channel.</t>
+<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT (0x01):'>
+The channel provides a partially-reliable in-order bi-directional
+Communication channel. User messages will not be retransmitted more times
+than specified in the Reliability Parameter.</t>
+<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT_UNORDERED (0x81):'>
+The channel provides a partial reliable unordered bi-directional
+Communication channel. User messages will not be retransmitted more times
+than specified in the Reliability Parameter.</t>
+<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED (0x02):'>
+The channel provides a partial reliable in-order bi-directional
+Communication channel. User messages might not be transmitted or
+retransmitted after a specified life-time given in milli-seconds in the
+Reliability Parameter.  This life-time starts when providing the user
+message to the Javascript engine.</t>
+<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED (0x82):'>
+The channel provides a partial reliable unordered bi-directional
+Communication channel. User messages might not be transmitted or
+retransmitted after a specified life-time given in milli-seconds in the
+Reliability Parameter.  This life-time starts when providing the user
+message to the Javascript engine.</t>
 </list>
 </t>
 
-<t hangText="Flags: 2 bytes (unsigned integer)">
-<vspace blankLines="0"/>
-This field contains the bitwise OR of the following flags:
-<list style='hanging'>
-<t hangText='DATA_CHANNEL_FLAG_OUT_OF_ORDER_ALLOWED (0x0001):'>
-If this flag is set, the channel does not need to preserve the
-message sequencing.</t>
-</list>
-</t>
 <t hangText="Reliability Parameter: 2 bytes (unsigned integer)">
 <vspace blankLines="0"/>
 This field is ignored if a reliable channel is used.
+<vspace blankLines="0"/>
 If a partial reliable channel with limited number of retransmissions is
 used, this field specifies the number of retransmissions. If a partial
 reliable channel with limited lifetime is used, this field specifies
-the maximum life-time in milli seconds.</t>
+the maximum lifetime in milliseconds.</t>
 
 <t hangText="Priority: 2 bytes (integer)">
 <vspace blankLines="0"/>
 The priority of the channel.</t>
 
+<t hangText="Label Length: 2 bytes (integer)">
+<vspace blankLines="0"/>
+The length of the label field in bytes.</t>
+
+<t hangText="Protocol Length: 2 bytes (integer)">
+<vspace blankLines="0"/>
+The length of the protocol field in bytes.</t>
+
 <t hangText="Label: Variable Length (sequence of characters)">
 <vspace blankLines="0"/>
-The name of the channel.</t>
-</list>
-</t>
-</section>
+The name of the channel.  This may be an empty string.</t>
 
-<section title='DATA_CHANNEL_OPEN_RESPONSE Message'>
-<t>This message is sent in response to an DATA_CHANNEL_OPEN_REQUEST message on
-the stream used for user messages using the channel.  Messages with the
-error field set to non-0 values can be sent on any stream; it is suggested
-that they be sent (if possible) on an unused stream.</t>
-<figure align='center'>
-<artwork>
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  Message Type |     Error     |           Flags               |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|       Reverse Stream          |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-</artwork>
-</figure>
-
-<t><list style="hanging">
-
-<t hangText="Message Type: 1 byte (unsigned integer)">
+<t hangText="Protocol: Variable Length (sequence of characters)">
 <vspace blankLines="0"/>
-This field holds the IANA defined message type for the the DATA_CHANNEL_OPEN_RESPONSE
-message. The suggested value of this field for IANA is 0x01.</t>
-
-<t hangText="Error: 1 byte (unsigned integer)">
-<!-- Should we have a separate ERROR message? -->
-<vspace blankLines="0"/>
-TBD.</t>
-
-<t hangText="Flags: 2 bytes (unsigned integer)">
-<!-- Should we have a separate ERROR message? -->
-<vspace blankLines="0"/>
-TBD.</t>
-
-<t hangText="Reverse Stream: 2 bytes (unsigned integer)">
-<vspace blankLines="0"/>
-The identifier for the incoming stream of the channel. The corresponding
-DATA_CHANNEL_OPEN_REQUEST message was received on this stream.</t>
-</list>
-</t>
-</section>
-
-<section title='DATA_CHANNEL_ACK Message'>
-<t>This message is sent in response to an DATA_CHANNEL_OPEN_RESPONSE message on
-the stream used for user messages using the channel.  Reception of this message
-tells the opener that the channel setup handshake is complete.</t>
-<figure align='center'>
-<artwork>
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  Message Type |
-+-+-+-+-+-+-+-+-+
-</artwork>
-</figure>
-
-<t><list style="hanging">
-
-<t hangText="Message Type: 1 byte (unsigned integer)">
-<vspace blankLines="0"/>
-This field holds the IANA defined message type for the the DATA_CHANNEL_ACK
-message. The suggested value of this field for IANA is 0x02.</t>
+The protocol for the channel.  This may be an empty string.  If used, it
+SHOULD be an IANA-registered protocol.</t>
 </list>
 </t>
 </section>
@@ -295,35 +263,25 @@ message. The suggested value of this field for IANA is 0x02.</t>
 
 <section title='Procedures'>
 <section title="Adding a Channel">
-<t>When one side wants to add a channel, it picks an unused outgoing stream;
-if no unused streams are available a negotiation to increase the number
-is done.
-It then sends a DATA_CHANNEL_OPEN_REQUEST control message on the outgoing stream.</t>
+<t>When one side wants to add a channel, it picks an unused outgoing stream
+(either even or odd, depending on TBD); if no unused streams are available
+a negotiation to increase the number is done.  It should also check that
+the other side has the same channel available, and if not then initiate an
+increase in the number of streams.  It then sends a DATA_CHANNEL_OPEN
+control message on the outgoing stream.</t>
 
-<t>When an DATA_CHANNEL_OPEN_REQUEST is received on an incoming stream, an unused outgoing
-stream is picked; if no unused streams are available a negotiation to
-increase the number is done.
-A DATA_CHANNEL_OPEN_RESPONSE message is sent on the outgoing stream, with the
-Reverse Stream field set to the incoming stream the DATA_CHANNEL_OPEN_REQUEST message
-came in on.</t>
-
-<t>When a DATA_CHANNEL_OPEN_RESPONSE is received, the Reverse Stream value is matched
-against all pending DATA_CHANNEL_OPEN_REQUEST messages.  If no match can be found, the
-DATA_CHANNEL_OPEN_RESPONSE message SHOULD be ignored. If a match is found, then if
-the error value is 0 a DATA_CHANNEL_ACK message is sent on the originator's outgoing
-Stream for the channel.  If the error value is non-zero, the open failed, and the
-originator SHOULD close down the originally-selected outgoing stream and
-notify the application.</t>
+<t>When an DATA_CHANNEL_OPEN is received on an incoming stream, the Stream
+is associated with the newly-created Channel.  If any data had arrived on
+the Stream before the Open arrives and had been buffered, it is now
+released on the new Channel.</t>
 
 <t>The channel_type and reliability_parameters fields of the
-DATA_CHANNEL_OPEN_REQUEST message MUST be used to set up the reverse
-side of the Data Channel so that both directions use the same options.
-So both directions are either reliable or use the PR-SCTP extension
-defined in <xref target='RFC3758'/> using the same policy and parameter.</t>
- </section>
+DATA_CHANNEL_OPEN message MUST be used to set up the reverse side of the
+Channel so that both directions use the same options by default.</t>
+</section>
 
 <section title="Closing a Channel">
-<t>Data Channels shall be closed by resetting the outgoing stream
+<t>Channels MUSTl be closed by resetting the outgoing stream
 If an incoming stream is reset by the peer, an corresponding outgoing
 stream reset SHOULD be issued. If both streams of a channel are reset,
 the channel is closed and the streams are available for reuse for new channel opens.</t>
@@ -336,21 +294,31 @@ of these data PPIDs and the format of the data shall be specific to the
 usage of this protocol, and typically shall be provided to the higher
 layers to allow proper decoding of the data.</t>
 
-<t>For WebRTC, data PPID's for DOMStrings and binary data blobs shall be created.</t>
+<t>It is RECOMMENDED that higher layers wishing to transfer large messages
+fragment them using PPIDs or other mechanisms to avoid monopolization of
+the SCTP association by the transfer of a single large message, unless a
+future SCTP draft relaxes this concern.  If fragmented solely with PPID
+values, then transmission must occur on a reliable in-order channel.  If
+in-band application framing is used, then other options may be possible.</t>
 
-<t>All data sent on a Data Channel in both directions MUST be sent over the
-underlying Stream using the reliability defined when the Data Channel was
-opened.</t>
+<t>For WebRTC, data PPID's for DOMStrings and binary data (and
+fragmentation thereof) shall be created.</t>
 
-<t>Data may be sent before the 3-way handshake is complete; if so it must be
-sent with in-order delivery set in order to avoid race conditions cause by a
-handshake message being lost.  This is an exception to the requirement to send
-all data using the channel reliability settings.</t>
+<t>All data sent on a Channel in both directions MUST be sent over the
+underlying Stream using the reliability defined when the Channel was
+opened unless the options are changed, or per-message options are specified
+by a higher level.</t>
 
-<t>It is recommended that message size be kept within certain bounds (TBD).</t>
+<t>Data may be sent immediately after sending or receiving a
+DATA_CHANNEL_OPEN message.</t>
+
+<t>It is recommended that message size be kept within certain size bounds
+(TBD) as applications wil not be able to support arbitrarily-large single
+messages.</t>
+</section>
 </section>
 
-</section>
+
 <section title="Security Considerations" anchor="sec-security">
 <t>
 To be done.
@@ -363,20 +331,24 @@ To be done.
 (PPIDs).  RFC 4960 <xref target="RFC4960"/>  creates the registry from which these
 identifiers have been assigned.  The following values have been
 reserved:
+<vspace blankLines="1"/>
 <list style='hanging'>
 	<t hangText='WebRTC Control  -'> #To Be Assigned</t>
+	<t>NOTE: not needed if Stream 0 is dedicated to control</t>
 	<t hangText='DOMString       -'> #To Be Assigned</t>
-	<t hangText='Binary Data     -'> #To Be Assigned</t>
+	<t hangText='Binary Data Partial -'> #To Be Assigned</t>
+	<t hangText='Binary Data Last    -'> #To Be Assigned</t>
 </list></t>
 </section>
 
 
 <section title="Acknowledgments">
-<t>The authors wish to thank ...
-for there invaluable comments.</t>
+<t>The authors wish to thank Martin Thompson, Cullen Jennings, Harald
+Alvestrand, Peter Thatcher, Adam Bergkvist, Justin Uberti, Randall Stewart,
+Stefan Håkansson and many others for their invaluable comments.</t>
 </section>
-
 </middle>
+
 
 <back>
 <references title='Normative References'>
@@ -398,7 +370,7 @@ for there invaluable comments.</t>
 </rfc>
 
 <!-- Change log
-
+-02 Major changes from 3-way handshake to 1-way declarative open
 
 -->
 
