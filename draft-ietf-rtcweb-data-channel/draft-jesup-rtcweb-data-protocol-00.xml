@@ -108,7 +108,7 @@ on as soon as the DATA_CHANNEL_OPEN has been sent.</t>
 <t>To avoid glare in opening Channels, each side must use either even or
 odd Streams when sending a DATA_CHANNEL_OPEN message.  The method used to
 determine which side uses odd or even is TBD and may be based on DTLS
-connection roles when used in rtcweb.</t>
+connection roles when used in RTCWeb.</t>
 
 <t>There is no attempt to resolve label glare; if both sides open a Channel
 labelled "x" at the same time, there will be two Channels labelled "x" -
@@ -168,7 +168,7 @@ and in-order.</t>
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |  Message Type |  Channel Type |     Reliability Parameter     |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|          Priority       r     |         Label Length          |
+|          Priority             |         Label Length          |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |       Protocol Length         |                               /
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |
@@ -217,7 +217,7 @@ Communication channel. User messages might not be transmitted or
 retransmitted after a specified life-time given in milli-seconds in the
 Reliability Parameter.  This life-time starts when providing the user
 message to the Javascript engine.</t>
-<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED (0x82):'>
+<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED_UNORDERED (0x82):'>
 The channel provides a partial reliable unordered bi-directional
 Communication channel. User messages might not be transmitted or
 retransmitted after a specified life-time given in milli-seconds in the
@@ -281,7 +281,7 @@ Channel so that both directions use the same options by default.</t>
 </section>
 
 <section title="Closing a Channel">
-<t>Channels MUSTl be closed by resetting the outgoing stream
+<t>Channels MUST be closed by resetting the outgoing stream
 If an incoming stream is reset by the peer, an corresponding outgoing
 stream reset SHOULD be issued. If both streams of a channel are reset,
 the channel is closed and the streams are available for reuse for new channel opens.</t>
@@ -313,7 +313,7 @@ by a higher level.</t>
 DATA_CHANNEL_OPEN message.</t>
 
 <t>It is recommended that message size be kept within certain size bounds
-(TBD) as applications wil not be able to support arbitrarily-large single
+(TBD) as applications will not be able to support arbitrarily-large single
 messages.</t>
 </section>
 </section>
