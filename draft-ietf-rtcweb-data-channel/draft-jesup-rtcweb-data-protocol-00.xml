@@ -7,7 +7,7 @@
 <?rfc strict="yes" ?>
 
 <rfc ipr="trust200902"
-     docName="draft-jesup-rtcweb-data-protocol-04.txt" category='std'>
+     docName="draft-ietf-rtcweb-data-protocol-00.txt" category='std'>
 <front>
 <title>WebRTC Data Channel Protocol</title>
 
@@ -166,12 +166,12 @@ and in-order.</t>
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  Message Type |  Channel Type |     Reliability Parameter     |
+|  Message Type |  Channel Type |           Priority            |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|          Priority             |         Label Length          |
+|                      Reliability Parameter                    |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|       Protocol Length         |                               /
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               |
+|          Label Length         |         Protocol Length       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 \                                                               |
 |                             Label                             |
 /                                                               \
@@ -226,7 +226,12 @@ message to the Javascript engine.</t>
 </list>
 </t>
 
-<t hangText="Reliability Parameter: 2 bytes (unsigned integer)">
+<t hangText="Priority: 2 bytes (integer)">
+<vspace blankLines="0"/>
+The priority of the channel.</t>
+
+
+<t hangText="Reliability Parameter: 4 bytes (unsigned integer)">
 <vspace blankLines="0"/>
 This field is ignored if a reliable channel is used.
 <vspace blankLines="0"/>
@@ -234,10 +239,6 @@ If a partial reliable channel with limited number of retransmissions is
 used, this field specifies the number of retransmissions. If a partial
 reliable channel with limited lifetime is used, this field specifies
 the maximum lifetime in milliseconds.</t>
-
-<t hangText="Priority: 2 bytes (integer)">
-<vspace blankLines="0"/>
-The priority of the channel.</t>
 
 <t hangText="Label Length: 2 bytes (integer)">
 <vspace blankLines="0"/>
