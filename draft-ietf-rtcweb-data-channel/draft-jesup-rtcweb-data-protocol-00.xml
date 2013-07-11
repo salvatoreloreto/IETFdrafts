@@ -74,7 +74,7 @@ peer fashion.
 As discussed in <xref target='I-D.ietf-rtcweb-data-channel'/> the protocol
 uses Stream Control Transmission Protocol (SCTP) <xref target="RFC4960"/>
 encapsulated on Datagram Transport Layer Security (DTLS) <xref target="RFC6347"/>
-as described in <xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/> to benefit
+as described in <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> to benefit
 from their already standardized transport and security  features.</t>
 </section>
 
@@ -127,7 +127,7 @@ applications).  If a later DATA_CHANNEL_OPEN arrives that conflicts with
 the pre-set properties of the Channel, an error should be signaled to
 higher levels.</t>
 
-<t>Channels are closed by resetting the Stream.</t>
+<t>Channels are closed by resetting the Streams.</t>
 </section>
 
 <section title="Opening Handshake">
@@ -282,10 +282,11 @@ Channel so that both directions use the same options by default.</t>
 </section>
 
 <section title="Closing a Channel">
-<t>Channels MUST be closed by resetting the outgoing stream
+<t>Channels MUST be closed by resetting the outgoing stream.
 If an incoming stream is reset by the peer, an corresponding outgoing
 stream reset SHOULD be issued. If both streams of a channel are reset,
-the channel is closed and the streams are available for reuse for new channel opens.</t>
+the channel is closed and the streams are available for reuse for new channel
+opens.</t>
 </section>
 
 <section title="Sending and Receiving Data">
@@ -359,7 +360,7 @@ Stefan Håkansson and many others for their invaluable comments.</t>
 <?rfc include="reference.RFC.6347"?>
 <?rfc include="reference.RFC.6525"?>
 <?rfc include="reference.I-D.ietf-mmusic-sctp-sdp"?>
-<?rfc include="reference.I-D.tuexen-tsvwg-sctp-dtls-encaps"?>
+<?rfc include="reference.I-D.ietf-tsvwg-sctp-dtls-encaps"?>
 </references>
 
 <references title="Informational References">
