@@ -74,7 +74,7 @@ peer fashion.
 As discussed in <xref target='I-D.ietf-rtcweb-data-channel'/> the protocol
 uses Stream Control Transmission Protocol (SCTP) <xref target="RFC4960"/>
 encapsulated on Datagram Transport Layer Security (DTLS) <xref target="RFC6347"/>
-as described in <xref target='I-D.tuexen-tsvwg-sctp-dtls-encaps'/> to benefit
+as described in <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> to benefit
 from their already standardized transport and security  features.</t>
 </section>
 
@@ -221,7 +221,7 @@ Communication channel. User messages might not be transmitted or
 retransmitted after a specified life-time given in milli-seconds in the
 Reliability Parameter.  This life-time starts when providing the user
 message to the Javascript engine.</t>
-<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED (0x82):'>
+<t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED_UNORDERED (0x82):'>
 The channel provides a partial reliable unordered bi-directional
 Communication channel. User messages might not be transmitted or
 retransmitted after a specified life-time given in milli-seconds in the
@@ -355,18 +355,31 @@ To be done.
 
 
 <section title="IANA Considerations" anchor="sec-IANA">
-<t>This document also defines five new SCTP Payload Protocol Identifiers
-(PPIDs).  RFC 4960 <xref target="RFC4960"/>  creates the registry from which these
-identifiers have been assigned.  The following values have been
-reserved:
-<vspace blankLines="1"/>
-<list style='hanging'>
-	<t hangText='WebRTC Control  -'> 50</t>
-	<t hangText='DOMString Last     -'> 51</t>
-	<t hangText='Binary Data Partial -'> 52</t>
-	<t hangText='Binary Data Last    -'> 53</t>
-	<t hangText='DOMString Partial -'> 54</t>
-</list></t>
+<t>[NOTE to RFC-Editor:
+<list>
+<t>"RFCXXXX" is to be replaced by the RFC number you assign this document.</t>
+</list>
+]</t>
+<t>[NOTE to RFC-Editor:
+<list>
+<t>The suggested values for the Payload Protocol Identifiers are tentative
+and to be confirmed by IANA.</t>
+</list>
+]</t>
+<t>This document defines five new SCTP Payload Protocol Identifiers (PPIDs).
+<xref target="RFC4960"/> creates the registry "SCTP Payload Protocol Identifiers"
+from which these identifiers need to be assigned.
+The following values are suggested:</t>
+<texttable>
+<ttcol align='left'>Value</ttcol>
+<ttcol align='left'>SCTP PPID</ttcol>
+<ttcol align='left'>Reference</ttcol>
+<c>WebRTC Control</c>      <c>50</c> <c>[RFCXXXX]</c>
+<c>DOMString Last</c>      <c>51</c> <c>[RFCXXXX]</c>
+<c>Binary Data Partial</c> <c>52</c> <c>[RFCXXXX]</c>
+<c>Binary Data Last</c>    <c>53</c> <c>[RFCXXXX]</c>
+<c>DOMString Partial</c>   <c>54</c> <c>[RFCXXXX]</c>
+</texttable>
 </section>
 
 
@@ -386,7 +399,7 @@ Stefan Håkansson and many others for their invaluable comments.</t>
 <?rfc include="reference.RFC.6347"?>
 <?rfc include="reference.RFC.6525"?>
 <?rfc include="reference.I-D.ietf-mmusic-sctp-sdp"?>
-<?rfc include="reference.I-D.tuexen-tsvwg-sctp-dtls-encaps"?>
+<?rfc include="reference.I-D.ietf-tsvwg-sctp-dtls-encaps"?>
 </references>
 
 <references title="Informational References">
