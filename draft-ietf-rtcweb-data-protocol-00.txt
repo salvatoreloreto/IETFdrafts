@@ -5,10 +5,10 @@
 RTCWeb Working Group                                            R. Jesup
 Internet-Draft                                                   Mozilla
 Intended status: Standards Track                               S. Loreto
-Expires: January 13, 2014                                       Ericsson
+Expires: January 16, 2014                                       Ericsson
                                                                M. Tuexen
                                         Muenster Univ. of Appl. Sciences
-                                                           July 12, 2013
+                                                           July 15, 2013
 
 
                       WebRTC Data Channel Protocol
@@ -38,7 +38,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 13, 2014.
+   This Internet-Draft will expire on January 16, 2014.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Jesup, et al.           Expires January 13, 2014                [Page 1]
+Jesup, et al.           Expires January 16, 2014                [Page 1]
 
 Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
@@ -76,13 +76,13 @@ Table of Contents
      7.1.  Adding a Channel (in-band open) . . . . . . . . . . . . .   6
      7.2.  Adding a Channel (external negotiation) . . . . . . . . .   7
      7.3.  Closing a Channel . . . . . . . . . . . . . . . . . . . .   7
-     7.4.  Sending and Receiving Data  . . . . . . . . . . . . . . .   7
+     7.4.  Sending and Receiving Data  . . . . . . . . . . . . . . .   8
    8.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
    9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
-   10. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   8
+   10. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   9
    11. References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
      11.1.  Normative References . . . . . . . . . . . . . . . . . .   9
-     11.2.  Informational References . . . . . . . . . . . . . . . .   9
+     11.2.  Informational References . . . . . . . . . . . . . . . .  10
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
 
 1.  Introduction
@@ -93,7 +93,7 @@ Table of Contents
    peer to peer fashion.  As discussed in [I-D.ietf-rtcweb-data-channel]
    the protocol uses Stream Control Transmission Protocol (SCTP)
    [RFC4960] encapsulated on Datagram Transport Layer Security (DTLS)
-   [RFC6347] as described in [I-D.tuexen-tsvwg-sctp-dtls-encaps] to
+   [RFC6347] as described in [I-D.ietf-tsvwg-sctp-dtls-encaps] to
    benefit from their already standardized transport and security
    features.
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Jesup, et al.           Expires January 13, 2014                [Page 2]
+Jesup, et al.           Expires January 16, 2014                [Page 2]
 
 Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
@@ -165,7 +165,7 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
 
 
-Jesup, et al.           Expires January 13, 2014                [Page 3]
+Jesup, et al.           Expires January 16, 2014                [Page 3]
 
 Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
@@ -221,7 +221,7 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
 
 
-Jesup, et al.           Expires January 13, 2014                [Page 4]
+Jesup, et al.           Expires January 16, 2014                [Page 4]
 
 Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
@@ -277,7 +277,7 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
 
 
-Jesup, et al.           Expires January 13, 2014                [Page 5]
+Jesup, et al.           Expires January 16, 2014                [Page 5]
 
 Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
@@ -287,12 +287,13 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
             seconds in the Reliability Parameter.  This life-time starts
             when providing the user message to the Javascript engine.
 
-      DATA_CHANNEL_PARTIAL_RELIABLE_TIMED (0x82):  The channel provides
-            a partial reliable unordered bi-directional Communication
-            channel.  User messages might not be transmitted or
-            retransmitted after a specified life-time given in milli-
-            seconds in the Reliability Parameter.  This life-time starts
-            when providing the user message to the Javascript engine.
+      DATA_CHANNEL_PARTIAL_RELIABLE_TIMED_UNORDERED (0x82):  The channel
+            provides a partial reliable unordered bi-directional
+            Communication channel.  User messages might not be
+            transmitted or retransmitted after a specified life-time
+            given in milli-seconds in the Reliability Parameter.  This
+            life-time starts when providing the user message to the
+            Javascript engine.
 
    Priority: 2 bytes (integer)
       The priority of the channel.
@@ -322,6 +323,21 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
 7.1.  Adding a Channel (in-band open)
 
+
+
+
+
+
+
+
+
+
+
+Jesup, et al.           Expires January 16, 2014                [Page 6]
+
+Internet-Draft        WebRTC Data Channel Protocol             July 2013
+
+
    When one side wants to add a channel using in-band declaration, it
    picks an unused outgoing Stream (even stream identifier for DTLS
    clients, or odd for DTLS servers); if no unused streams are available
@@ -330,13 +346,6 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
    the same channel available, and if not then initiate an increase in
    the number of streams.  It then sends a DATA_CHANNEL_OPEN control
    message on the outgoing stream.
-
-
-
-Jesup, et al.           Expires January 13, 2014                [Page 6]
-
-Internet-Draft        WebRTC Data Channel Protocol             July 2013
-
 
    When an DATA_CHANNEL_OPEN is received on an incoming Stream, the
    Stream is associated with a newly-created Channel (unless the Stream
@@ -377,6 +386,14 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
    a Channel are reset, the Channel is considered fully closed and the
    Streams are available for reuse for new channel opens.
 
+
+
+
+Jesup, et al.           Expires January 16, 2014                [Page 7]
+
+Internet-Draft        WebRTC Data Channel Protocol             July 2013
+
+
 7.4.  Sending and Receiving Data
 
    Data shall be sent using PPID's other than the Data Channel Control
@@ -384,15 +401,6 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
    meaning of these data PPIDs and the format of the data shall be
    specific to the usage of this protocol, and typically shall be
    provided to the higher layers to allow proper decoding of the data.
-
-
-
-
-
-Jesup, et al.           Expires January 13, 2014                [Page 7]
-
-Internet-Draft        WebRTC Data Channel Protocol             July 2013
-
 
    It is RECOMMENDED that higher layers wishing to transfer large
    messages fragment them using PPIDs or other mechanisms to avoid
@@ -424,31 +432,46 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
 9.  IANA Considerations
 
-   This document also defines five new SCTP Payload Protocol Identifiers
-   (PPIDs).  RFC 4960 [RFC4960]  creates the registry from which these
-   identifiers have been assigned.  The following values have been
-   reserved:
+   [NOTE to RFC-Editor:
 
+      "RFCXXXX" is to be replaced by the RFC number you assign this
+      document.
 
-   WebRTC Control  -  50
+   ]
 
-   DOMString Last     -  51
-
-   Binary Data Partial -  52
-
-   Binary Data Last    -  53
-
-   DOMString Partial -  54
-
-10.  Acknowledgments
+   [NOTE to RFC-Editor:
 
 
 
 
-Jesup, et al.           Expires January 13, 2014                [Page 8]
+
+Jesup, et al.           Expires January 16, 2014                [Page 8]
 
 Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
+
+      The suggested values for the Payload Protocol Identifiers are
+      tentative and to be confirmed by IANA.
+
+   ]
+
+   This document defines five new SCTP Payload Protocol Identifiers
+   (PPIDs).  [RFC4960] creates the registry "SCTP Payload Protocol
+   Identifiers" from which these identifiers need to be assigned.  The
+   following values are suggested:
+
+              +---------------------+-----------+-----------+
+              | Value               | SCTP PPID | Reference |
+              +---------------------+-----------+-----------+
+              | WebRTC Control      | 50        | [RFCXXXX] |
+              | DOMString Last      | 51        | [RFCXXXX] |
+              | Binary Data Partial | 52        | [RFCXXXX] |
+              | Binary Data Last    | 53        | [RFCXXXX] |
+              | DOMString Partial   | 54        | [RFCXXXX] |
+              +---------------------+-----------+-----------+
+
+
+10.  Acknowledgments
 
    The authors wish to thank Martin Thompson, Cullen Jennings, Harald
    Alvestrand, Peter Thatcher, Adam Bergkvist, Justin Uberti, Randall
@@ -476,16 +499,24 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
               Transmission Protocol (SCTP) Stream Reconfiguration", RFC
               6525, February 2012.
 
+
+
+Jesup, et al.           Expires January 16, 2014                [Page 9]
+
+Internet-Draft        WebRTC Data Channel Protocol             July 2013
+
+
    [I-D.ietf-mmusic-sctp-sdp]
               Loreto, S. and G. Camarillo, "Stream Control Transmission
               Protocol (SCTP)-Based Media Transport in the Session
               Description Protocol (SDP)", draft-ietf-mmusic-sctp-sdp-04
               (work in progress), June 2013.
 
-   [I-D.tuexen-tsvwg-sctp-dtls-encaps]
+   [I-D.ietf-tsvwg-sctp-dtls-encaps]
               Jesup, R., Loreto, S., Stewart, R., and M. Tuexen, "DTLS
-              Encapsulation of SCTP Packets for RTCWEB", draft-tuexen-
-              tsvwg-sctp-dtls-encaps-01 (work in progress), July 2012.
+              Encapsulation of SCTP Packets for RTCWEB", draft-ietf-
+              tsvwg-sctp-dtls-encaps-00 (work in progress), February
+              2013.
 
 11.2.  Informational References
 
@@ -498,13 +529,6 @@ Internet-Draft        WebRTC Data Channel Protocol             July 2013
               Jesup, R., Loreto, S., and M. Tuexen, "RTCWeb Data
               Channels", draft-ietf-rtcweb-data-channel-04 (work in
               progress), February 2013.
-
-
-
-Jesup, et al.           Expires January 13, 2014                [Page 9]
-
-Internet-Draft        WebRTC Data Channel Protocol             July 2013
-
 
 Authors' Addresses
 
@@ -522,6 +546,20 @@ Authors' Addresses
    FI
 
    Email: salvatore.loreto@ericsson.com
+
+
+
+
+
+
+
+
+
+
+
+Jesup, et al.           Expires January 16, 2014               [Page 10]
+
+Internet-Draft        WebRTC Data Channel Protocol             July 2013
 
 
    Michael Tuexen
@@ -557,4 +595,22 @@ Authors' Addresses
 
 
 
-Jesup, et al.           Expires January 13, 2014               [Page 10]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Jesup, et al.           Expires January 16, 2014               [Page 11]
