@@ -340,7 +340,7 @@ requirement 12.</t>
 </artwork>
 </figure>
 <t>This stack (especially in contrast to DTLS over SCTP <xref target='RFC6083'/>
-in combination with SCTP over UDP <xref target='I-D.ietf-tsvwg-sctp-udp-encaps'/>)
+in combination with SCTP over UDP <xref target='RFC6951'/>)
 has been chosen because it
 <list style='symbols'>
 <t>supports the transmission of arbitrary large user messages.</t>
@@ -420,6 +420,26 @@ sender side behavior using existing information carried in the association.</t>
 
 <section title='The Usage of SCTP in the RTCWeb Context'
          anchor='sec-sctp-usage'>
+
+<section title='SCTP Protocol Considerations'>
+<t>The DTLS encapsulation of SCTP packets as described in
+<xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> MUST be used.
+The following SCTP protocol extensions are required:
+<list style='symbols'>
+<t>The stream reset extension defined in <xref target='RFC6525'/> MUST
+   be supported. It is used for closing channels.</t>
+<t>The dynamic address reconfiguration extension defined in
+   <xref target='RFC5061'/> MUST be used to signal the support of the
+   stream reset extension defined in <xref target='RFC6525'/>,
+   other features of <xref target='RFC5061'/> MUST NOT be used.</t>
+<t>The partial reliability extension defined in <xref target='RFC3758'/> MUST
+   be supported. In addition to the timed reliability PR-SCTP policy defined
+   in <xref target='RFC3758'/>, the limited retransmission policy defined in
+   <xref target='I-D.tuexen-tsvwg-sctp-prpolicies'/> MUST be supported.</t>
+<t>The message interleaving extension defined in
+   <xref target='I-D.stewart-tsvwg-sctp-ndata'/> MUST be supported.</t>
+</list></t>
+</section>
 
 <section title='Association Setup'
          anchor='sec-sctp-setup'>
@@ -551,9 +571,11 @@ and Magnus Westerlund.</t>
 <?rfc include='reference.RFC.4820'?>
 <?rfc include='reference.RFC.4821'?>
 <?rfc include='reference.RFC.4960'?>
+<?rfc include='reference.RFC.5061'?>
 <?rfc include='reference.RFC.5245'?>
 <?rfc include='reference.RFC.6347'?>
 <?rfc include='reference.RFC.6525'?>
+<?rfc include='reference.I-D.stewart-tsvwg-sctp-ndata'?>
 <?rfc include='reference.I-D.jesup-rtcweb-data-protocol'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-dtls-encaps'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security'?>
@@ -563,8 +585,9 @@ and Magnus Westerlund.</t>
 </references>
 <references title='Informative References'>
 <?rfc include='reference.RFC.6083'?>
+<?rfc include='reference.RFC.6951'?>
 <?rfc include='reference.I-D.ietf-rtcweb-use-cases-and-requirements'?>
-<?rfc include='reference.I-D.ietf-tsvwg-sctp-udp-encaps'?>
+<?rfc include='reference.I-D.tuexen-tsvwg-sctp-prpolicies'?>
 </references>
 </back>
 
