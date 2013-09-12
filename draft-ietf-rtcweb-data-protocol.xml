@@ -1,17 +1,19 @@
-<?xml version="1.0"?>
-<?rfc symrefs="yes"?>
-<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
-<?rfc toc="yes" ?>
-<?rfc compact="yes" ?>
-<?rfc sortrefs="no" ?>
-<?rfc strict="yes" ?>
+<?xml version='1.0'?>
+<?rfc symrefs='yes'?>
+<!DOCTYPE rfc SYSTEM 'rfc2629.dtd'>
+<?rfc toc='yes' ?>
+<?rfc compact='yes' ?>
+<?rfc subcompact='no' ?>
+<?rfc sortrefs='no' ?>
+<?rfc strict='yes' ?>
 
-<rfc ipr="trust200902"
-     docName="draft-ietf-rtcweb-data-protocol-00.txt" category='std'>
+<rfc category='std'
+     ipr='trust200902'
+     docName='draft-ietf-rtcweb-data-protocol-01.txt'>
 <front>
 <title>WebRTC Data Channel Protocol</title>
 
-<author initials="R." surname="Jesup" fullname="Randell Jesup">
+<author initials='R.' surname='Jesup' fullname='Randell Jesup'>
   <organization>Mozilla</organization>
   <address>
     <postal>
@@ -24,7 +26,7 @@
   </address>
 </author>
 
-<author initials="S." surname="Loreto" fullname="Salvatore Loreto">
+<author initials='S.' surname='Loreto' fullname='Salvatore Loreto'>
   <organization>Ericsson</organization>
   <address>
     <postal>
@@ -37,7 +39,7 @@
   </address>
 </author>
 
-<author initials="M." surname="Tuexen" fullname="Michael Tuexen">
+<author initials='M.' surname='Tuexen' fullname='Michael Tuexen'>
   <organization abbrev='Muenster Univ. of Appl. Sciences'>
                 Muenster University of Applied Sciences</organization>
   <address>
@@ -66,19 +68,19 @@ DataChannel objects provide the data channels between the peers.</t>
 
 <middle>
 
-<section title="Introduction">
+<section title='Introduction'>
 <t>The DataChannel Protocol is designed to provide, in the WebRTC context
 <xref target='I-D.ietf-rtcweb-overview'/>, a generic transport service
 allowing a Web Browser to exchange generic data in a bidirectional peer to
 peer fashion.
 As discussed in <xref target='I-D.ietf-rtcweb-data-channel'/> the protocol
-uses Stream Control Transmission Protocol (SCTP) <xref target="RFC4960"/>
-encapsulated on Datagram Transport Layer Security (DTLS) <xref target="RFC6347"/>
+uses Stream Control Transmission Protocol (SCTP) <xref target='RFC4960'/>
+encapsulated on Datagram Transport Layer Security (DTLS) <xref target='RFC6347'/>
 as described in <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> to benefit
 from their already standardized transport and security  features.</t>
 </section>
 
-<section anchor='con' title="Conventions">
+<section anchor='con' title='Conventions'>
 <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in <xref target='RFC2119'/>.</t>
@@ -97,7 +99,7 @@ Two Streams with the same identifier, one in each direction, that are managed to
 </list></t>
 </section>
 
-<section title="Protocol Overview">
+<section title='Protocol Overview'>
 <t>This protocol is a simple, low-overhead way to establish bidirectional
 Channels over an SCTP association with a consistent set of properties.</t>
 
@@ -134,7 +136,7 @@ should be signaled to higher levels.</t>
 <t>Channels are closed by an SCTP reset of the Stream.</t>
 </section>
 
-<section title="Opening Handshake">
+<section title='Opening Handshake'>
 <t>The opening handshake is based on the multimedia session description
 exchange that happens between the browsers, typically through a Web Server
 acting as the signaling service.</t>
@@ -148,18 +150,18 @@ the application, and if not specified, then it SHOULD default to 16
 streams.</t>
 
 <t>It is recommended that additional streams be available dynamically based
-on <xref target="RFC6525"/>.</t>
+on <xref target='RFC6525'/>.</t>
 
 </section>
 
-<section title="Control Messages">
+<section title='Control Messages'>
 <t>Control Messages are sent to manage opening bidirectional channels.</t>
 
 <t>A DATA_CHANNEL_OPEN message is sent on the Stream that is intended to be
 used for a new Channel, and this creates a bidirectional Channel that may
 be used by both sides to send data.</t>
 
-<section title="DATA_CHANNEL_OPEN Message">
+<section title='DATA_CHANNEL_OPEN Message'>
 <t>This message is sent initially on the stream used for user messages
 using the channel.  All DATA_CHANNEL_OPEN messages MUST be sent using SCTP
 options for reliable in-order delivery.</t>
@@ -190,15 +192,15 @@ options for reliable in-order delivery.</t>
 
 <t><list style='hanging'>
 
-<t hangText="Message Type: 1 byte (unsigned integer)">
-<vspace blankLines="0"/>
+<t hangText='Message Type: 1 byte (unsigned integer)'>
+<vspace blankLines='0'/>
 This field holds the IANA defined message type for the the DATA_CHANNEL_OPEN
 message. The suggested value of this field for IANA is 0x03. NOTE: values
 0x00-0x02 were used in an older draft with incompatible structures.  Any
 future incompatible message changes should define new message types.</t>
 
-<t hangText="Channel Type: 1 byte (unsigned integer)">
-<vspace blankLines="0"/>
+<t hangText='Channel Type: 1 byte (unsigned integer)'>
+<vspace blankLines='0'/>
 This field specifies the type of the channel to be opened:
 <list style='hanging'>
 <t hangText='DATA_CHANNEL_RELIABLE (0x00):'>
@@ -230,33 +232,33 @@ message to the Javascript engine.</t>
 </list>
 </t>
 
-<t hangText="Priority: 2 bytes (integer)">
-<vspace blankLines="0"/>
+<t hangText='Priority: 2 bytes (integer)'>
+<vspace blankLines='0'/>
 The priority of the channel.</t>
 
-<t hangText="Reliability Parameter: 4 bytes (unsigned integer)">
-<vspace blankLines="0"/>
+<t hangText='Reliability Parameter: 4 bytes (unsigned integer)'>
+<vspace blankLines='0'/>
 This field is ignored if a reliable channel is used.
-<vspace blankLines="0"/>
+<vspace blankLines='0'/>
 If a partial reliable channel with limited number of retransmissions is
 used, this field specifies the number of retransmissions. If a partial
 reliable channel with limited lifetime is used, this field specifies
 the maximum lifetime in milliseconds.</t>
 
-<t hangText="Label Length: 2 bytes (unsigned integer)">
-<vspace blankLines="0"/>
+<t hangText='Label Length: 2 bytes (unsigned integer)'>
+<vspace blankLines='0'/>
 The length of the label field in bytes.</t>
 
-<t hangText="Protocol Length: 2 bytes (unsigned integer)">
-<vspace blankLines="0"/>
+<t hangText='Protocol Length: 2 bytes (unsigned integer)'>
+<vspace blankLines='0'/>
 The length of the protocol field in bytes.</t>
 
-<t hangText="Label: Variable Length (sequence of characters)">
-<vspace blankLines="0"/>
+<t hangText='Label: Variable Length (sequence of characters)'>
+<vspace blankLines='0'/>
 The name of the channel.  This may be an empty string.</t>
 
-<t hangText="Protocol: Variable Length (sequence of characters)">
-<vspace blankLines="0"/>
+<t hangText='Protocol: Variable Length (sequence of characters)'>
+<vspace blankLines='0'/>
 The protocol for the channel.  This may be an empty string.  If used, it
 SHOULD be an IANA-registered protocol.</t>
 </list>
@@ -266,11 +268,11 @@ SHOULD be an IANA-registered protocol.</t>
 </section>
 
 <section title='Procedures'>
-<section title="Adding a Channel (in-band open)">
+<section title='Adding a Channel (in-band open)'>
 <t>When one side wants to add a channel using in-band declaration, it picks
 an unused outgoing Stream (even stream identifier for DTLS clients, or odd
 for DTLS servers); if no unused streams are available a negotiation to
-increase the number is done via <xref target="RFC6525"/>, or failure is
+increase the number is done via <xref target='RFC6525'/>, or failure is
 returned.  It should also check that the other side has the same channel
 available, and if not then initiate an increase in the number of streams.
 It then sends a DATA_CHANNEL_OPEN control message on the outgoing
@@ -287,7 +289,7 @@ DATA_CHANNEL_OPEN message MUST be used to set up the reverse side of the
 Channel so that both directions use the same options by default.</t>
 </section>
 
-<section title="Adding a Channel (external negotiation)">
+<section title='Adding a Channel (external negotiation)'>
 <t>When one side wants to add a channel using external negotiation, it
 picks a Stream.  This can be done by asking the protocol to select an
 unused Stream (of the approriate even or odd type), or by simply telling
@@ -306,7 +308,7 @@ the other side will also inform the protocol that the selected Stream is to
 be used, and the parameters for sending data from that side.</t>
 </section>
 
-<section title="Closing a Channel">
+<section title='Closing a Channel'>
 <t>Channels MUST be closed by and SCTP reset of the outgoing Stream.  If an
 incoming Stream is reset by the peer, an corresponding outgoing stream
 reset SHOULD be issued. If the streams in both directions of a Channel are
@@ -314,7 +316,7 @@ reset, the Channel is considered fully closed and the Streams are available
 for reuse for new channel opens.</t>
 </section>
 
-<section title="Sending and Receiving Data">
+<section title='Sending and Receiving Data'>
 <t>Data shall be sent using PPID's other than the Data Channel Control
 PPID.  These PPID's should be registered with IANA via (TBD).  The meaning
 of these data PPIDs and the format of the data shall be specific to the
@@ -347,14 +349,16 @@ messages.</t>
 </section>
 
 
-<section title="Security Considerations" anchor="sec-security">
+<section title='Security Considerations'
+         anchor='sec-security'>
 <t>
 To be done.
 </t>
 </section>
 
 
-<section title="IANA Considerations" anchor="sec-IANA">
+<section title='IANA Considerations'
+         anchor='sec-IANA'>
 <t>[NOTE to RFC-Editor:
 <list>
 <t>"RFCXXXX" is to be replaced by the RFC number you assign this document.</t>
@@ -367,7 +371,7 @@ and to be confirmed by IANA.</t>
 </list>
 ]</t>
 <t>This document defines five new SCTP Payload Protocol Identifiers (PPIDs).
-<xref target="RFC4960"/> creates the registry "SCTP Payload Protocol Identifiers"
+<xref target='RFC4960'/> creates the registry "SCTP Payload Protocol Identifiers"
 from which these identifiers need to be assigned.
 The following values are suggested:</t>
 <texttable>
@@ -383,7 +387,7 @@ The following values are suggested:</t>
 </section>
 
 
-<section title="Acknowledgments">
+<section title='Acknowledgments'>
 <t>The authors wish to thank Martin Thompson, Cullen Jennings, Harald
 Alvestrand, Peter Thatcher, Adam Bergkvist, Justin Uberti, Randall Stewart,
 Stefan Håkansson and many others for their invaluable comments.</t>
@@ -393,16 +397,16 @@ Stefan Håkansson and many others for their invaluable comments.</t>
 
 <back>
 <references title='Normative References'>
-<?rfc include="reference.RFC.2119"?>
-<?rfc include="reference.RFC.3758"?>
-<?rfc include="reference.RFC.4960"?>
-<?rfc include="reference.RFC.6347"?>
-<?rfc include="reference.RFC.6525"?>
-<?rfc include="reference.I-D.ietf-mmusic-sctp-sdp"?>
-<?rfc include="reference.I-D.ietf-tsvwg-sctp-dtls-encaps"?>
+<?rfc include='reference.RFC.2119'?>
+<?rfc include='reference.RFC.3758'?>
+<?rfc include='reference.RFC.4960'?>
+<?rfc include='reference.RFC.6347'?>
+<?rfc include='reference.RFC.6525'?>
+<?rfc include='reference.I-D.ietf-mmusic-sctp-sdp'?>
+<?rfc include='reference.I-D.ietf-tsvwg-sctp-dtls-encaps'?>
 </references>
 
-<references title="Informational References">
+<references title='Informational References'>
 <?rfc include='reference.I-D.ietf-rtcweb-overview' ?>
 <?rfc include='reference.I-D.ietf-rtcweb-data-channel' ?>
 </references>
