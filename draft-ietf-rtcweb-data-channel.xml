@@ -53,16 +53,18 @@
 </address>
 </author>
 
-<date/>
+<date />
+<area>RAI</area>
+<workgroup>RTCWeb Working Group</workgroup>
 
 <abstract>
-<t>The Web Real-Time Communication (WebRTC) working group is charged to provide
-protocol support for direct interactive rich communication using audio, video,
-and data between two peers' web-browsers.
-This document specifies the non-media data transport aspects of the WebRTC
+<t>The Real-Time Communication in WEB-browsers (RTCWeb) working group is charged
+to provide protocol support for direct interactive rich communication using
+audio, video, and data between two peers' web-browsers.
+This document specifies the non-media data transport aspects of the RTCWeb
 framework. It provides an architectural overview of how the Stream Control
-Transmission Protocol (SCTP) is used in the WebRTC context as a generic
-transport service allowing Web Browser to exchange generic data from peer to
+Transmission Protocol (SCTP) is used in the RTCWeb context as a generic
+transport service allowing WEB-browsers to exchange generic data from peer to
 peer.</t>
 </abstract>
 </front>
@@ -96,15 +98,18 @@ and all of them can eventually share a single transport-layer port number.</t>
 
 <t>SCTP as specified in <xref target='RFC4960'/> with the partial reliability
 extension defined in <xref target='RFC3758'/> provides multiple streams
-natively with reliable, and partially-reliable delivery modes.</t>
+natively with reliable, and partially-reliable delivery modes for user messages.
+Using the reconfiguration extension defined in <xref target='RFC6525'/>
+allows to increase the number of streams during the lifetime of an SCTP
+association and to reset individual SCTP streams.</t>
 
 <t>The remainder of this document is organized as follows:
-<xref target='sec-req'/> and <xref target='sec-use-cases'/>  provide requirements
-and use cases for both unreliable and reliable peer to peer datagram base channel;
+<xref target='sec-use-cases'/> and <xref target='sec-req'/> provide use cases
+and requirements for both unreliable and reliable peer to peer data channels;
 <xref target='sec-p-a-2'/> arguments SCTP over DTLS over UDP;
-<xref target='sec-sctp-usage'/> provides an specification of how SCTP should be
+<xref target='sec-sctp-usage'/> provides a specification of how SCTP should be
 used by the RTCWeb protocol framework for transporting non-media data between
-browsers.</t>
+WEB-browsers.</t>
 </section>
 
 <section title='Conventions'>
@@ -124,7 +129,7 @@ For general use cases see
 <section title='Use Cases for Unreliable Data Channels'
          anchor='sec-use-cases-unreliable'>
 
-<t><list style='format U-C %d' counter='UseCases'>
+<t><list style='format U-C %d:' counter='UseCases'>
 
 <t>A real-time game where position and object state information is
 sent via one or more unreliable data channels.
@@ -132,14 +137,14 @@ Note that at any time there may be no media channels, or all media channels
 may be inactive, and that there may also be reliable data channels in use.</t>
 	
 <t>Providing non-critical information to a user about the reason for a state
-update in a video chat or conference, such as Mute state.</t>
+update in a video chat or conference, such as mute state.</t>
 </list></t>
 </section>
 
 <section title='Use Cases for Reliable Data Channels'
          anchor='sec-use-cases-reliable'>
 
-<t><list style='format U-C %d' counter='UseCases'>
+<t><list style='format U-C %d:' counter='UseCases'>
 
 <t> A real-time game where critical state information needs to be
 transferred, such as control information.
@@ -167,7 +172,7 @@ internet filtering or monitoring.</t>
 <t>This section lists the requirements for P2P data channels between
 two browsers.</t>
 
-<t><list style='format Req. %d'>
+<t><list style='format Req. %d:'>
 <t>Multiple simultaneous data channels MUST be supported.
 Note that there may 0 or more media streams in parallel with the data channels,
 and the number and state (active/inactive) of the media streams may change at
@@ -198,7 +203,7 @@ optional TURN servers.</t>-->
 
 <t>Data channels MUST provide message fragmentation support such that
 IP-layer fragmentation can be avoided no matter how large a message the
-Javascript application passes to be sent.  It also MUST ensure that large
+Javascript application passes to be sent. It also MUST ensure that large
 data channel transfers don't unduely delay traffic on other data
 channels.</t>
 
@@ -213,7 +218,7 @@ limit.</t>
 <!-- FIXME: Why this limit? Is it enough?-->
 <!-- FIXME: If there is a limit, does this need to be exposed to the other
 side and application so it can adapt (and application-layer-fragment if
-need be)?  Or do we want to provide a partial-delivery option to help
+need be)? Or do we want to provide a partial-delivery option to help
 remove memory limitations on message size? -->
 
 <!-- Mooted by running over DTLS:
@@ -236,19 +241,23 @@ application space.</t>
 
 <t>The important features of SCTP in the RTCWeb context are:
 <list style='symbols'>
-<t>TCP-friendly congestion control.</t>
-<t>The congestion control is modifiable for integration with media stream congestion control.</t>
-<t>Support for multiple channels with different characteristics.</t>
-<t>Support for out-of-order delivery.</t>
-<t>Support for large datagrams and PMTU-discovery and fragmentation.</t>
-<t>Reliable or partial reliability support.</t>
-<t>Support of multiple streams.</t>
+<t>Usage of a TCP-friendly congestion control.</t>
+<t>The congestion control is modifiable for integration with media stream
+   congestion control.</t>
+<t>Support of multiple unidirectional streams, each providing its own
+   notion of ordered message delivery.</t>
+<t>Support of ordered and out-of-order message delivery.</t>
+<t>Supporting arbitrary large user message by providing fragmentation
+   and reassembly.</t>
+<t>Support of PMTU-discovery.</t>
+<t>Support of reliable or partial raliable message transport.</t>
 </list></t>
 
 <t>SCTP multihoming will not be used in RTCWeb.
-The SCTP layer will simply act  as if it were running on a single-homed host,
+The SCTP layer will simply act as if it were running on a single-homed host,
 since that is the abstraction that the lower layer (a connection oriented,
 unreliable datagram service) exposes.</t>
+
 <t>The encapsulation of SCTP over DTLS defined in
 <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> provides confidentiality,
 source authenticated, and integrity protected transfers. Using DTLS
@@ -310,7 +319,7 @@ and new operating systems. They support operating systems 10 years old or more,
 they run on mobile and desktop operating systems,
 and they are highly portable to new operating systems.
 This is achieved by having a fairly narrow portability layer to minimize
-what needs  to be supported on old operating systems and ported to new ones.
+what needs to be supported on old operating systems and ported to new ones.
 This creates a need to implement as much functionality as possible 
 inside the application instead of relying on the operating system.</t>
 
@@ -453,6 +462,26 @@ DTLS-SRTP media streams.</t>
 <!-- FIXME: Negotiation of CC. -->
 <!-- FIXME: Bundle Issue. -->
 
+<!-- From the protocol ID 
+<section title='Opening Handshake'>
+<t>The opening handshake is based on the multimedia session description
+exchange that happens between the browsers, typically through a Web Server
+acting as the signaling service.</t>
+
+<t><xref target='I-D.ietf-mmusic-sctp-sdp'/> defines the protocol
+identifier, 'DTLS/SCTP', and defines how to establish an SCTP association
+over DTLS using the Session Description Protocol (SDP).</t>
+
+<t>The SCTP association is created with the number of streams specified by
+the application, and if not specified, then it SHOULD default to 16
+streams.</t>
+
+<t>It is recommended that additional streams be available dynamically based
+on <xref target='RFC6525'/>.</t>
+</section>
+-->
+
+
 <t>The application SHOULD indicate the initial number of streams
 required when opening the association, and if no value is supplied, the
 implementation SHOULD provide an appropriate default.
@@ -482,7 +511,7 @@ among other things.</t>
 <t>The realization of a bidirectional Data Channel is a pair of one
 incoming stream and one outgoing SCTP stream.</t>
 
-<t>The simple protocol specified in <xref target='I-D.jesup-rtcweb-data-protocol'/>
+<t>The simple protocol specified in <xref target='I-D.ietf-rtcweb-data-protocol'/>
 MUST be used to set up and manage the bidirectional data channels.</t>
 
 <t>Note that there's no requirement for the SCTP streams used to create	
@@ -507,7 +536,7 @@ transporting control information.</t>
 <section title='Usage of Payload Protocol Identifier'>
 <t>The SCTP Payload Protocol Identifiers (PPIDs) can be used to signal the 
 interpretation of the "Payload data", like the protocol specified in
-<xref target='I-D.jesup-rtcweb-data-protocol'/> uses them to identify
+<xref target='I-D.ietf-rtcweb-data-protocol'/> uses them to identify
 a Javascript string,
 a Javascript binary data (ArrayBuffer or Blob) and to provide fragmentation
 support for large messages that may cause the message to monopolize the
@@ -532,7 +561,7 @@ SCTP association.</t>
 <!--
 <section title='Minor Protocol and Message Format'
          anchor='sec-mes-format'>
-<t>A separate draft (draft-jesup-rtcweb-data-protocol) proposes
+<t>A separate draft (<xref target='I-D.ietf-rtcweb-data-protocol'/>) proposes
 the minor protocol to set up and manage the bidirectional data channels
 needed to satisfy the requirements in this document for WebRTC.</t>
 <t> Masking of the protocol is not needed if the lower layer always encrypts
@@ -549,7 +578,27 @@ with DTLS.</t>
 
 <section title='IANA Considerations'
          anchor='sec-IANA'>
-<t>This document does not require any actions by the IANA.</t>
+<t>[NOTE to RFC-Editor:
+<list>
+<t>"RFCXXXX" is to be replaced by the RFC number you assign this document.</t>
+</list>
+]</t>
+<t>This document uses four already registered SCTP Payload Protocol
+Identifiers (PPIDs).
+<xref target='RFC4960'/> creates the registry "SCTP Payload Protocol Identifiers"
+from which these identifiers were assigned.
+IANA is requested to update the reference of these four assignments to point
+to this document.
+Therefore these four assignments should be updated to read:</t>
+<texttable>
+<ttcol align='left'>Value</ttcol>
+<ttcol align='left'>SCTP PPID</ttcol>
+<ttcol align='left'>Reference</ttcol>
+<c>DOMString Last</c>      <c>51</c> <c>[RFCXXXX]</c>
+<c>Binary Data Partial</c> <c>52</c> <c>[RFCXXXX]</c>
+<c>Binary Data Last</c>    <c>53</c> <c>[RFCXXXX]</c>
+<c>DOMString Partial</c>   <c>54</c> <c>[RFCXXXX]</c>
+</texttable>
 </section>
 
 <section title='Acknowledgments'>
@@ -576,7 +625,7 @@ and Magnus Westerlund.</t>
 <?rfc include='reference.RFC.6347'?>
 <?rfc include='reference.RFC.6525'?>
 <?rfc include='reference.I-D.stewart-tsvwg-sctp-ndata'?>
-<?rfc include='reference.I-D.jesup-rtcweb-data-protocol'?>
+<?rfc include='reference.I-D.ietf-rtcweb-data-protocol'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-dtls-encaps'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security-arch'?>
