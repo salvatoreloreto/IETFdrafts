@@ -80,7 +80,7 @@ encapsulated in the Datagram Transport Layer Security (DTLS)
 from their already standardized transport and security features.</t>
 </section>
 
-<section anchor='con' title='Conventions'>
+<section title='Conventions'>
 <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in <xref target='RFC2119'/>.</t>
