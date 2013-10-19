@@ -543,6 +543,56 @@ support for large messages that may cause the message to monopolize the
 SCTP association.</t>
 
 </section>
+<section title='Sending and Receiving Data'>
+<t>Data shall be sent using PPID's other than the Data Channel Control
+PPID. These PPID's should be registered with IANA via (TBD). The meaning
+of these data PPIDs and the format of the data shall be specific to the
+usage of this protocol, and typically shall be provided to the higher
+layers to allow proper decoding of the data.</t>
+
+<t>It is RECOMMENDED that higher layers wishing to transfer large messages
+fragment them using PPIDs or other mechanisms to avoid monopolization of
+the SCTP association by the transfer of a single large message, unless a
+future SCTP draft relaxes this concern. If fragmented solely with PPID
+values, then transmission MUST occur on a reliable in-order channel. If
+in-band application framing is used, then other options may be possible.</t>
+
+<t>For WebRTC, data PPID's for DOMStrings and binary data (and
+fragmentation thereof) shall be created.</t>
+
+<t>All data sent on a Channel in both directions MUST be sent over the
+underlying Stream using the reliability defined when the Channel was
+opened unless the options are changed, or per-message options are specified
+by a higher level.</t>
+
+<t>Data may be sent immediately after sending or receiving a
+DATA_CHANNEL_OPEN message, or after creating an externally-negotiated
+Channel.</t>
+
+<t>It is recommended that message size be kept within certain size bounds
+(TBD) as applications will not be able to support arbitrarily-large single
+messages.</t>
+</section>
+
+<section title='Adding a Channel (external negotiation)'>
+<t>When one side wants to add a channel using external negotiation, it
+picks a Stream. This can be done by asking the protocol to select an
+unused Stream (of the approriate even or odd type), or by simply telling
+the protocol what Stream to use. In the latter case, the application is
+responsible for avoiding collisions with existing Streams. If it attempts
+to re-use a Stream which is part of an existing Channel, the addition
+should fail.</t>
+
+<t>In addition to choosing a Stream, the application should also inform the
+protocol of the options to use for sending messages. Note that there is no
+requirement for both sides to have the same options for an
+externally-negotiated stream, though typically this will be the case.</t>
+
+<t>The application must now ensure in an application-specific manner that
+the other side will also inform the protocol that the selected Stream is to
+be used, and the parameters for sending data from that side.</t>
+</section>
+
 <!--
 <t>TBD not sure if we want discuss here or in the actual protocol draft:
 <list style='empty'>

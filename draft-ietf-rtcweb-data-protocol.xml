@@ -63,16 +63,16 @@ provide protocols to support for direct interactive rich communication
 using audio, video, and data between two peers' web-browsers.
 This document specifies a simple protocol for establishing symmetric
 data channels between the peers. It uses a two way handshake and allows
-sending of user data without waiting for the handhshake to complete.</t>
+sending of user data without waiting for the handshake to complete.</t>
 </abstract>
 </front>
 
 <middle>
 <section title='Introduction'>
-<t>The DataChannel Protocol is designed to provide, in the WebRTC data channel
+<t>The data channel protocol is designed to provide, in the WebRTC data channel
 context <xref target='I-D.ietf-rtcweb-data-channel'/>, a simple in-band method
 to open symmetric data channels.
-As discussed in <xref target='I-D.ietf-rtcweb-data-channel'/> the protocol uses
+As discussed in <xref target='I-D.ietf-rtcweb-data-channel'/>, the protocol uses
 the Stream Control Transmission Protocol (SCTP) <xref target='RFC4960'/> 
 encapsulated in the Datagram Transport Layer Security (DTLS)
 <xref target='RFC6347'/> as described in
@@ -105,14 +105,27 @@ together.</t>
 <section title='Protocol Overview'>
 <t>This protocol is a simple, low-overhead way to establish bidirectional
 Channels over an SCTP association with a consistent set of properties.</t>
-<t>The set of consistent properties </t>
-<t>Channels are created by sending an optional DATA_CHANNEL_OPEN message on
-an unused Stream. There is no handshake, and the channel is available to
-send on as soon as the DATA_CHANNEL_OPEN has been sent. Alternatively,
-both sides make externally agree to a set of parameters for a Channel, in
-which case no DATA_CHANNEL_OPEN message is required.</t>
 
-<t>To avoid glare in opening Channels, each side must use either even or
+<t>The set of consistent properties includes
+<list style='symbols'>
+<t>whether the messages are transmitted reliable or unreliable. In case
+   of unreliable transmissions, the same level of unreliability is used.</t>
+<t>whether the messages are delivered in-order or out-of order.</t>
+<t>an optional label for the Channel.</t>
+<t>an optional protocol for the Channel.</t>
+<t>the outgoing SCTP stream.</t>
+</list></t>
+
+<t>The data channel protocol uses a two way handshake to open a data channel.
+The side wanting to open a data channel selects an unused Stream and sends
+a DATA_CHANNEL_OPEN message. The peer responds with a DATA_CHANNEL_ACK message.
+Then the data channel is open. Please note that the opening side can send
+user messages before the DATA_CHANNEL_ACK is received. These data channel
+messages are sent on the same Stream as the user messages belonging to the
+data channel. The demultiplexing is based on the SCTP payload protocol
+identifier.</t>
+
+<t>To avoid glare in opening Channels, each side MUST use either even or
 odd Streams when sending a DATA_CHANNEL_OPEN message. The method used to
 determine which side uses odd or even is based on the underlying DTLS
 connection role when used in RTCWeb, with the side acting as the DTLS
@@ -138,8 +151,7 @@ values are managed by IANA (see <xref target='iana_msg_type'/>).</t>
 <section title='DATA_CHANNEL_OPEN Message'
          anchor='open_msg_format'>
 <t>This message is sent initially on the stream used for user messages
-using the channel. All DATA_CHANNEL_OPEN messages MUST be sent using SCTP
-options for reliable in-order delivery.</t>
+using the channel.</t>
 
 <figure align='center'>
 <artwork>
@@ -264,57 +276,67 @@ message. The suggested value of this field for IANA is 0x02.</t>
 </section>
 
 <section title='Procedures'>
-<!--
-<section title='Adding a Channel (in-band open)'>
-<t>When one side wants to add a channel using in-band declaration, it picks
-an unused outgoing Stream (even stream identifier for DTLS clients, or odd
-for DTLS servers); if no unused streams are available a negotiation to
-increase the number is done via <xref target='RFC6525'/>, or failure is
-returned. It should also check that the other side has the same channel
-available, and if not then initiate an increase in the number of streams.
-It then sends a DATA_CHANNEL_OPEN control message on the outgoing
-stream.</t>
 
-<t>When an DATA_CHANNEL_OPEN is received on an incoming Stream, the Stream
-is associated with a newly-created Channel (unless the Stream was already
-part of an externally-negotiated Channel). If any data had arrived on the
-Stream before the Open arrives and had been buffered, it is now delivered on
-the new Channel.</t>
+<t>All data channel protocol messages MUST be sent requesting ordered delivery
+and using reliable transmission.
+They MUST be sent on the same outgoing SCTP
+stream as the user messages belonging to the corresponding data channel.
+Multiplexing and demultiplexing is done by using the SCTP payload protocol
+identifier (PPID).
+Therefore data channel protocol message MUST be sent with the assigned PPID
+for the data channel protocol (see <xref target='iana_ppid'/>).
+Other message MUST NOT be sent using this PPID.</t>
 
-<t>The channel_type and reliability_parameters fields of the
-DATA_CHANNEL_OPEN message MUST be used to set up the reverse side of the
-Channel so that both directions use the same options by default.</t>
-</section>
+<t>If one sides wants to open a data channel, it chooses a free
+outgoing SCTP stream. If the side is the DTLS client, it MUST choose
+an even stream identifier, if the side is the DTLS server, it MUST
+choose an odd one. It fills in the parameters of the DATA_CHANNEL_OPEN message
+and sends it on the chosen SCTP stream.</t>
 
-<section title='Adding a Channel (external negotiation)'>
-<t>When one side wants to add a channel using external negotiation, it
-picks a Stream. This can be done by asking the protocol to select an
-unused Stream (of the approriate even or odd type), or by simply telling
-the protocol what Stream to use. In the latter case, the application is
-responsible for avoiding collisions with existing Streams. If it attempts
-to re-use a Stream which is part of an existing Channel, the addition
-should fail.</t>
+<t>After the DATA_CHANNEL_OPEN message has been sent, the sender of it
+can start sending messages containing user data without waiting for the
+reception of the corresponding DATA_CHANNEL_ACK message.
+However, before the DATA_CHANNEL_ACK message or any other message has been
+received on the data channel, all other messages containing user data and
+belonging to the data channel MUST be sent ordered, not matter whether the
+data channel is ordered or not.
+After the DATA_CHANNEL_ACK or any other message has been received on the data
+channel, messages containing user data MUST be send ordered on ordered data
+channels and MUST be sent unordered on unordered data channels.
+Therefore receiving a message containing user data on an unused SCTP stream
+indicates an error. The corresponding outgoing SCTP stream MUST be reset
+using <xref target='RFC6525'/>.</t>
 
-<t>In addition to choosing a Stream, the application should also inform the
-protocol of the options to use for sending messages. Note that there is no
-requirement for both sides to have the same options for an
-externally-negotiated stream, though typically this will be the case.</t>
+<t>If a DATA_CHANNEL_OPEN message is received on an unused stream,
+the stream identifier corresponds to the role of the peer and
+all parameters in the DATA_CHANNEL_OPEN message are valid,
+then a corresponding DATA_CHANNEL_ACK message is sent on the stream with the
+same stream identifier as the one the DATA_CHANNEL_OPEN message was received
+on.</t>
 
-<t>The application must now ensure in an application-specific manner that
-the other side will also inform the protocol that the selected Stream is to
-be used, and the parameters for sending data from that side.</t>
+<t>If a DATA_CHANNEL_OPEN message
+is received on an already used SCTP stream or
+there are any problems with parameters within the DATA_CHANNEL_OPEN message or
+the DATA_CHANNEL_OPEN message itself is not well-formed,
+the receiver MUST reset the corresponding outgoing SCTP stream using 
+<xref target='RFC6525'/> and MUST NOT send a DATA_CHANNEL_ACK message in
+response to the received message. 
+Therefore, receiving an SCTP stream reset request for a stream on which
+no DATA_CHANNEL_ACK message has been received indicates to the sender of the
+corresponding DATA_CHANNEL_OPEN message the failure of the data channel
+setup procedure.</t>
 </section>
 
 <section title='Closing a Channel'>
-<t>Channels MUST be closed by and SCTP reset of the outgoing Stream. If an
+<t>Channels MUST be closed by an SCTP reset of the outgoing Stream. If an
 incoming Stream is reset by the peer, a corresponding outgoing stream
 reset SHOULD be issued. If the streams in both directions of a Channel are
 reset, the Channel is considered fully closed and the Streams are available
-for reuse for new channel opens.</t>
+for reuse for new Channels.</t>
 </section>
 
 <section title='Sending and Receiving Data'>
-<t>Data shall be sent using PPID's other than the Data Channel Control
+<t>Data is sent using PPID's other than the Data Channel Control
 PPID. These PPID's should be registered with IANA via (TBD). The meaning
 of these data PPIDs and the format of the data shall be specific to the
 usage of this protocol, and typically shall be provided to the higher
@@ -325,7 +347,8 @@ fragment them using PPIDs or other mechanisms to avoid monopolization of
 the SCTP association by the transfer of a single large message, unless a
 future SCTP draft relaxes this concern. If fragmented solely with PPID
 values, then transmission MUST occur on a reliable in-order channel. If
-in-band application framing is used, then other options may be possible.</t>
+in-band application framing is used, then other reliability options may
+be used.</t>
 
 <t>For WebRTC, data PPID's for DOMStrings and binary data (and
 fragmentation thereof) shall be created.</t>
@@ -355,8 +378,7 @@ messages.</t>
 </section>
 
 
-<section title='IANA Considerations'
-         anchor='sec-IANA'>
+<section title='IANA Considerations'>
 <t>[NOTE to RFC-Editor:
 <list>
 <t>"RFCXXXX" is to be replaced by the RFC number you assign this document.</t>
@@ -365,7 +387,8 @@ messages.</t>
 <t>IANA is asked to update the reference of an already existing SCTP PPID
 assignment and to create three new registries for the data channel protocol.</t>
 
-<section title='SCTP Payload Protocol Identifier'>
+<section title='SCTP Payload Protocol Identifier'
+         anchor='iana_ppid'>
 <t>This document uses one already registered SCTP Payload Protocol
 Identifier (PPID). <xref target='RFC4960'/> creates the registry
 "SCTP Payload Protocol Identifiers" from which this identifier was assigned.
@@ -469,7 +492,6 @@ Stefan Håkansson and many others for their invaluable comments.</t>
 <back>
 <references title='Normative References'>
 <?rfc include='reference.RFC.2119'?>
-<?rfc include='reference.RFC.3758'?>
 <?rfc include='reference.RFC.4960'?>
 <?rfc include='reference.RFC.5226'?>
 <?rfc include='reference.RFC.6347'?>
