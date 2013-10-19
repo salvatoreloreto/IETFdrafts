@@ -230,7 +230,7 @@ The name of the channel. This may be an empty string.</t>
 <t hangText='Protocol: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
 The protocol for the channel. This may be an empty string. If used, it
-SHOULD be an IANA-registered protocol.</t>
+is an IANA-registered protocol (see <xref target='iana_protocol'/>).</t>
 </list>
 </t>
 </section>
@@ -409,14 +409,14 @@ within the operation of the data channel protocol.</t>
          anchor='iana_channel_type'>
 <t>IANA is requested to create a new registration table "Channel Type Registry"
 for the data channel protocol to manage the one byte "Channel Type" field in
-DATA_CHANNEL_OPEN message (see <xref target='open_msg_format'/>).</t>
+DATA_CHANNEL_OPEN messages (see <xref target='open_msg_format'/>).</t>
 <t>The assignment of new message types is done through an RFC required action,
 as defined in <xref target='RFC5226'/>.
 Documentation of the new channel type MUST contain the following information:
 <list style="numbers">
 <t>A name for the new channel type;</t>
 <t>A detailed procedural description of the user message handling for
-data channels with the new channel type.</t>
+data channels using this new channel type.</t>
 </list>
 Please note that if new channel types support ordered and unordered message
 delivery, the high order bit SHOULD be used to indicated whether the message
@@ -438,7 +438,19 @@ delivery is unordered or not.</t>
 </texttable>
 </section>
 
-<section title='New Protocol Registry'>
+<section title='New Protocol Registry'
+         anchor='iana_protocol'>
+<t>IANA is requested to create a new registration table "Protocol Registry"
+for the data channel protocol to manage the "Protocol" field of type string in
+DATA_CHANNEL_OPEN messages (see <xref target='open_msg_format'/>).</t>
+<t>The assignment of new message types is done through an First Come First
+Served action, as defined in <xref target='RFC5226'/>.
+Documentation of the new protocol MUST contain the following information:
+<list style="numbers">
+<t>A name for the protocol;</t>
+<t>A reference for the protocol indicated by the registered string.</t>
+</list></t>
+<t>Initially this registry is empty.</t>
 </section>
 
 </section>
