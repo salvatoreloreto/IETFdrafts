@@ -133,7 +133,8 @@ more than one type of Channel.</t>
 "Message Type" which indicates the type of the message. The corresponding
 values are managed by IANA (see <xref target='iana_msg_type'/>).</t>
 
-<section title='DATA_CHANNEL_OPEN Message'>
+<section title='DATA_CHANNEL_OPEN Message'
+         anchor='open_msg_format'>
 <t>This message is sent initially on the stream used for user messages
 using the channel. All DATA_CHANNEL_OPEN messages MUST be sent using SCTP
 options for reliable in-order delivery.</t>
@@ -169,7 +170,8 @@ message. The suggested value of this field for IANA is 0x03.</t>
 
 <t hangText='Channel Type: 1 byte (unsigned integer)'>
 <vspace blankLines='0'/>
-This field specifies the type of the channel to be opened:
+This field specifies the type of the channel to be opened and the
+values are managed by IANA (see <xref target='iana_channel_type'/>):
 <list style='hanging'>
 <t hangText='DATA_CHANNEL_RELIABLE (0x00):'>
 The channel provides a reliable in-order bi-directional communication
@@ -403,7 +405,22 @@ within the operation of the data channel protocol.</t>
 </texttable>
 </section>
 
-<section title='New Channel Type Registry'>
+<section title='New Channel Type Registry'
+         anchor='iana_channel_type'>
+<t>IANA is requested to create a new registration table "Channel Type Registry"
+for the data channel protocol to manage the one byte "Channel Type" field in
+DATA_CHANNEL_OPEN message (see <xref target='open_msg_format'/>).</t>
+<t>The assignment of new message types is done through an RFC required action,
+as defined in <xref target='RFC5226'/>.
+Documentation of the new channel type MUST contain the following information:
+<list style="numbers">
+<t>A name for the new channel type;</t>
+<t>A detailed procedural description of the user message handling for
+data channels with the new channel type.</t>
+</list>
+Please note that if new channel types support ordered and unordered message
+delivery, the high order bit SHOULD be used to indicated whether the message
+delivery is unordered or not.</t>
 <t>Initially the following values need to be registered:</t>
 <texttable>
 <ttcol align='left'>Name</ttcol>
@@ -415,6 +432,9 @@ within the operation of the data channel protocol.</t>
 <c>DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT_UNORDERED</c> <c>0x81</c> <c>[RFCXXXX]</c>
 <c>DATA_CHANNEL_PARTIAL_RELIABLE_TIMED</c>            <c>0x02</c> <c>[RFCXXXX]</c>
 <c>DATA_CHANNEL_PARTIAL_RELIABLE_TIMED_UNORDERED</c>  <c>0x82</c> <c>[RFCXXXX]</c>
+<c>Reserved</c>                                       <c>0x7f</c> <c>[RFCXXXX]</c>
+<c>Reserved</c>                                       <c>0xff</c> <c>[RFCXXXX]</c>
+<c>Unassigned</c>                                     <c>rest</c> <c>         </c>
 </texttable>
 </section>
 
