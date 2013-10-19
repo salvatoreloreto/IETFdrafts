@@ -127,7 +127,11 @@ more than one type of Channel.</t>
 </section>
 
 
-<section title='Message Formats'>
+<section title='Message Formats'
+         anchor='msg_format'>
+<t>Every data channel protocol message starts with a one byte field called
+"Message Type" which indicates the type of the message. The corresponding
+values are managed by IANA (see <xref target='iana_msg_type'/>).</t>
 
 <section title='DATA_CHANNEL_OPEN Message'>
 <t>This message is sent initially on the stream used for user messages
@@ -372,16 +376,30 @@ Therefore this assignment should be updated to read:</t>
 </texttable>
 </section>
 
-<section title='New Message Type Registry'>
+<section title='New Message Type Registry'
+         anchor ='iana_msg_type'>
+<t>IANA is requested to create a new registration table "Message Type Registry"
+for the data channel protocol to manage the one byte "Message Type" field in
+data channel messages (see <xref target='msg_format'/>).</t>
+<t>The assignment of new message types is done through an RFC required action,
+as defined in <xref target='RFC5226'/>.
+Documentation of the new message type MUST contain the following information:
+<list style="numbers">
+<t>A name for the new message type;</t>
+<t>A detailed procedural description of the use of messages with the new type
+within the operation of the data channel protocol.</t>
+</list></t>
 <t>Initially the following values need to be registered:</t>
 <texttable>
 <ttcol align='left'>Name</ttcol>
 <ttcol align='left'>Type</ttcol>
 <ttcol align='left'>Reference</ttcol>
-<c>Reserved</c>          <c>0x00</c> <c>[RFCXXXX]</c>
-<c>Reserved</c>          <c>0x01</c> <c>[RFCXXXX]</c>
-<c>DATA_CHANNEL_ACK</c>  <c>0x02</c> <c>[RFCXXXX]</c>
-<c>DATA_CHANNEL_OPEN</c> <c>0x03</c> <c>[RFCXXXX]</c>
+<c>Reserved</c>          <c>0x00     </c> <c>[RFCXXXX]</c>
+<c>Reserved</c>          <c>0x01     </c> <c>[RFCXXXX]</c>
+<c>DATA_CHANNEL_ACK</c>  <c>0x02     </c> <c>[RFCXXXX]</c>
+<c>DATA_CHANNEL_OPEN</c> <c>0x03     </c> <c>[RFCXXXX]</c>
+<c>Unassigned</c>        <c>0x04-0xfe</c> <c>         </c>
+<c>Reserved</c>          <c>0xff     </c> <c>[RFCXXXX]</c>
 </texttable>
 </section>
 
