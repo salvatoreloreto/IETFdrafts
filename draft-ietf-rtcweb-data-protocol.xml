@@ -358,10 +358,12 @@ messages.</t>
 assignment and to create three new registries for the data channel protocol.</t>
 
 <section title='SCTP Payload Protocol Identifier'>
-<t>This document uses one already registered SCTP Payload Protocol Identifier (PPID).
-<xref target='RFC4960'/> creates the registry "SCTP Payload Protocol Identifiers"
-from which these identifiers need to be assigned.
-The following values are suggested:</t>
+<t>This document uses one already registered SCTP Payload Protocol
+Identifier (PPID). <xref target='RFC4960'/> creates the registry
+"SCTP Payload Protocol Identifiers" from which this identifier was assigned.
+IANA is requested to update the reference of this assignment to point to this
+document.
+Therefore this assignment should be updated to read:</t>
 <texttable>
 <ttcol align='left'>Value</ttcol>
 <ttcol align='left'>SCTP PPID</ttcol>
@@ -373,8 +375,8 @@ The following values are suggested:</t>
 <section title='New Message Type Registry'>
 <t>Initially the following values need to be registered:</t>
 <texttable>
-<ttcol align='left'>Message Type Name</ttcol>
-<ttcol align='left'>Message Type</ttcol>
+<ttcol align='left'>Name</ttcol>
+<ttcol align='left'>Type</ttcol>
 <ttcol align='left'>Reference</ttcol>
 <c>Reserved</c>          <c>0x00</c> <c>[RFCXXXX]</c>
 <c>Reserved</c>          <c>0x01</c> <c>[RFCXXXX]</c>
@@ -386,8 +388,8 @@ The following values are suggested:</t>
 <section title='New Channel Type Registry'>
 <t>Initially the following values need to be registered:</t>
 <texttable>
-<ttcol align='left'>Channel Type Name</ttcol>
-<ttcol align='left'>Channel Type</ttcol>
+<ttcol align='left'>Name</ttcol>
+<ttcol align='left'>Type</ttcol>
 <ttcol align='left'>Reference</ttcol>
 <c>DATA_CHANNEL_RELIABLE</c>                          <c>0x00</c> <c>[RFCXXXX]</c>
 <c>DATA_CHANNEL_RELIABLE_UNORDERED</c>                <c>0x80</c> <c>[RFCXXXX]</c>
