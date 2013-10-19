@@ -155,8 +155,8 @@ given time, or may only be added due to in-game actions.</t>
 Note that this may involve a large number of files to transfer sequentially
 or in parallel, such as when sharing a folder of images or a directory of files.</t>
 
-<t>Realtime text chat while talking with an individual or with multiple
-people in a conference.</t>
+<t>Realtime text chat during an audio and/or video call with an individual
+or with multiple people in a conference.</t>
 
 <t>Renegotiation of the set of media streams in the PeerConnection.</t>
 
@@ -203,8 +203,8 @@ optional TURN servers.</t>-->
 
 <t>Data channels MUST provide message fragmentation support such that
 IP-layer fragmentation can be avoided no matter how large a message the
-Javascript application passes to be sent. It also MUST ensure that large
-data channel transfers don't unduely delay traffic on other data
+JavaScript application passes to be sent. It also MUST ensure that large
+data channel transfers don't unduly delay traffic on other data
 channels.</t>
 
 <t>The data channel transport protocol MUST NOT encode local IP addresses
@@ -223,12 +223,12 @@ remove memory limitations on message size? -->
 
 <!-- Mooted by running over DTLS:
 <t>The data channel packet format/encoding MUST be such
-that it is impossible for a malicious Javascript to generate an
+that it is impossible for a malicious JavaScript to generate an
 application message crafted such that it could be interpreted as a native
 protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc.</t> -->
 
 <t>The data channel transport protocol SHOULD avoid IP fragmentation. It
-MUST support PMTU discovery and MUST NOT rely on ICMP or ICMPv6
+MUST support PMTU (Path MTU) discovery and MUST NOT rely on ICMP or ICMPv6
 being generated or being passed back, especially for PMTU discovery.</t>
 
 <t>It MUST be possible to implement the protocol stack in the user
@@ -250,7 +250,7 @@ application space.</t>
 <t>Supporting arbitrary large user message by providing fragmentation
    and reassembly.</t>
 <t>Support of PMTU-discovery.</t>
-<t>Support of reliable or partial raliable message transport.</t>
+<t>Support of reliable or partially reliable message transport.</t>
 </list></t>
 
 <t>SCTP multihoming will not be used in RTCWeb.
@@ -370,15 +370,15 @@ MUST be used, since DTLS does not expose any address management to its upper
 layer.
 The ICE/UDP layer can handle IP address changes during a session without needing
 to notify the DTLS and SCTP layers, though it would be advantageous to retest
-path MTU on an IP address change.</t>
+Path MTU on an IP address change.</t>
 
 <t>DTLS implementations used for this stack SHOULD support controlling fields of
-the IP layer like the Don't fragment (DF)-bit in case of IPv4 and the
+the IP layer like the Don't Fragment (DF)-bit in case of IPv4 and the
 Differentiated Services Code Point (DSCP) field required for supporting
 <xref target='I-D.ietf-rtcweb-qos'/>.
 Being able to set the (DF)-bit in case of IPv4 is required for performing
 path MTU discovery. The DTLS implementation SHOULD also support sending
-user messages exceeding the path MTU.</t>
+user messages exceeding the Path MTU.</t>
 
 <t>Incoming ICMP or ICMPv6 messages can't be processed by
 the SCTP layer, since there is no way to identify the corresponding	
@@ -393,7 +393,7 @@ until measured otherwise.</t>
          overhead (it depends on the choosen cipher suite) into account.
          Same for UPv4. -->
 <t>In general, the lower layer interface of an SCTP implementation SHOULD be
-adapted to address the differences between IPv4 or IPv6 (being connection-less)
+adapted to address the differences between IPv4 and IPv6 (being connection-less)
 or DTLS (being connection-oriented).</t>
 
 <t>When protocol stack of <xref target='fig-sctp-layering'/> is used, DTLS
@@ -492,7 +492,7 @@ direction.</t>
 </section>
 
 <section title='SCTP Streams'>
-<t>SCTP defines a stream as an unidirectional logical channel existing within
+<t>SCTP defines a stream as a unidirectional logical channel existing within
 an SCTP association one to another SCTP endpoint. The streams are used to
 provide the notion of in-sequence delivery and for multiplexing.
 Each user message is sent on a particular stream, either order or unordered.
@@ -500,9 +500,9 @@ Ordering is preserved only for ordered messages sent on the same stream.</t>
 </section>
 
 <section title='Channel Definition'>
-<t>The W3C has consensus on defining the application API for WebRTC dataChannels
+<t>The W3C has consensus on defining the application API for WebRTC DataChannels
 to be bidirectional. They also consider the notions of in-sequence,
-out-of-sequence, reliable and un-reliable as properties of Channels. One strong
+out-of-sequence, reliable and unreliable as properties of Channels. One strong
 wish is for the application-level API to be close to the API for WebSockets,
 which implies bidirectional streams of data and waiting for onopen to fire
 before sending, a textual label used to identify the meaning of the stream,
@@ -537,8 +537,8 @@ transporting control information.</t>
 <t>The SCTP Payload Protocol Identifiers (PPIDs) can be used to signal the 
 interpretation of the "Payload data", like the protocol specified in
 <xref target='I-D.ietf-rtcweb-data-protocol'/> uses them to identify
-a Javascript string,
-a Javascript binary data (ArrayBuffer or Blob) and to provide fragmentation
+a JavaScript string,
+a JavaScript binary data (ArrayBuffer or Blob) and to provide fragmentation
 support for large messages that may cause the message to monopolize the
 SCTP association.</t>
 
