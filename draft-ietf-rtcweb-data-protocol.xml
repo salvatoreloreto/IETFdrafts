@@ -472,7 +472,6 @@ Stefan Håkansson and many others for their invaluable comments.</t>
 <?rfc include='reference.RFC.5226'?>
 <?rfc include='reference.RFC.6347'?>
 <?rfc include='reference.RFC.6525'?>
-<?rfc include='reference.I-D.ietf-mmusic-sctp-sdp'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-dtls-encaps'?>
 </references>
 
