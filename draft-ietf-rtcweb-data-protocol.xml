@@ -93,9 +93,11 @@ interpreted as described in <xref target='RFC2119'/>.</t>
 An SCTP association.</t>
 <t hangText='Stream:'>
 A unidirectional stream of an SCTP association. It is uniquely identified
-by a stream identifier (0-65535).</t>
+by a stream identifier (0-65534).  Note: stream identifier 65535 is
+reserved due to SCTP Init messages allowing a maximum of 65535 streams to
+be negotiated (0-65534).</t>
 <t hangText='Channel:'>
-Two Streams with the same identifier, one in each direction, that are managed
+Two Streams with the same identifier, one in each direction, which are managed
 together.</t>
 </list></t>
 </section>
@@ -117,12 +119,12 @@ connection role when used in RTCWeb, with the side acting as the DTLS
 client using even stream identifiers.</t>
 
 <t>Note: There is no attempt to resolve label glare; if both sides open a
-Channel labelled "x" at the same time, there will be two Channels labelled "x" -
+Channel labeled "x" at the same time, there will be two Channels labeled "x" -
 one on an even Stream pair, one on an odd pair.</t>
 
 <t>The protocol field is to ease cross-application interoperation
 ("federation") by identifying the data being passed with an IANA-registered
-string, and may also be useful for homogenous applications which may create
+string, and may be useful for homogenous applications which may create
 more than one type of Channel.</t>
 </section>
 
@@ -305,7 +307,7 @@ be used, and the parameters for sending data from that side.</t>
 
 <section title='Closing a Channel'>
 <t>Channels MUST be closed by and SCTP reset of the outgoing Stream. If an
-incoming Stream is reset by the peer, an corresponding outgoing stream
+incoming Stream is reset by the peer, a corresponding outgoing stream
 reset SHOULD be issued. If the streams in both directions of a Channel are
 reset, the Channel is considered fully closed and the Streams are available
 for reuse for new channel opens.</t>
