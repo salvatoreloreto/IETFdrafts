@@ -149,8 +149,7 @@ values are managed by IANA (see <xref target='iana_msg_type'/>).</t>
 <section title='DATA_CHANNEL_OPEN Message'
          anchor='open_msg_format'>
 <t>This message is sent initially on the stream used for user messages
-using the channel. All DATA_CHANNEL_OPEN messages MUST be sent using SCTP
-options for reliable in-order delivery.</t>
+using the channel.</t>
 
 <figure align='center'>
 <artwork>
@@ -277,7 +276,8 @@ message. The suggested value of this field for IANA is 0x02.</t>
 <section title='Procedures'>
 
 <t>All data channel protocol messages MUST be sent requesting ordered delivery
-and using reliable transmission. They MUST be sent on the same outgoing SCTP
+and using reliable transmission.
+They MUST be sent on the same outgoing SCTP
 stream as the user messages belonging to the corresponding data channel.
 Multiplexing and demultiplexing is done by using the SCTP payload protocol
 identifier (PPID).
@@ -302,7 +302,8 @@ After the DATA_CHANNEL_ACK or any other message has been received on the data
 channel, messages containing user data MUST be send ordered on ordered data
 channels and MUST be sent unordered on unordered data channels.
 Therefore receiving a message containing user data on an unused SCTP stream
-indicates an error. The corresponding outgoing SCTP stream MUST be reset.</t>
+indicates an error. The corresponding outgoing SCTP stream MUST be reset
+using <xref target='RFC6525'/>.</t>
 
 <t>If a DATA_CHANNEL_OPEN message is received on an unused stream,
 the stream identifier corresponds to the role of the peer and
@@ -315,25 +316,23 @@ on.</t>
 is received on an already used SCTP stream or
 there are any problems with parameters within the DATA_CHANNEL_OPEN message or
 the DATA_CHANNEL_OPEN message itself is not well-formed,
-the receiver MUST reset the corresponding outgoing SCTP stream
-and MUST NOT send a DATA_CHANNEL_ACK message in response to the
-received message. 
+the receiver MUST reset the corresponding outgoing SCTP stream using 
+<xref target='RFC6525'/> and MUST NOT send a DATA_CHANNEL_ACK message in
+response to the received message. 
 Therefore, receiving an SCTP stream reset request for a stream on which
 no DATA_CHANNEL_ACK message has been received indicates to the sender of the
 corresponding DATA_CHANNEL_OPEN message the failure of the data channel
 setup procedure.</t>
 </section>
 
-<section title='Security Considerations'
-         anchor='sec-security'>
+<section title='Security Considerations'>
 <t>This document does not add any additional considerations to the ones given in
 <xref target='I-D.ietf-rtcweb-security'/> and
 <xref target='I-D.ietf-rtcweb-security-arch'/>.</t>
 </section>
 
 
-<section title='IANA Considerations'
-         anchor='sec-IANA'>
+<section title='IANA Considerations'>
 <t>[NOTE to RFC-Editor:
 <list>
 <t>"RFCXXXX" is to be replaced by the RFC number you assign this document.</t>
@@ -447,7 +446,6 @@ Stefan Håkansson and many others for their invaluable comments.</t>
 <back>
 <references title='Normative References'>
 <?rfc include='reference.RFC.2119'?>
-<?rfc include='reference.RFC.3758'?>
 <?rfc include='reference.RFC.4960'?>
 <?rfc include='reference.RFC.5226'?>
 <?rfc include='reference.RFC.6347'?>
