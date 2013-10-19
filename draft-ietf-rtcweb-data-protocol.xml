@@ -327,49 +327,6 @@ corresponding DATA_CHANNEL_OPEN message the failure of the data channel
 setup procedure.</t>
 </section>
 
-<section title='Closing a Channel'>
-<t>Channels MUST be closed by an SCTP reset of the outgoing Stream. If an
-incoming Stream is reset by the peer, a corresponding outgoing stream
-reset SHOULD be issued. If the streams in both directions of a Channel are
-reset, the Channel is considered fully closed and the Streams are available
-for reuse for new Channels.</t>
-</section>
-
-<section title='Sending and Receiving Data'>
-<t>Data is sent using PPID's other than the Data Channel Control
-PPID. These PPID's should be registered with IANA via (TBD). The meaning
-of these data PPIDs and the format of the data shall be specific to the
-usage of this protocol, and typically shall be provided to the higher
-layers to allow proper decoding of the data.</t>
-
-<t>It is RECOMMENDED that higher layers wishing to transfer large messages
-fragment them using PPIDs or other mechanisms to avoid monopolization of
-the SCTP association by the transfer of a single large message, unless a
-future SCTP draft relaxes this concern. If fragmented solely with PPID
-values, then transmission MUST occur on a reliable in-order channel. If
-in-band application framing is used, then other reliability options may
-be used.</t>
-
-<t>For WebRTC, data PPID's for DOMStrings and binary data (and
-fragmentation thereof) shall be created.</t>
-
-<t>All data sent on a Channel in both directions MUST be sent over the
-underlying Stream using the reliability defined when the Channel was
-opened unless the options are changed, or per-message options are specified
-by a higher level.</t>
-
-<t>Data may be sent immediately after sending or receiving a
-DATA_CHANNEL_OPEN message, or after creating an externally-negotiated
-Channel.</t>
-
-<t>It is recommended that message size be kept within certain size bounds
-(TBD) as applications will not be able to support arbitrarily-large single
-messages.</t>
-</section>
--->
-</section>
-
-
 <section title='Security Considerations'
          anchor='sec-security'>
 <t>This document does not add any additional considerations to the ones given in
