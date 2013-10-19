@@ -63,13 +63,13 @@ provide protocols to support for direct interactive rich communication
 using audio, video, and data between two peers' web-browsers.
 This document specifies a simple protocol for establishing symmetric
 data channels between the peers. It uses a two way handshake and allows
-sending of user data without waiting for the handhshake to complete.</t>
+sending of user data without waiting for the handshake to complete.</t>
 </abstract>
 </front>
 
 <middle>
 <section title='Introduction'>
-<t>The DataChannel Protocol is designed to provide, in the WebRTC data channel
+<t>The data channel protocol is designed to provide, in the WebRTC data channel
 context <xref target='I-D.ietf-rtcweb-data-channel'/>, a simple in-band method
 to open symmetric data channels.
 As discussed in <xref target='I-D.ietf-rtcweb-data-channel'/>, the protocol uses
@@ -107,7 +107,7 @@ Channels over an SCTP association with a consistent set of properties.</t>
 <t>The set of consistent properties includes
 <list style='symbols'>
 <t>whether the messages are transmitted reliable or unreliable. In case
-   of unreliable transmissmions, the same level of unreliabilityi used.</t>
+   of unreliable transmissions, the same level of unreliability is used.</t>
 <t>whether the messages are delivered in-order or out-of order.</t>
 <t>an optional label for the Channel.</t>
 <t>an optional protocol for the Channel.</t>
@@ -281,7 +281,7 @@ and using reliable transmission. They MUST be sent on the same outgoing SCTP
 stream as the user messages belonging to the corresponding data channel.
 Multiplexing and demultiplexing is done by using the SCTP payload protocol
 identifier (PPID).
-Therefore data chanel protocol message MUST be sent with the assigned PPID
+Therefore data channel protocol message MUST be sent with the assigned PPID
 for the data channel protocol (see <xref target='iana_ppid'/>).
 Other message MUST NOT be sent using this PPID.</t>
 
@@ -302,13 +302,13 @@ After the DATA_CHANNEL_ACK or any other message has been received on the data
 channel, messages containing user data MUST be send ordered on ordered data
 channels and MUST be sent unordered on unordered data channels.
 Therefore receiving a message containing user data on an unused SCTP stream
-indicates an error. The corresponing outgoing SCTP stream MUST be reset.</t>
+indicates an error. The corresponding outgoing SCTP stream MUST be reset.</t>
 
 <t>If a DATA_CHANNEL_OPEN message is received on an unused stream,
 the stream identifier corresponds to the role of the peer and
 all parameters in the DATA_CHANNEL_OPEN message are valid,
 then a corresponding DATA_CHANNEL_ACK message is sent on the stream with the
-same stream identifer as the one the DATA_CHANNEL_OPEN message was received
+same stream identifier as the one the DATA_CHANNEL_OPEN message was received
 on.</t>
 
 <t>If a DATA_CHANNEL_OPEN message
