@@ -107,7 +107,7 @@ association and to reset individual SCTP streams.</t>
 <xref target='sec-use-cases'/> and <xref target='sec-req'/> provide use cases
 and requirements for both unreliable and reliable peer to peer data channels;
 <xref target='sec-p-a-2'/> arguments SCTP over DTLS over UDP;
-<xref target='sec-sctp-usage'/> provides a specification of how SCTP should be
+<xref target='sec-sctp-usage'/> provides the specification of how SCTP should be
 used by the RTCWeb protocol framework for transporting non-media data between
 WEB-browsers.</t>
 </section>
@@ -510,7 +510,9 @@ among other things.</t>
 
 <t>The realization of a bidirectional Data Channel is a pair of one
 incoming stream and one outgoing SCTP stream.</t>
+</section>
 
+<section title='Opening a Channel'>
 <t>The simple protocol specified in <xref target='I-D.ietf-rtcweb-data-protocol'/>
 MUST be used to set up and manage the bidirectional data channels.</t>
 
@@ -518,22 +520,31 @@ MUST be used to set up and manage the bidirectional data channels.</t>
 a bidirectional channel have the same number in each direction. 
 How stream values are selected is protocol and implementation dependent.</t>
 
-<t>Closing of a Data Channel MUST be signaled by resetting the corresponding
-streams <xref target='RFC6525'/>.
-Resetting a stream set the Stream Sequence Numbers (SSNs) of the stream back to
-'zero' with a corresponding notification to the application layer
-that the reset has been performed. Streams are available to reuse after a reset
-has been performed.</t>
+<t>When one side wants to add a channel using external negotiation, it
+picks a Stream. This can be done by asking the protocol to select an
+unused Stream (of the approriate even or odd type), or by simply telling
+the protocol what Stream to use. In the latter case, the application is
+responsible for avoiding collisions with existing Streams. If it attempts
+to re-use a Stream which is part of an existing Channel, the addition
+should fail.</t>
 
-<t><xref target='RFC6525'/> also guarantees that all the messages are delivered
-(or expired) before resetting the stream.</t> 
-<!--
-<t>It might be useful to use a specific pair of SCTP streams for
-transporting control information.</t>
--->
+<t>In addition to choosing a Stream, the application should also inform the
+protocol of the options to use for sending messages. Note that there is no
+requirement for both sides to have the same options for an
+externally-negotiated stream, though typically this will be the case.</t>
+
+<t>The application must now ensure in an application-specific manner that
+the other side will also inform the protocol that the selected Stream is to
+be used, and the parameters for sending data from that side.</t>
 </section>
 
-<section title='Usage of Payload Protocol Identifier'>
+<section title='Transferring User Data on a Channel'>
+<t>Data shall be sent using PPID's other than the Data Channel Control
+PPID. These PPID's should be registered with IANA via (TBD). The meaning
+of these data PPIDs and the format of the data shall be specific to the
+usage of this protocol, and typically shall be provided to the higher
+layers to allow proper decoding of the data.</t>
+
 <t>The SCTP Payload Protocol Identifiers (PPIDs) can be used to signal the 
 interpretation of the "Payload data", like the protocol specified in
 <xref target='I-D.ietf-rtcweb-data-protocol'/> uses them to identify
@@ -541,14 +552,6 @@ a JavaScript string,
 a JavaScript binary data (ArrayBuffer or Blob) and to provide fragmentation
 support for large messages that may cause the message to monopolize the
 SCTP association.</t>
-
-</section>
-<section title='Sending and Receiving Data'>
-<t>Data shall be sent using PPID's other than the Data Channel Control
-PPID. These PPID's should be registered with IANA via (TBD). The meaning
-of these data PPIDs and the format of the data shall be specific to the
-usage of this protocol, and typically shall be provided to the higher
-layers to allow proper decoding of the data.</t>
 
 <t>It is RECOMMENDED that higher layers wishing to transfer large messages
 fragment them using PPIDs or other mechanisms to avoid monopolization of
@@ -574,23 +577,17 @@ Channel.</t>
 messages.</t>
 </section>
 
-<section title='Adding a Channel (external negotiation)'>
-<t>When one side wants to add a channel using external negotiation, it
-picks a Stream. This can be done by asking the protocol to select an
-unused Stream (of the approriate even or odd type), or by simply telling
-the protocol what Stream to use. In the latter case, the application is
-responsible for avoiding collisions with existing Streams. If it attempts
-to re-use a Stream which is part of an existing Channel, the addition
-should fail.</t>
+<section title='Closing a Channel'>
+<t>Closing of a Data Channel MUST be signaled by resetting the corresponding
+streams <xref target='RFC6525'/>.
+Resetting a stream set the Stream Sequence Numbers (SSNs) of the stream back to
+'zero' with a corresponding notification to the application layer
+that the reset has been performed. Streams are available to reuse after a reset
+has been performed.</t>
+<t><xref target='RFC6525'/> also guarantees that all the messages are delivered
+(or expired) before resetting the stream.</t>
+</section>
 
-<t>In addition to choosing a Stream, the application should also inform the
-protocol of the options to use for sending messages. Note that there is no
-requirement for both sides to have the same options for an
-externally-negotiated stream, though typically this will be the case.</t>
-
-<t>The application must now ensure in an application-specific manner that
-the other side will also inform the protocol that the selected Stream is to
-be used, and the parameters for sending data from that side.</t>
 </section>
 
 <!--
@@ -606,7 +603,6 @@ be used, and the parameters for sending data from that side.</t>
 </list>
 </t>
 -->
-</section>
 
 <!--
 <section title='Minor Protocol and Message Format'
