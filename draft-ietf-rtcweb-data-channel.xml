@@ -527,12 +527,12 @@ The details are out of scope of this document.</t>
 <xref target='I-D.ietf-rtcweb-data-protocol'/> and MUST be supported.</t>
 
 <t>When one side wants to open a channel using external negotiation, it
-picks a Stream. This can be done by asking the protocol to select an
-unused Stream (of the approriate even or odd type), or by simply telling
-the protocol what Stream to use. In the latter case, the application is
-responsible for avoiding collisions with existing Streams. If it attempts
-to re-use a Stream which is part of an existing Channel, the addition
-SHOULD fail.
+picks a Stream. This can be based on the DTLS role (the client picks even
+stream identifiers, the server odd stream identifiers) or done in a different
+way. However, the application is responsible for avoiding collisions with
+existing Streams.
+If it attempts to re-use a Stream which is part of an existing Channel,
+the addition SHOULD fail.
 In addition to choosing a Stream, the application SHOULD also inform the
 protocol of the options to use for sending messages.
 The application MUST ensure in an application-specific manner that
@@ -563,7 +563,7 @@ support message interleaving. Once such an extension is available, it SHOULD
 be used.</t>
 
 <t>As long as message interleaving is not supported, the sending application
-SHOULD fragment large user messages for realiable and ordered data channels.
+SHOULD fragment large user messages for reliable and ordered data channels.
 For sending large JavaScript strings, it uses the PPID "DOMString Partial" for
 all but the last fragments and the PPID "DOMString Last" for the last one.
 For JavaScript binary data the PPIDs "Binary Data Partial" and
