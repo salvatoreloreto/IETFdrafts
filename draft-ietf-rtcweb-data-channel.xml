@@ -427,8 +427,8 @@ behavior using existing information carried in the association.</t>
 
 <section title='SCTP Protocol Considerations'>
 <t>The DTLS encapsulation of SCTP packets as described in
-<xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> MUST be used.
-The following SCTP protocol extensions are required:
+<xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> MUST be used.</t>
+<t>The following SCTP protocol extensions are required:
 <list style='symbols'>
 <t>The stream reset extension defined in <xref target='RFC6525'/> MUST
    be supported. It is used for closing channels.</t>
@@ -440,9 +440,10 @@ The following SCTP protocol extensions are required:
    be supported. In addition to the timed reliability PR-SCTP policy defined
    in <xref target='RFC3758'/>, the limited retransmission policy defined in
    <xref target='I-D.tuexen-tsvwg-sctp-prpolicies'/> MUST be supported.</t>
-<t>The message interleaving extension defined in
-   <xref target='I-D.stewart-tsvwg-sctp-ndata'/> MUST be supported.</t>
 </list></t>
+<t>Once support for message interleaving as currently being discussed
+in <xref target='I-D.stewart-tsvwg-sctp-ndata'/> is available, it SHOULD be
+supported.</t>
 </section>
 
 <section title='Association Setup'
