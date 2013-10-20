@@ -540,38 +540,40 @@ be used, and the parameters for sending data from that side.</t>
 
 <section title='Transferring User Data on a Channel'>
 
-<t>Data shall be sent using PPID's other than the Data Channel Control
-PPID. These PPID's should be registered with IANA via (TBD). The meaning
-of these data PPIDs and the format of the data shall be specific to the
-usage of this protocol, and typically shall be provided to the higher
-layers to allow proper decoding of the data.</t>
-
-<t>The SCTP Payload Protocol Identifiers (PPIDs) can be used to signal the 
-interpretation of the "Payload data", like the protocol specified in
-<xref target='I-D.ietf-rtcweb-data-protocol'/> uses them to identify
-a JavaScript string,
-a JavaScript binary data (ArrayBuffer or Blob) and to provide fragmentation
-support for large messages that may cause the message to monopolize the
-SCTP association.</t>
-
-<t>It is RECOMMENDED that higher layers wishing to transfer large messages
-fragment them using PPIDs or other mechanisms to avoid monopolization of
-the SCTP association by the transfer of a single large message, unless a
-future SCTP draft relaxes this concern. If fragmented solely with PPID
-values, then transmission MUST occur on a reliable in-order channel. If
-in-band application framing is used, then other options may be possible.</t>
-
-<t>For WebRTC, data PPID's for DOMStrings and binary data (and
-fragmentation thereof) shall be created.</t>
-
 <t>All data sent on a Channel in both directions MUST be sent over the
 underlying Stream using the reliability defined when the Channel was
 opened unless the options are changed, or per-message options are specified
 by a higher level.</t>
 
+<t>No more than one message should be put into an SCTP user message.</t>
+
+<t>The SCTP Payload Protocol Identifiers (PPIDs) are used to signal the 
+interpretation of the "Payload data". For identifying a JavaScript string
+the PPID "DOMString Last" MUST be used, for JavaScript binary data
+(ArrayBuffer or Blob) the PPID "Binary Data Last" MUST be used
+(see <xref target='sec-IANA'/>).</t>
+
+<t>The SCTP base protocol specified in <xref target='RFC4960'/> does not
+support the interleaving of user messages. Therefore sending a large user
+message can monopolize the SCTP association. To overcome this limitation,
+<xref target='I-D.stewart-tsvwg-sctp-ndata'/>  defines an extension to
+support message interleaving. Once such an extension is available, it SHOULD
+be used.</t>
+
+<t>As long as message interleaving is not supported, the sending application
+SHOULD fragment large user messages for realiable and ordered data channels.
+For sending large JavaScript strings, it uses the PPID "DOMString Partial" for
+all but the last fragments and the PPID "DOMString Last" for the last one.
+For JavaScript binary data the PPIDs "Binary Data Partial" and
+"Binary Data Last" are used. The reassembly based on the PPID MUST be
+supported. For data channel which are not reliable and ordered, the sender
+MAY limit the maximum message size to avoid monopolization.</t>
+
 <t>It is recommended that message size be kept within certain size bounds
 (TBD) as applications will not be able to support arbitrarily-large single
 messages.</t>
+
+<t>The sender MAY disable the Nagle algorithm to minimize the latency.</t>
 </section>
 
 <section title='Closing a Channel'>
