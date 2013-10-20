@@ -13,6 +13,14 @@
 <front>
 <title>RTCWeb Data Channels</title>
 
+<!--
+Open Issues:
+* Overhead of DTLS.
+* Message size limits for the data channel: Upper limits, lower limits for
+  the upper limits?
+* Disabling of the Nagle algorithm.
+-->
+
 <author initials='R.' surname='Jesup' fullname='Randell Jesup'>
 <organization>Mozilla</organization>
 <address>
@@ -385,13 +393,11 @@ the SCTP layer, since there is no way to identify the corresponding
 association. Therefore SCTP MUST support performing Path MTU discovery
 without relying on ICMP or ICMPv6 as specified in <xref target='RFC4821'/>
 using probing messages specified in <xref target='RFC4820'/>.
-The initial Path MTU MUST NOT exceed 1280 [ *** need justification ***] bytes
-until measured otherwise.</t>
-<!-- MT: Why? Shouldn't SCTP just do PMTU discovery? -->
-<!-- MT: 1280 is the minimum PMTU for IPv6. However, we need to take
-         any IPv6 optional headers, the UDP header (8 bytes) and the DTLS
-         overhead (it depends on the choosen cipher suite) into account.
-         Same for UPv4. -->
+The initial Path MTU at the IP layer MUST NOT exceed 1200 bytes for IPv4
+and 1280 for IPv6. Taking an overhead of 20 bytes for IPv4, 40 bytes for IPv6,
+8 bytes for UDP, 13 + X for DTLS and 28 bytes for SCTP into account, this results
+in an SCTP payload of 1131 - X when IPv4 is used and 1192 - X bytes when IPv6 is
+used.</t>
 <t>In general, the lower layer interface of an SCTP implementation SHOULD be
 adapted to address the differences between IPv4 and IPv6 (being connection-less)
 or DTLS (being connection-oriented).</t>
