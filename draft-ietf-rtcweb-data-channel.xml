@@ -415,16 +415,11 @@ and delivered in the order received.</t>
 <t>SCTP provides congestion control on a per-association base. This means
 that all SCTP streams within a single SCTP association share the same
 congestion window. Traffic not being sent over SCTP is not covered by
-the SCTP congestion control. Due to the typical parallel SRTP media
-streams, a delay-sensitive congestion control algorithm MUST be supported
-and the congestion control MAY be coordinated between the
-data channels and the media streams to avoid a data channel transfer 
-ending up with most or all the channel bandwidth.</t>
-<!-- FIXME: We need to be more specific here... -->
-<t>Since SCTP does not support the negotiation of a congestion control algorithm,
-the algorithm either MUST be negotiated before establishment of the
-SCTP association or MUST NOT require any negotiation because it only requires
-sender side behavior using existing information carried in the association.</t>
+the SCTP congestion control. Using a congestion control different from
+the standard one might improve the impact on the parallel SRTP media streams.
+Since SCTP does not support the negotiation of a congestion control algorithm,
+alternate congestion controls SHOULD only require a different sender side
+behavior using existing information carried in the association.</t>
 </section>
 
 <section title='The Usage of SCTP in the RTCWeb Context'
