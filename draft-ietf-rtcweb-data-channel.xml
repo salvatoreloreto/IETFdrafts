@@ -568,7 +568,7 @@ For sending large JavaScript strings, it uses the PPID "DOMString Partial" for
 all but the last fragments and the PPID "DOMString Last" for the last one.
 For JavaScript binary data the PPIDs "Binary Data Partial" and
 "Binary Data Last" are used. The reassembly based on the PPID MUST be
-supported. For data channel which are not reliable and ordered, the sender
+supported. For data channels which are not reliable and ordered, the sender
 MAY limit the maximum message size to avoid monopolization.</t>
 
 <t>It is recommended that message size be kept within certain size bounds
