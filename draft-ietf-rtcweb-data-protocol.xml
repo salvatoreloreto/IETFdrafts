@@ -93,9 +93,9 @@ interpreted as described in <xref target='RFC2119'/>.</t>
 An SCTP association.</t>
 <t hangText='Stream:'>
 A unidirectional stream of an SCTP association. It is uniquely identified
-by a stream identifier (0-65534).  Note: stream identifier 65535 is
-reserved due to SCTP Init messages allowing a maximum of 65535 streams to
-be negotiated (0-65534).</t>
+by a stream identifier (0-65534).
+Note: stream identifier 65535 is reserved due to SCTP INIT and INIT-ACK chunks
+only allowing a maximum of 65535 streams to be negotiated (0-65534).</t>
 <t hangText='Channel:'>
 Two Streams with the same identifier, one in each direction, which are managed
 together.</t>
