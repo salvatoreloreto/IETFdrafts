@@ -445,10 +445,10 @@ behavior using existing information carried in the association.</t>
 <t>The partial reliability extension defined in <xref target='RFC3758'/> MUST
    be supported. In addition to the timed reliability PR-SCTP policy defined
    in <xref target='RFC3758'/>, the limited retransmission policy defined in
-   <xref target='I-D.tuexen-tsvwg-sctp-prpolicies'/> MUST be supported.</t>
+   <xref target='I-D.ietf-tsvwg-sctp-prpolicies'/> MUST be supported.</t>
 </list></t>
 <t>Once support for message interleaving as currently being discussed
-in <xref target='I-D.stewart-tsvwg-sctp-ndata'/> is available, it SHOULD be
+in <xref target='I-D.ietf-tsvwg-sctp-ndata'/> is available, it SHOULD be
 supported.</t>
 </section>
 
@@ -558,7 +558,7 @@ the PPID "DOMString Last" MUST be used, for JavaScript binary data
 <t>The SCTP base protocol specified in <xref target='RFC4960'/> does not
 support the interleaving of user messages. Therefore sending a large user
 message can monopolize the SCTP association. To overcome this limitation,
-<xref target='I-D.stewart-tsvwg-sctp-ndata'/>  defines an extension to
+<xref target='I-D.ietf-tsvwg-sctp-ndata'/>  defines an extension to
 support message interleaving. Once such an extension is available, it SHOULD
 be used.</t>
 
@@ -671,7 +671,7 @@ and Magnus Westerlund.</t>
 <?rfc include='reference.RFC.5245'?>
 <?rfc include='reference.RFC.6347'?>
 <?rfc include='reference.RFC.6525'?>
-<?rfc include='reference.I-D.stewart-tsvwg-sctp-ndata'?>
+<?rfc include='reference.I-D.ietf-tsvwg-sctp-ndata'?>
 <?rfc include='reference.I-D.ietf-rtcweb-data-protocol'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-dtls-encaps'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security'?>
@@ -683,7 +683,7 @@ and Magnus Westerlund.</t>
 <?rfc include='reference.RFC.6083'?>
 <?rfc include='reference.RFC.6951'?>
 <?rfc include='reference.I-D.ietf-rtcweb-use-cases-and-requirements'?>
-<?rfc include='reference.I-D.tuexen-tsvwg-sctp-prpolicies'?>
+<?rfc include='reference.I-D.ietf-tsvwg-sctp-prpolicies'?>
 </references>
 </back>
 
