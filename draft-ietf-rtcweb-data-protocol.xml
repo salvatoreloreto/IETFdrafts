@@ -11,7 +11,7 @@
      ipr='trust200902'
      docName='draft-ietf-rtcweb-data-protocol-02.txt'>
 <front>
-<title>RTCWeb Data Channel Protocol</title>
+<title>WebRTC Data Channel Protocol</title>
 
 <author initials='R.' surname='Jesup' fullname='Randell Jesup'>
   <organization>Mozilla</organization>
@@ -55,7 +55,6 @@
 
 <date />
 <area>RAI</area>
-<workgroup>RTCWeb Working Group</workgroup>
 
 <abstract>
 <t>The Web Real-Time Communication (WebRTC) working group is charged to
@@ -128,7 +127,7 @@ identifier.</t>
 <t>To avoid glare in opening Channels, each side MUST use either even or
 odd Streams when sending a DATA_CHANNEL_OPEN message. The method used to
 determine which side uses odd or even is based on the underlying DTLS
-connection role when used in RTCWeb, with the side acting as the DTLS
+connection role when used in WebRTC, with the side acting as the DTLS
 client using even stream identifiers.</t>
 
 <t>Note: There is no attempt to resolve label glare; if both sides open a

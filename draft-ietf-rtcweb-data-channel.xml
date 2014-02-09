@@ -11,7 +11,7 @@
      ipr='trust200902'
      docName='draft-ietf-rtcweb-data-channel-07.txt'>
 <front>
-<title>RTCWeb Data Channels</title>
+<title>WebRTC Data Channels</title>
 
 <!--
 Open Issues:
@@ -63,15 +63,14 @@ Open Issues:
 
 <date />
 <area>RAI</area>
-<workgroup>RTCWeb Working Group</workgroup>
 
 <abstract>
-<t>The Real-Time Communication in WEB-browsers (RTCWeb) working group is charged
+<t>The Real-Time Communication in WEB-browsers working group is charged
 to provide protocol support for direct interactive rich communication using
 audio, video, and data between two peers' web-browsers.
-This document specifies the non-media data transport aspects of the RTCWeb
+This document specifies the non-media data transport aspects of the WebRTC
 framework. It provides an architectural overview of how the Stream Control
-Transmission Protocol (SCTP) is used in the RTCWeb context as a generic
+Transmission Protocol (SCTP) is used in the WebRTC context as a generic
 transport service allowing WEB-browsers to exchange generic data from peer to
 peer.</t>
 </abstract>
@@ -79,7 +78,7 @@ peer.</t>
 
 <middle>
 <section title='Introduction'>
-<t>Non-media data types in the context of RTCWeb are handled by using SCTP
+<t>Non-media data types in the context of WebRTC are handled by using SCTP
 <xref target='RFC4960'/> encapsulated in DTLS <xref target='RFC6347'/>.</t>
 
 <figure title='Basic stack diagram'
@@ -116,7 +115,7 @@ association and to reset individual SCTP streams.</t>
 and requirements for both unreliable and reliable peer to peer data channels;
 <xref target='sec-p-a-2'/> arguments SCTP over DTLS over UDP;
 <xref target='sec-sctp-usage'/> provides the specification of how SCTP should be
-used by the RTCWeb protocol framework for transporting non-media data between
+used by the WebRTC protocol framework for transporting non-media data between
 WEB-browsers.</t>
 </section>
 
@@ -191,7 +190,7 @@ any time.</t>
 <t>Data channels MUST be congestion controlled; either individually,
 as a class, or in conjunction with the media streams, to ensure
 that data channels don't cause congestion problems for the
-media streams, and that the RTCWeb PeerConnection as a whole is
+media streams, and that the WebRTC PeerConnection as a whole is
 fair with competing traffic such as TCP.</t>
 
 <t>The application SHOULD be able to provide guidance as to the 
@@ -247,7 +246,7 @@ application space.</t>
 <section title='SCTP over DTLS over UDP Considerations'
          anchor='sec-p-a-2'>
 
-<t>The important features of SCTP in the RTCWeb context are:
+<t>The important features of SCTP in the WebRTC context are:
 <list style='symbols'>
 <t>Usage of a TCP-friendly congestion control.</t>
 <t>The congestion control is modifiable for integration with media stream
@@ -261,7 +260,7 @@ application space.</t>
 <t>Support of reliable or partially reliable message transport.</t>
 </list></t>
 
-<t>SCTP multihoming will not be used in RTCWeb.
+<t>SCTP multihoming will not be used in WebRTC.
 The SCTP layer will simply act as if it were running on a single-homed host,
 since that is the abstraction that the lower layer (a connection oriented,
 unreliable datagram service) exposes.</t>
@@ -343,7 +342,7 @@ requirement 12.</t>
         align='center'>
 <artwork>
               +------+
-              |RTCWEB|
+              |WEBRTC|
               | DATA |
               +------+
               | SCTP |
@@ -394,10 +393,7 @@ association. Therefore SCTP MUST support performing Path MTU discovery
 without relying on ICMP or ICMPv6 as specified in <xref target='RFC4821'/>
 using probing messages specified in <xref target='RFC4820'/>.
 The initial Path MTU at the IP layer MUST NOT exceed 1200 bytes for IPv4
-and 1280 for IPv6. Taking an overhead of 20 bytes for IPv4, 40 bytes for IPv6,
-8 bytes for UDP, 13 + X for DTLS and 28 bytes for SCTP into account, this results
-in an SCTP payload of 1131 - X when IPv4 is used and 1192 - X bytes when IPv6 is
-used.</t>
+and 1280 for IPv6.</t>
 <t>In general, the lower layer interface of an SCTP implementation SHOULD be
 adapted to address the differences between IPv4 and IPv6 (being connection-less)
 or DTLS (being connection-oriented).</t>
@@ -428,7 +424,7 @@ alternate congestion controls SHOULD only require a different sender side
 behavior using existing information carried in the association.</t>
 </section>
 
-<section title='The Usage of SCTP in the RTCWeb Context'
+<section title='The Usage of SCTP in the WebRTC Context'
          anchor='sec-sctp-usage'>
 
 <section title='SCTP Protocol Considerations'>
