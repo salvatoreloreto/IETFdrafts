@@ -92,12 +92,13 @@ interpreted as described in <xref target='RFC2119'/>.</t>
 An SCTP association.</t>
 <t hangText='Stream:'>
 A unidirectional stream of an SCTP association. It is uniquely identified
-by a stream identifier (0-65534).
-Note: stream identifier 65535 is reserved due to SCTP INIT and INIT-ACK chunks
-only allowing a maximum of 65535 streams to be negotiated (0-65534).</t>
+by an SCTP stream identifier (0-65534).
+Note: the SCTP stream identifier 65535 is reserved due to SCTP INIT and
+INIT-ACK chunks only allowing a maximum of 65535 streams to be
+negotiated (0-65534).</t>
 <t hangText='Channel:'>
-Two Streams with the same identifier, one in each direction, which are managed
-together.</t>
+Two Streams with the same SCTP stream identifier, one in each direction,
+which are managed together.</t>
 </list></t>
 </section>
 
@@ -112,17 +113,23 @@ Channels over an SCTP association with a consistent set of properties.</t>
 <t>whether the messages are delivered in-order or out-of order.</t>
 <t>an optional label for the Channel.</t>
 <t>an optional protocol for the Channel.</t>
-<t>the outgoing SCTP stream.</t>
+<t>the SCTP streams.</t>
 </list></t>
 
-<t>The data channel protocol uses a two way handshake to open a data channel.
-The side wanting to open a data channel selects an unused Stream and sends
-a DATA_CHANNEL_OPEN message. The peer responds with a DATA_CHANNEL_ACK message.
-Then the data channel is open. Please note that the opening side can send
-user messages before the DATA_CHANNEL_ACK is received. These data channel
-messages are sent on the same Stream as the user messages belonging to the
-data channel. The demultiplexing is based on the SCTP payload protocol
-identifier.</t>
+<t>The data channel protocol uses a two way handshake to open a data channel
+by combining two SCTP streams, one in each direction, with the same
+SCTP stream identifier.
+The side wanting to open a data channel selects an SCTP stream identifier
+for which the corresponding incoming and outgoing SCTP stream is unused
+and sends a DATA_CHANNEL_OPEN message on this outgoing SCTP stream.
+The peer responds with a DATA_CHANNEL_ACK message on its corresponding
+outgoing SCTP stream. Then the data channel is open.
+Please note that the opening side can send user messages before the
+DATA_CHANNEL_ACK is received.
+Data channel messages are sent on the same Stream as the user
+messages belonging to the data channel.
+The demultiplexing is based on the SCTP payload protocol identifier (PPID),
+since the data channel protocol uses a specific PPID.</t>
 
 <t>To avoid glare in opening Channels, each side MUST use either even or
 odd Streams when sending a DATA_CHANNEL_OPEN message. The method used to
@@ -135,9 +142,9 @@ Channel labeled "x" at the same time, there will be two Channels labeled "x" -
 one on an even Stream pair, one on an odd pair.</t>
 
 <t>The protocol field is to ease cross-application interoperation
-("federation") by identifying the data being passed with an IANA-registered
-string, and may be useful for homogenous applications which may create
-more than one type of Channel.</t>
+("federation") by identifying the user data being passed with an IANA-registered
+string (see <xref target='iana_protocol'/>), and may be useful for homogenous
+applications which may create more than one type of Channel.</t>
 </section>
 
 
@@ -212,12 +219,14 @@ Communication channel. User messages might not be transmitted or
 retransmitted after a specified life-time given in milli-seconds in the
 Reliability Parameter. This life-time starts when providing the user
 message to the Javascript engine.</t>
-</list>
-</t>
+</list></t>
 
 <t hangText='Priority: 2 bytes (integer)'>
 <vspace blankLines='0'/>
-The priority of the channel.</t>
+<!-- FIXME: Should this be unsigned? -->
+The priority of the channel as described in
+<xref target='I-D.ietf-rtcweb-data-channel'/>.
+The higher the number, the lower the priority.</t>
 
 <t hangText='Reliability Parameter: 4 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
@@ -226,8 +235,20 @@ This field is ignored if a reliable channel is used.
 If a partial reliable channel with limited number of retransmissions is
 used, this field specifies the number of retransmissions. If a partial
 reliable channel with limited lifetime is used, this field specifies
-the maximum lifetime in milliseconds.</t>
+the maximum lifetime in milliseconds. The following table summarizes this:</t>
+</list></t>
+<texttable>
+<ttcol align='left'>Channel Type</ttcol>
+<ttcol align='center'>Reliability Parameter</ttcol>
+<c>DATA_CHANNEL_RELIABLE</c>                         <c>Ignored</c>
+<c>DATA_CHANNEL_RELIABLE_UNORDERED</c>               <c>Ignored</c>
+<c>DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT</c>          <c>Number of RTX</c>
+<c>DATA_CHANNEL_PARTIAL_RELIABLE_REXMIT_UNORDERED</c><c>Number of RTX</c>
+<c>DATA_CHANNEL_PARTIAL_RELIABLE_TIMED</c>           <c>Lifetime in ms</c>
+<c>DATA_CHANNEL_PARTIAL_RELIABLE_TIMED_UNORDERED</c> <c>Lifetime in ms</c>
+</texttable>
 
+<t><list style='hanging'>
 <t hangText='Label Length: 2 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
 The length of the label field in bytes.</t>
@@ -242,10 +263,10 @@ The name of the channel. This may be an empty string.</t>
 
 <t hangText='Protocol: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
-The protocol for the channel. This may be an empty string. If used, it
-is an IANA-registered protocol (see <xref target='iana_protocol'/>).</t>
-</list>
-</t>
+The protocol for the channel. If this is an empty string the
+protocol us unspecified. If it is an non-empty string, it specifies
+an IANA-registered protocol (see <xref target='iana_protocol'/>).</t>
+</list></t>
 </section>
 
 <section title='DATA_CHANNEL_ACK Message'>
@@ -323,7 +344,8 @@ response to the received message.
 Therefore, receiving an SCTP stream reset request for a stream on which
 no DATA_CHANNEL_ACK message has been received indicates to the sender of the
 corresponding DATA_CHANNEL_OPEN message the failure of the data channel
-setup procedure.</t>
+setup procedure. After also successfully resetting the corresponding outgoing
+SCTP stream, a new DATA_CHANNEL_OPEN message can be sent on the stream.</t>
 </section>
 
 <section title='Security Considerations'
@@ -384,6 +406,9 @@ within the operation of the data channel protocol.</t>
 <c>Unassigned</c>        <c>0x04-0xfe</c> <c>         </c>
 <c>Reserved</c>          <c>0xff     </c> <c>[RFCXXXX]</c>
 </texttable>
+<t>Please note that the values 0x00 and 0x01 are reserved to avoid
+interoperability problems, since they have been used in earlier versions
+of the document.</t>
 </section>
 
 <section title='New Channel Type Registry'
