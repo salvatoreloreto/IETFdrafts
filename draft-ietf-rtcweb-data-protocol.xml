@@ -11,9 +11,7 @@
      ipr='trust200902'
      docName='draft-ietf-rtcweb-data-protocol-03.txt'>
 <front>
-<!-- FIXME: Change name to WebRT Data Channel Establishment Protocol?
-            Ack to Barry Dingle -->
-<title>WebRTC Data Channel Protocol</title>
+<title>WebRTC Data Channel Establishment Protocol</title>
 
 <author initials='R.' surname='Jesup' fullname='Randell Jesup'>
   <organization>Mozilla</organization>
@@ -70,9 +68,9 @@ sending of user data without waiting for the handshake to complete.</t>
 
 <middle>
 <section title='Introduction'>
-<t>The data channel protocol is designed to provide, in the WebRTC data channel
-context <xref target='I-D.ietf-rtcweb-data-channel'/>, a simple in-band method
-to open symmetric data channels.
+<t>The Data Channel Establishment Protocol is designed to provide, in the
+WebRTC data channel context <xref target='I-D.ietf-rtcweb-data-channel'/>,
+a simple in-band method to open symmetric data channels.
 As discussed in <xref target='I-D.ietf-rtcweb-data-channel'/>, the protocol uses
 the Stream Control Transmission Protocol (SCTP) <xref target='RFC4960'/> 
 encapsulated in the Datagram Transport Layer Security (DTLS)
@@ -118,9 +116,9 @@ Channels over an SCTP association with a consistent set of properties.</t>
 <t>the SCTP streams.</t>
 </list></t>
 
-<t>The data channel protocol uses a two way handshake to open a data channel
-by combining two SCTP streams, one in each direction, with the same
-SCTP stream identifier.
+<t>The Data Channel Establishment Protocol uses a two way handshake to open
+a data channel by combining two SCTP streams, one in each direction, with
+the same SCTP stream identifier.
 The side wanting to open a data channel selects an SCTP stream identifier
 for which the corresponding incoming and outgoing SCTP stream is unused
 and sends a DATA_CHANNEL_OPEN message on this outgoing SCTP stream.
@@ -131,7 +129,7 @@ DATA_CHANNEL_ACK is received.
 Data channel messages are sent on the same Stream as the user
 messages belonging to the data channel.
 The demultiplexing is based on the SCTP payload protocol identifier (PPID),
-since the data channel protocol uses a specific PPID.</t>
+since the Data Channel Establishment Protocol uses a specific PPID.</t>
 
 <t>To avoid glare in opening Channels, each side MUST use either even or
 odd Streams when sending a DATA_CHANNEL_OPEN message. The method used to
@@ -152,9 +150,10 @@ applications which may create more than one type of Channel.</t>
 
 <section title='Message Formats'
          anchor='msg_format'>
-<t>Every data channel protocol message starts with a one byte field called
-"Message Type" which indicates the type of the message. The corresponding
-values are managed by IANA (see <xref target='iana_msg_type'/>).</t>
+<t>Every Data Channel Establishment Protocol message starts with a one byte
+field called "Message Type" which indicates the type of the message.
+The corresponding values are managed by IANA
+(see <xref target='iana_msg_type'/>).</t>
 
 <section title='DATA_CHANNEL_OPEN Message'
          anchor='open_msg_format'>
@@ -299,14 +298,15 @@ message. The suggested value of this field for IANA is 0x02.</t>
 
 <section title='Procedures'>
 
-<t>All data channel protocol messages MUST be sent requesting ordered delivery
-and using reliable transmission.
-They MUST be sent on the same outgoing SCTP
-stream as the user messages belonging to the corresponding data channel.
+<t>All Data Channel Establishment Protocol messages MUST be sent requesting
+ordered delivery and using reliable transmission.
+They MUST be sent on the same outgoing SCTP stream as the user messages
+belonging to the corresponding data channel.
 Multiplexing and demultiplexing is done by using the SCTP payload protocol
 identifier (PPID).
-Therefore data channel protocol message MUST be sent with the assigned PPID
-for the data channel protocol (see <xref target='iana_ppid'/>).
+Therefore Data Channel Establishment Protocol message MUST be sent with the
+assigned PPID for the Data Channel Establishment Protocol
+(see <xref target='iana_ppid'/>).
 Other message MUST NOT be sent using this PPID.</t>
 
 <t>If one sides wants to open a data channel, it chooses an SCTP stream
@@ -366,7 +366,8 @@ SCTP stream, a new DATA_CHANNEL_OPEN message can be sent on the stream.</t>
 </list>
 ]</t>
 <t>IANA is asked to update the reference of an already existing SCTP PPID
-assignment and to create three new registries for the data channel protocol.</t>
+assignment and to create three new registries for the Data Channel
+Establishment Protocol.</t>
 
 <section title='SCTP Payload Protocol Identifier'
          anchor='iana_ppid'>
@@ -387,15 +388,16 @@ Therefore this assignment should be updated to read:</t>
 <section title='New Message Type Registry'
          anchor ='iana_msg_type'>
 <t>IANA is requested to create a new registration table "Message Type Registry"
-for the data channel protocol to manage the one byte "Message Type" field in
-data channel messages (see <xref target='msg_format'/>).</t>
+for the Data Channel Establishment Protocol to manage the one byte
+"Message Type" field in Data Channel Establishment Protocol messages
+(see <xref target='msg_format'/>).</t>
 <t>The assignment of new message types is done through an RFC required action,
 as defined in <xref target='RFC5226'/>.
 Documentation of the new message type MUST contain the following information:
 <list style="numbers">
 <t>A name for the new message type;</t>
 <t>A detailed procedural description of the use of messages with the new type
-within the operation of the data channel protocol.</t>
+within the operation of the Data Channel Establishment Protocol.</t>
 </list></t>
 <t>Initially the following values need to be registered:</t>
 <texttable>
@@ -417,8 +419,9 @@ of the document.</t>
 <section title='New Channel Type Registry'
          anchor='iana_channel_type'>
 <t>IANA is requested to create a new registration table "Channel Type Registry"
-for the data channel protocol to manage the one byte "Channel Type" field in
-DATA_CHANNEL_OPEN messages (see <xref target='open_msg_format'/>).</t>
+for the Data Channel Establishment Protocol to manage the one byte
+"Channel Type" field in DATA_CHANNEL_OPEN messages
+(see <xref target='open_msg_format'/>).</t>
 <t>The assignment of new message types is done through an RFC required action,
 as defined in <xref target='RFC5226'/>.
 Documentation of the new channel type MUST contain the following information:
@@ -450,8 +453,9 @@ delivery is unordered or not.</t>
 <section title='New Protocol Registry'
          anchor='iana_protocol'>
 <t>IANA is requested to create a new registration table "Protocol Registry"
-for the data channel protocol to manage the "Protocol" field of type string in
-DATA_CHANNEL_OPEN messages (see <xref target='open_msg_format'/>).</t>
+for the Data Channel Establishment Protocol to manage the "Protocol" field of
+type string in DATA_CHANNEL_OPEN messages
+(see <xref target='open_msg_format'/>).</t>
 <t>The assignment of new message types is done through an First Come First
 Served action, as defined in <xref target='RFC5226'/>.
 Documentation of the new protocol MUST contain the following information:
@@ -466,9 +470,17 @@ Documentation of the new protocol MUST contain the following information:
 
 
 <section title='Acknowledgments'>
-<t>The authors wish to thank Martin Thompson, Cullen Jennings, Harald
-Alvestrand, Peter Thatcher, Adam Bergkvist, Justin Uberti, Randall Stewart,
-Stefan Håkansson and many others for their invaluable comments.</t>
+<t>The authors wish to thank
+Harald Alvestrand,
+Adam Bergkvist,
+Barry Dingle,
+Stefan Håkansson,
+Cullen Jennings,
+Randall Stewart,
+Peter Thatcher,
+Martin Thompson,
+Justin Uberti,
+and many others for their invaluable comments.</t>
 </section>
 </middle>
 
