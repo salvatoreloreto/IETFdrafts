@@ -165,11 +165,11 @@ or in parallel, such as when sharing a folder of images or a directory of files.
 <t>Realtime text chat during an audio and/or video call with an individual
 or with multiple people in a conference.</t>
 
-<t>Renegotiation of the set of media streams in the PeerConnection.</t>
+<t>Renegotiation of the configuration of the PeerConnection.</t>
 
 <t>Proxy browsing, where a browser uses data channels of a PeerConnection
 to send and receive HTTP/HTTPS requests and data, for example to avoid local
-internet filtering or monitoring.</t>
+Internet filtering or monitoring.</t>
 </list></t>
 </section>
 </section>
@@ -181,22 +181,21 @@ two browsers.</t>
 
 <t><list style='format Req. %d:'>
 <t>Multiple simultaneous data channels MUST be supported.
-Note that there may 0 or more media streams in parallel with the data channels,
-and the number and state (active/inactive) of the media streams may change at
-any time.</t>
+Note that there may 0 or more media streams in parallel with the data channels
+in the same PeerConnection, and the number and state (active/inactive) of
+these media streams may change at any time.</t>
 
 <t>Both reliable and unreliable data channels MUST be supported.</t>
 
-<t>Data channels MUST be congestion controlled; either individually,
-as a class, or in conjunction with the media streams, to ensure
-that data channels don't cause congestion problems for the
-media streams, and that the WebRTC PeerConnection as a whole is
-fair with competing traffic such as TCP.</t>
+<t>Data channels of a PeerConnection MUST be congestion controlled;
+either individually, as a class, or in conjunction with the media streams
+of the PeerConnection, to ensure that data channels don't cause congestion
+problems for these media streams, and that the WebRTC PeerConnection as
+a whole is fair with competing traffic such as TCP.</t>
 
 <t>The application SHOULD be able to provide guidance as to the 
 relative priority of each data channel relative to each other,
 and relative to the media streams.
-[ TBD: how this is encoded and what the impact of this is. ]
 This will interact with the congestion control algorithms.</t>
 
 <t>Data channels MUST be secured; allowing for confidentiality,
@@ -267,8 +266,9 @@ unreliable datagram service) exposes.</t>
 
 <t>The encapsulation of SCTP over DTLS defined in
 <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> provides confidentiality,
-source authenticated, and integrity protected transfers. Using DTLS
-over UDP in combination with ICE enables NAT traversal in IPv4 based networks.
+source authenticated, and integrity protected transfers.
+Using DTLS over UDP in combination with ICE enables middlebox traversal
+in IPv4 and IPv6 based networks.
 SCTP as specified in <xref target='RFC4960'/> MUST be used in
 combination with the extension defined in <xref target='RFC3758'/> and 
 provides the following interesting features for transporting non-media
@@ -284,7 +284,11 @@ Identifier (PPID) that is passed to SCTP by its upper layer and sent to its peer
 This value can be used to multiplex multiple protocols
 over a single SCTP association. The sender provides for each protocol a
 specific PPID and the receiver can demultiplex the messages based on the
-received PPID.</t>
+received PPID.
+The PPID is used to distinguish UTF-8 encoded user data and binary encoded
+userdata. The Data Channel Establishment Protocol defined in
+<xref target='I-D.ietf-rtcweb-data-protocol'/> uses also a specific PPID to
+be distinguished from user data.</t>
 
 <!--
 <t>Moreover SCTP provides the possibility to transport different "protocols"
@@ -360,14 +364,17 @@ in combination with SCTP over UDP <xref target='RFC6951'/>)
 has been chosen because it
 <list style='symbols'>
 <t>supports the transmission of arbitrary large user messages.</t>
-<t>shares the DTLS connection with the media channels.</t>
+<t>shares the DTLS connection with the media channels of the PeerConnection.</t>
 <t>provides privacy for the SCTP control information.</t>
 </list></t>
 
 <t>Considering the protocol stack of <xref target='fig-sctp-layering'/> the
 usage of DTLS over UDP is specified in <xref target='RFC6347'/>, while the
 usage of SCTP on top of DTLS is specified in
-<xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>.</t>
+<xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>.
+Please note that the demultiplexing STUN vs. SRTP vs. DTLS is done
+as described in Section 5.1.2 of <xref target='RFC5764'/> and SCTP
+is the only payload of DTLS.</t>
 
 <t>Since DTLS is typically implemented in user-land, the SCTP stack also
 needs to be a user-land stack.</t>
@@ -402,7 +409,8 @@ or DTLS (being connection-oriented).</t>
 protects the complete SCTP packet, so it provides confidentiality, integrity and
 source authentication of the complete SCTP packet.</t>
 
-<t>This protocol stack MUST support the usage of multiple SCTP streams.
+<t>This SCTP stack and its upper layer MUST support the usage of multiple
+SCTP streams.
 A user message can be sent ordered or unordered and with partial or full
 reliability.
 The partial reliability extension MUST support policies to limit
@@ -419,9 +427,10 @@ that all SCTP streams within a single SCTP association share the same
 congestion window. Traffic not being sent over SCTP is not covered by
 the SCTP congestion control. Using a congestion control different from
 the standard one might improve the impact on the parallel SRTP media streams.
-Since SCTP does not support the negotiation of a congestion control algorithm,
-alternate congestion controls SHOULD only require a different sender side
-behavior using existing information carried in the association.</t>
+Since SCTP does not support the negotiation of a congestion control algorithm
+yet, alternate congestion controls SHOULD either only require a different
+sender side behavior using existing information carried in the association or
+need also specify a negotiation of of a congestion control algorithm.</t>
 </section>
 
 <section title='The Usage of SCTP in the WebRTC Context'
@@ -437,7 +446,8 @@ behavior using existing information carried in the association.</t>
 <t>The dynamic address reconfiguration extension defined in
    <xref target='RFC5061'/> MUST be used to signal the support of the
    stream reset extension defined in <xref target='RFC6525'/>,
-   other features of <xref target='RFC5061'/> MUST NOT be used.</t>
+   other features of <xref target='RFC5061'/> are NOT REQUIRED to be
+   implemented.</t>
 <t>The partial reliability extension defined in <xref target='RFC3758'/> MUST
    be supported. In addition to the timed reliability PR-SCTP policy defined
    in <xref target='RFC3758'/>, the limited retransmission policy defined in
@@ -454,7 +464,7 @@ supported.</t>
 PeerConnection agree on opening it, as negotiated by JSEP (typically an
 exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>. Additionally,
 the negotiation SHOULD include some type of congestion control selection.
-It will use the DTLS connection selected via SDP; typically this will be
+It will use the DTLS connection selected via ICE; typically this will be
 shared via BUNDLE or equivalent with DTLS connections used to key the
 DTLS-SRTP media streams.</t>
 <!-- FIXME: Negotiation of CC. -->
@@ -674,12 +684,13 @@ and Magnus Westerlund.</t>
 <?rfc include='reference.I-D.ietf-rtcweb-security-arch'?>
 <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
 <?rfc include='reference.I-D.ietf-rtcweb-qos'?>
+<?rfc include='reference.I-D.ietf-tsvwg-sctp-prpolicies'?>
 </references>
 <references title='Informative References'>
+<?rfc include='reference.RFC.5764'?>
 <?rfc include='reference.RFC.6083'?>
 <?rfc include='reference.RFC.6951'?>
 <?rfc include='reference.I-D.ietf-rtcweb-use-cases-and-requirements'?>
-<?rfc include='reference.I-D.ietf-tsvwg-sctp-prpolicies'?>
 </references>
 </back>
 
