@@ -11,6 +11,8 @@
      ipr='trust200902'
      docName='draft-ietf-rtcweb-data-protocol-02.txt'>
 <front>
+<!-- FIXME: Change name to WebRT Data Channel Establishment Protocol?
+            Ack to Barry Dingle -->
 <title>WebRTC Data Channel Protocol</title>
 
 <author initials='R.' surname='Jesup' fullname='Randell Jesup'>
@@ -307,8 +309,9 @@ Therefore data channel protocol message MUST be sent with the assigned PPID
 for the data channel protocol (see <xref target='iana_ppid'/>).
 Other message MUST NOT be sent using this PPID.</t>
 
-<t>If one sides wants to open a data channel, it chooses a free
-outgoing SCTP stream. If the side is the DTLS client, it MUST choose
+<t>If one sides wants to open a data channel, it chooses an SCTP stream
+identifier for which the corresponding incoming and outgoing SCTP streams
+are free. If the side is the DTLS client, it MUST choose
 an even stream identifier, if the side is the DTLS server, it MUST
 choose an odd one. It fills in the parameters of the DATA_CHANNEL_OPEN message
 and sends it on the chosen SCTP stream.</t>
