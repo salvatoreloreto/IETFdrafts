@@ -68,7 +68,7 @@ sending of user data without waiting for the handshake to complete.</t>
 
 <middle>
 <section title='Introduction'>
-<t>The Data Channel Establishment Protocol is designed to provide, in the
+<t>The Data Channel Establishment Protocol (DCEP) is designed to provide, in the
 WebRTC data channel context <xref target='I-D.ietf-rtcweb-data-channel'/>,
 a simple in-band method to open symmetric data channels.
 As discussed in <xref target='I-D.ietf-rtcweb-data-channel'/>, the protocol uses
@@ -372,25 +372,25 @@ Establishment Protocol.</t>
 <section title='SCTP Payload Protocol Identifier'
          anchor='iana_ppid'>
 <t>This document uses one already registered SCTP Payload Protocol
-Identifier (PPID). <xref target='RFC4960'/> creates the registry
+Identifier (PPID) named "WebRTC Control".
+<xref target='RFC4960'/> creates the registry
 "SCTP Payload Protocol Identifiers" from which this identifier was assigned.
 IANA is requested to update the reference of this assignment to point to this
-document.
+document and to update the name.
 Therefore this assignment should be updated to read:</t>
 <texttable>
 <ttcol align='left'>Value</ttcol>
 <ttcol align='left'>SCTP PPID</ttcol>
 <ttcol align='left'>Reference</ttcol>
-<c>WebRTC Control</c> <c>50</c> <c>[RFCXXXX]</c>
+<c>WebRTC DCEP</c> <c>50</c> <c>[RFCXXXX]</c>
 </texttable>
 </section>
 
 <section title='New Message Type Registry'
          anchor ='iana_msg_type'>
 <t>IANA is requested to create a new registration table "Message Type Registry"
-for the Data Channel Establishment Protocol to manage the one byte
-"Message Type" field in Data Channel Establishment Protocol messages
-(see <xref target='msg_format'/>).</t>
+for the Data Channel Establishment Protocol (DCEP) to manage the one byte
+"Message Type" field in DCEP messages (see <xref target='msg_format'/>).</t>
 <t>The assignment of new message types is done through an RFC required action,
 as defined in <xref target='RFC5226'/>.
 Documentation of the new message type MUST contain the following information:
