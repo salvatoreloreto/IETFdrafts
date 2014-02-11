@@ -446,7 +446,7 @@ need also specify a negotiation of of a congestion control algorithm.</t>
 <t>The dynamic address reconfiguration extension defined in
    <xref target='RFC5061'/> MUST be used to signal the support of the
    stream reset extension defined in <xref target='RFC6525'/>,
-   other features of <xref target='RFC5061'/> are NOT REQUIRED to be
+   other features of <xref target='RFC5061'/> are not REQUIRED to be
    implemented.</t>
 <t>The partial reliability extension defined in <xref target='RFC3758'/> MUST
    be supported. In addition to the timed reliability PR-SCTP policy defined
@@ -489,14 +489,16 @@ on <xref target='RFC6525'/>.</t>
 </section>
 -->
 
-
-<t>The application SHOULD indicate the initial number of streams
+<t>The number of streams negotiated during SCTP association setup SHOULD
+be 65535, which is the maximum number of streams that can negotiated during
+the association setup.</t>
+<!--<t>The application SHOULD indicate the initial number of streams
 required when opening the association, and if no value is supplied, the
 implementation SHOULD provide an appropriate default.
 If more simultaneous streams are needed, <xref target='RFC6525'/> allows
 adding additional (but not removing) streams to an existing association.
 Note there can be up to 65536 SCTP streams per SCTP association in each
-direction.</t>
+direction.</t>-->
 </section>
 
 <section title='SCTP Streams'>
@@ -518,11 +520,12 @@ among other things. Each data channel also has a priority. These priorities
 MUST NOT be strict priorities.</t>
 
 <t>The realization of a bidirectional Data Channel is a pair of one
-incoming stream and one outgoing SCTP stream.</t>
+incoming stream and one outgoing SCTP stream having the same stream SCTP
+identifier.</t>
 
-<t>Note that there's no requirement for the SCTP streams used to create	
-a bidirectional channel have the same number in each direction. 
-How stream values are selected is protocol and implementation dependent.</t>
+<!--<t>Note that there's no requirement for the SCTP streams used to create	
+a bidirectional channel have the same number in each direction. -->
+<t>How stream values are selected is protocol and implementation dependent.</t>
 </section>
 
 <section title='Opening a Channel'>
@@ -533,23 +536,23 @@ The details are out of scope of this document.</t>
 <xref target='I-D.ietf-rtcweb-data-protocol'/> and MUST be supported.</t>
 
 <t>When one side wants to open a channel using external negotiation, it
-picks a Stream. This can be based on the DTLS role (the client picks even
+picks a stream. This can be based on the DTLS role (the client picks even
 stream identifiers, the server odd stream identifiers) or done in a different
 way. However, the application is responsible for avoiding collisions with
-existing Streams.
-If it attempts to re-use a Stream which is part of an existing Channel,
+existing streams.
+If it attempts to re-use a stream which is part of an existing Channel,
 the addition SHOULD fail.
-In addition to choosing a Stream, the application SHOULD also inform the
+In addition to choosing a stream, the application SHOULD also inform the
 protocol of the options to use for sending messages.
 The application MUST ensure in an application-specific manner that
-the other side will also inform the protocol that the selected Stream is to
+the other side will also inform the protocol that the selected stream is to
 be used, and the parameters for sending data from that side.</t>
 </section>
 
 <section title='Transferring User Data on a Channel'>
 
 <t>All data sent on a Channel in both directions MUST be sent over the
-underlying Stream using the reliability defined when the Channel was
+underlying stream using the reliability defined when the Channel was
 opened unless the options are changed, or per-message options are specified
 by a higher level.</t>
 
@@ -557,31 +560,29 @@ by a higher level.</t>
 
 <t>The SCTP Payload Protocol Identifiers (PPIDs) are used to signal the 
 interpretation of the "Payload data". For identifying a JavaScript string
-the PPID "DOMString Last" MUST be used, for JavaScript binary data
-(ArrayBuffer or Blob) the PPID "Binary Data Last" MUST be used
-(see <xref target='sec-IANA'/>).</t>
+encoded in UTF-8 the PPID "WebRTC String" MUST be used,
+for JavaScript binary data (ArrayBuffer or Blob) the PPID
+"WebRTC Binary" MUST be used (see <xref target='sec-IANA'/>).</t>
+
+<t>The usage of the PPIDs "WebRTC String Partial" and "WebRTC Binary Partial"
+is deprecated. They were used for a PPID based fragmentation and reassembly
+of user messages belonging to reliable and ordered data channels.</t>
 
 <t>The SCTP base protocol specified in <xref target='RFC4960'/> does not
 support the interleaving of user messages. Therefore sending a large user
 message can monopolize the SCTP association. To overcome this limitation,
 <xref target='I-D.ietf-tsvwg-sctp-ndata'/>  defines an extension to
-support message interleaving. Once such an extension is available, it SHOULD
-be used.</t>
-
-<t>As long as message interleaving is not supported, the sending application
-SHOULD fragment large user messages for reliable and ordered data channels.
-For sending large JavaScript strings, it uses the PPID "DOMString Partial" for
-all but the last fragments and the PPID "DOMString Last" for the last one.
-For JavaScript binary data the PPIDs "Binary Data Partial" and
-"Binary Data Last" are used. The reassembly based on the PPID MUST be
-supported. For data channels which are not reliable and ordered, the sender
-MAY limit the maximum message size to avoid monopolization.</t>
+support message interleaving. Once this extension is available, it MUST
+be used. As long as message interleaving is not supported, the sender
+SHOULD limit the maximum message size to 16 KB to avoid monopolization.</t>
 
 <t>It is recommended that message size be kept within certain size bounds
-(TBD) as applications will not be able to support arbitrarily-large single
-messages.</t>
+as applications will not be able to support arbitrarily-large single
+messages. This limit has to be negotiated, for example by using
+<xref target='I-D.ietf-mmusic-sctp-sdp'/>.
+</t>
 
-<t>The sender MAY disable the Nagle algorithm to minimize the latency.</t>
+<t>The sender SHOULD disable the Nagle algorithm to minimize the latency.</t>
 </section>
 
 <section title='Closing a Channel'>
@@ -637,20 +638,22 @@ with DTLS.</t>
 </list>
 ]</t>
 <t>This document uses four already registered SCTP Payload Protocol
-Identifiers (PPIDs).
+Identifiers (PPIDs):
+"DOMString Last", "Binary Data Partial", "Binary Data Last", and
+"DOMString Partial".
 <xref target='RFC4960'/> creates the registry "SCTP Payload Protocol Identifiers"
 from which these identifiers were assigned.
 IANA is requested to update the reference of these four assignments to point
-to this document.
+to this document and change the names of the PPIDs.
 Therefore these four assignments should be updated to read:</t>
 <texttable>
 <ttcol align='left'>Value</ttcol>
 <ttcol align='left'>SCTP PPID</ttcol>
 <ttcol align='left'>Reference</ttcol>
-<c>DOMString Last</c>      <c>51</c> <c>[RFCXXXX]</c>
-<c>Binary Data Partial</c> <c>52</c> <c>[RFCXXXX]</c>
-<c>Binary Data Last</c>    <c>53</c> <c>[RFCXXXX]</c>
-<c>DOMString Partial</c>   <c>54</c> <c>[RFCXXXX]</c>
+<c>WebRTC String</c>                      <c>51</c> <c>[RFCXXXX]</c>
+<c>WebRTC Binary Partial (Deprecated)</c> <c>52</c> <c>[RFCXXXX]</c>
+<c>WebRTC Binary</c>                      <c>53</c> <c>[RFCXXXX]</c>
+<c>WebRTC String Partial (Deprecated)</c> <c>54</c> <c>[RFCXXXX]</c>
 </texttable>
 </section>
 
@@ -685,6 +688,7 @@ and Magnus Westerlund.</t>
 <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
 <?rfc include='reference.I-D.ietf-rtcweb-qos'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-prpolicies'?>
+<?rfc include='reference.I-D.ietf-mmusic-sctp-sdp'?>
 </references>
 <references title='Informative References'>
 <?rfc include='reference.RFC.5764'?>
