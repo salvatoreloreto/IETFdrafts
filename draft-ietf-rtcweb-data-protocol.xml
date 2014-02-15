@@ -9,7 +9,7 @@
 
 <rfc category='std'
      ipr='trust200902'
-     docName='draft-ietf-rtcweb-data-protocol-03.txt'>
+     docName='draft-ietf-rtcweb-data-protocol-04.txt'>
 <front>
 <title>WebRTC Data Channel Establishment Protocol</title>
 
@@ -160,8 +160,8 @@ The corresponding values are managed by IANA
 <t>This message is sent initially on the stream used for user messages
 using the channel.</t>
 
-<figure align='center'>
-<artwork>
+<figure>
+<artwork align='center'>
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -275,8 +275,8 @@ an IANA-registered protocol (see <xref target='iana_protocol'/>).</t>
 message on the stream used for user messages using the channel.
 Reception of this message tells the opener that the channel setup
 handshake is complete.</t>
-<figure align='center'>
-<artwork>
+<figure>
+<artwork align='center'>
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

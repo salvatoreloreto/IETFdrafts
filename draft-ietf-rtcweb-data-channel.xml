@@ -9,7 +9,7 @@
 
 <rfc category='std'
      ipr='trust200902'
-     docName='draft-ietf-rtcweb-data-channel-07.txt'>
+     docName='draft-ietf-rtcweb-data-channel-08.txt'>
 <front>
 <title>WebRTC Data Channels</title>
 
@@ -82,9 +82,8 @@ peer.</t>
 <xref target='RFC4960'/> encapsulated in DTLS <xref target='RFC6347'/>.</t>
 
 <figure title='Basic stack diagram'
-        anchor='fig-stack'
-        align='center'>
-<artwork>
+        anchor='fig-stack'>
+<artwork align='center'>
 +----------+
 |   SCTP   |
 +----------+
@@ -342,9 +341,8 @@ requirement 12.</t>
 <t>The layering of protocols for WebRTC is shown in the following
 <xref target='fig-sctp-layering'/>.</t>
 <figure title='WebRTC protocol layers'
-        anchor='fig-sctp-layering'
-        align='center'>
-<artwork>
+        anchor='fig-sctp-layering'>
+<artwork align='center'>
               +------+
               |WEBRTC|
               | DATA |
