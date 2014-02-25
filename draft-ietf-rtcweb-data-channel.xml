@@ -278,16 +278,25 @@ data between browsers:
 <t>Reliable and partial-reliable transport of user messages.</t>
 </list></t>
 
-<t>Each SCTP user message contains a so called Payload Protocol
-Identifier (PPID) that is passed to SCTP by its upper layer and sent to its peer.
-This value can be used to multiplex multiple protocols
-over a single SCTP association. The sender provides for each protocol a
-specific PPID and the receiver can demultiplex the messages based on the
-received PPID.
+<t>Each SCTP user message contains a Payload Protocol Identifier (PPID)
+that is passed to SCTP by its upper layer on the sending side and
+provided to its upper layer on the receiving side.
+The PPID can be used to multiplex/demultiplex multiple upper layers over
+a single SCTP association.
+In the WebRTP context, the PPID is used to distinguish between
+UTF-8 encoded user data,
+binary encoded userdata and
+the Data Channel Establishment Protocol defined in
+<xref target='I-D.ietf-rtcweb-data-protocol'/>.
+Please note that the PPID is not accessable via the Javascript API.</t>
+
+Please note that this PPID is not accessible by the JavaScript
+program
 The PPID is used to distinguish UTF-8 encoded user data and binary encoded
 userdata. The Data Channel Establishment Protocol defined in
 <xref target='I-D.ietf-rtcweb-data-protocol'/> uses also a specific PPID to
-be distinguished from user data.</t>
+be distinguished from user data.
+Please note that the PPID is not accessable from the Javascript application.</t>
 
 <!--
 <t>Moreover SCTP provides the possibility to transport different "protocols"
@@ -378,7 +387,7 @@ is the only payload of DTLS.</t>
 needs to be a user-land stack.</t>
 
 <t>When using DTLS as the lower layer, only single homed SCTP associations
-MUST be used, since DTLS does not expose any address management to its upper
+are supported, since DTLS does not expose any address management to its upper
 layer.
 The ICE/UDP layer can handle IP address changes during a session without needing
 to notify the DTLS and SCTP layers, though it would be advantageous to retest
@@ -659,6 +668,7 @@ Therefore these four assignments should be updated to read:</t>
 <t>Many thanks for comments, ideas, and text from
 Harald Alvestrand,
 Adam Bergkvist,
+Christer Holmberg,
 Cullen Jennings,
 Eric Rescorla,
 Randall Stewart,
