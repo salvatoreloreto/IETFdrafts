@@ -213,13 +213,13 @@ The channel provides a partial reliable in-order bi-directional
 Communication channel. User messages might not be transmitted or
 retransmitted after a specified life-time given in milli-seconds in the
 Reliability Parameter. This life-time starts when providing the user
-message to the Javascript engine.</t>
+message to the protocol stack.</t>
 <t hangText='DATA_CHANNEL_PARTIAL_RELIABLE_TIMED_UNORDERED (0x82):'>
 The channel provides a partial reliable unordered bi-directional
 Communication channel. User messages might not be transmitted or
 retransmitted after a specified life-time given in milli-seconds in the
 Reliability Parameter. This life-time starts when providing the user
-message to the Javascript engine.</t>
+message to the protocol stack.</t>
 </list></t>
 
 <t hangText='Priority: 2 bytes (integer)'>
@@ -231,8 +231,8 @@ The higher the number, the lower the priority.</t>
 
 <t hangText='Reliability Parameter: 4 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
-This field is ignored if a reliable channel is used.
-<vspace blankLines='0'/>
+For reliable channels this field MUST be set to 0 on the sending side
+and MUST be ignored no the receiving side.
 If a partial reliable channel with limited number of retransmissions is
 used, this field specifies the number of retransmissions. If a partial
 reliable channel with limited lifetime is used, this field specifies
@@ -476,6 +476,7 @@ Adam Bergkvist,
 Barry Dingle,
 Stefan Håkansson,
 Cullen Jennings,
+Paul Kyzivat,
 Randall Stewart,
 Peter Thatcher,
 Martin Thompson,
