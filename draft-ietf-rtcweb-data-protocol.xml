@@ -111,6 +111,7 @@ Channels over an SCTP association with a consistent set of properties.</t>
 <t>whether the messages are transmitted reliable or unreliable. In case
    of unreliable transmissions, the same level of unreliability is used.</t>
 <t>whether the messages are delivered in-order or out-of order.</t>
+<t>the priority of the data Channel.</t>
 <t>an optional label for the Channel.</t>
 <t>an optional protocol for the Channel.</t>
 <t>the SCTP streams.</t>
@@ -260,13 +261,15 @@ The length of the protocol field in bytes.</t>
 
 <t hangText='Label: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
-The name of the channel. This may be an empty string.</t>
+The name of the channel as a UTF-8 encoded string.
+This may be an empty string.</t>
 
 <t hangText='Protocol: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
-The protocol for the channel. If this is an empty string the
-protocol us unspecified. If it is an non-empty string, it specifies
-an IANA-registered protocol (see <xref target='iana_protocol'/>).</t>
+The protocol for the channel as a UTF-8 encoded string.
+If this is an empty string the protocol us unspecified.
+If it is an non-empty string, it specifies an IANA-registered protocol
+(see <xref target='iana_protocol'/>).</t>
 </list></t>
 </section>
 
@@ -320,8 +323,8 @@ and sends it on the chosen SCTP stream.</t>
 can start sending messages containing user data without waiting for the
 reception of the corresponding DATA_CHANNEL_ACK message.
 However, before the DATA_CHANNEL_ACK message or any other message has been
-received on the data channel, all other messages containing user data and
-belonging to the data channel MUST be sent ordered, not matter whether the
+received on a data channel, all other messages containing user data and
+belonging to this data channel MUST be sent ordered, no matter whether the
 data channel is ordered or not.
 After the DATA_CHANNEL_ACK or any other message has been received on the data
 channel, messages containing user data MUST be send ordered on ordered data
@@ -413,7 +416,8 @@ within the operation of the Data Channel Establishment Protocol.</t>
 </texttable>
 <t>Please note that the values 0x00 and 0x01 are reserved to avoid
 interoperability problems, since they have been used in earlier versions
-of the document.</t>
+of the document.
+The value 0xff has been reserved for future extensibility.</t>
 </section>
 
 <section title='New Channel Type Registry'
