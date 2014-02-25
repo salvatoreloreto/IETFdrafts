@@ -68,7 +68,7 @@ Open Issues:
 <t>The Real-Time Communication in WEB-browsers working group is charged
 to provide protocol support for direct interactive rich communication using
 audio, video, and data between two peers' web-browsers.
-This document specifies the non-media data transport aspects of the WebRTC
+This document specifies the non SRTP media data transport aspects of the WebRTC
 framework. It provides an architectural overview of how the Stream Control
 Transmission Protocol (SCTP) is used in the WebRTC context as a generic
 transport service allowing WEB-browsers to exchange generic data from peer to
@@ -78,7 +78,7 @@ peer.</t>
 
 <middle>
 <section title='Introduction'>
-<t>Non-media data types in the context of WebRTC are handled by using SCTP
+<t>Non SRTP media data types in the context of WebRTC are handled by using SCTP
 <xref target='RFC4960'/> encapsulated in DTLS <xref target='RFC6347'/>.</t>
 
 <figure title='Basic stack diagram'
@@ -99,23 +99,28 @@ peer.</t>
 (see <xref target='RFC5245'/>) provides a NAT traversal
 solution together with confidentiality, source authentication, and
 integrity protected transfers.
-This data transport service operates in parallel to the media transports,
+This data transport service operates in parallel to the SRTP media transports,
 and all of them can eventually share a single transport-layer port number.</t>
 
 <t>SCTP as specified in <xref target='RFC4960'/> with the partial reliability
-extension defined in <xref target='RFC3758'/> provides multiple streams
-natively with reliable, and partially-reliable delivery modes for user messages.
+extension defined in <xref target='RFC3758'/> and the additional policies
+defined in <xref target='I-D.ietf-tsvwg-sctp-prpolicies'/>
+provides multiple streams natively with reliable, and the relevant 
+partially-reliable delivery modes for user messages.
 Using the reconfiguration extension defined in <xref target='RFC6525'/>
 allows to increase the number of streams during the lifetime of an SCTP
-association and to reset individual SCTP streams.</t>
+association and to reset individual SCTP streams.
+Using <xref target='I-D.ietf-tsvwg-sctp-ndata'/> allows to interleave
+large messages to avoid the monopolization and adds the support of
+prioritising of SCTP streams.</t>
 
 <t>The remainder of this document is organized as follows:
 <xref target='sec-use-cases'/> and <xref target='sec-req'/> provide use cases
 and requirements for both unreliable and reliable peer to peer data channels;
-<xref target='sec-p-a-2'/> arguments SCTP over DTLS over UDP;
+<xref target='sec-p-a-2'/> discusses SCTP over DTLS over UDP;
 <xref target='sec-sctp-usage'/> provides the specification of how SCTP should be
-used by the WebRTC protocol framework for transporting non-media data between
-WEB-browsers.</t>
+used by the WebRTC protocol framework for transporting non SRTP media data
+between WEB-browsers.</t>
 </section>
 
 <section title='Conventions'>
@@ -139,8 +144,9 @@ For general use cases see
 
 <t>A real-time game where position and object state information is
 sent via one or more unreliable data channels.
-Note that at any time there may be no media channels, or all media channels
-may be inactive, and that there may also be reliable data channels in use.</t>
+Note that at any time there may be no SRTP media channels, or all SRTP media
+channels may be inactive, and that there may also be reliable data channels
+in use.</t>
 	
 <t>Providing non-critical information to a user about the reason for a state
 update in a video chat or conference, such as mute state.</t>
@@ -154,7 +160,7 @@ update in a video chat or conference, such as mute state.</t>
 
 <t> A real-time game where critical state information needs to be
 transferred, such as control information.
-Such a game may have no media channels, or they may be inactive at any
+Such a game may have no SRTP media channels, or they may be inactive at any
 given time, or may only be added due to in-game actions.</t>
 
 <t>Non-realtime file transfers between people chatting.
@@ -166,6 +172,8 @@ or with multiple people in a conference.</t>
 
 <t>Renegotiation of the configuration of the PeerConnection.</t>
 
+<!-- FIXME: This needs either to be removed or addressed appropriately in
+            the security considerations section. -->
 <t>Proxy browsing, where a browser uses data channels of a PeerConnection
 to send and receive HTTP/HTTPS requests and data, for example to avoid local
 Internet filtering or monitoring.</t>
@@ -180,21 +188,21 @@ two browsers.</t>
 
 <t><list style='format Req. %d:'>
 <t>Multiple simultaneous data channels MUST be supported.
-Note that there may 0 or more media streams in parallel with the data channels
-in the same PeerConnection, and the number and state (active/inactive) of
-these media streams may change at any time.</t>
+Note that there may 0 or more SRTP media streams in parallel with the data
+channels in the same PeerConnection, and the number and state (active/inactive)
+of these SRTP media streams may change at any time.</t>
 
 <t>Both reliable and unreliable data channels MUST be supported.</t>
 
 <t>Data channels of a PeerConnection MUST be congestion controlled;
-either individually, as a class, or in conjunction with the media streams
+either individually, as a class, or in conjunction with the SRTP media streams
 of the PeerConnection, to ensure that data channels don't cause congestion
-problems for these media streams, and that the WebRTC PeerConnection as
+problems for these SRTP media streams, and that the WebRTC PeerConnection as
 a whole is fair with competing traffic such as TCP.</t>
 
 <t>The application SHOULD be able to provide guidance as to the 
 relative priority of each data channel relative to each other,
-and relative to the media streams.
+and relative to the SRTP media streams.
 This will interact with the congestion control algorithms.</t>
 
 <t>Data channels MUST be secured; allowing for confidentiality,
@@ -247,8 +255,8 @@ application space.</t>
 <t>The important features of SCTP in the WebRTC context are:
 <list style='symbols'>
 <t>Usage of a TCP-friendly congestion control.</t>
-<t>The congestion control is modifiable for integration with media stream
-   congestion control.</t>
+<t>The congestion control is modifiable for integration with the
+   SRTP media stream congestion control.</t>
 <t>Support of multiple unidirectional streams, each providing its own
    notion of ordered message delivery.</t>
 <t>Support of ordered and out-of-order message delivery.</t>
@@ -270,7 +278,7 @@ Using DTLS over UDP in combination with ICE enables middlebox traversal
 in IPv4 and IPv6 based networks.
 SCTP as specified in <xref target='RFC4960'/> MUST be used in
 combination with the extension defined in <xref target='RFC3758'/> and 
-provides the following interesting features for transporting non-media
+provides the following interesting features for transporting non SRTP media
 data between browsers:
 <list style='symbols'>
 <t>Support of multiple unidirectional streams.</t> 
@@ -371,7 +379,7 @@ in combination with SCTP over UDP <xref target='RFC6951'/>)
 has been chosen because it
 <list style='symbols'>
 <t>supports the transmission of arbitrary large user messages.</t>
-<t>shares the DTLS connection with the media channels of the PeerConnection.</t>
+<t>shares the DTLS connection with the SRTP media channels of the PeerConnection.</t>
 <t>provides privacy for the SCTP control information.</t>
 </list></t>
 
@@ -393,6 +401,8 @@ The ICE/UDP layer can handle IP address changes during a session without needing
 to notify the DTLS and SCTP layers, though it would be advantageous to retest
 Path MTU on an IP address change.</t>
 
+<!-- FIXME: Remove the following paragraph after adding the DSCP
+            text to I-D.ietf-tsvwg-sctp-dtls-encaps. -->
 <t>DTLS implementations used for this stack SHOULD support controlling fields of
 the IP layer like the Don't Fragment (DF)-bit in case of IPv4 and the
 Differentiated Services Code Point (DSCP) field required for supporting
@@ -406,7 +416,7 @@ the SCTP layer, since there is no way to identify the corresponding
 association. Therefore SCTP MUST support performing Path MTU discovery
 without relying on ICMP or ICMPv6 as specified in <xref target='RFC4821'/>
 using probing messages specified in <xref target='RFC4820'/>.
-The initial Path MTU at the IP layer MUST NOT exceed 1200 bytes for IPv4
+The initial Path MTU at the IP layer SHOULD NOT exceed 1200 bytes for IPv4
 and 1280 for IPv6.</t>
 <t>In general, the lower layer interface of an SCTP implementation SHOULD be
 adapted to address the differences between IPv4 and IPv6 (being connection-less)
@@ -432,8 +442,9 @@ and delivered in the order received.</t>
 <t>SCTP provides congestion control on a per-association base. This means
 that all SCTP streams within a single SCTP association share the same
 congestion window. Traffic not being sent over SCTP is not covered by
-the SCTP congestion control. Using a congestion control different from
-the standard one might improve the impact on the parallel SRTP media streams.
+the SCTP congestion control.
+Using a congestion control different other than the standard one might improve
+the impact on the parallel SRTP media streams.
 Since SCTP does not support the negotiation of a congestion control algorithm
 yet, alternate congestion controls SHOULD either only require a different
 sender side behavior using existing information carried in the association or
@@ -460,20 +471,21 @@ need also specify a negotiation of of a congestion control algorithm.</t>
    in <xref target='RFC3758'/>, the limited retransmission policy defined in
    <xref target='I-D.ietf-tsvwg-sctp-prpolicies'/> MUST be supported.</t>
 </list></t>
-<t>Once support for message interleaving as currently being discussed
-in <xref target='I-D.ietf-tsvwg-sctp-ndata'/> is available, it SHOULD be
-supported.</t>
+<t>The support for message interleaving as defined in
+<xref target='I-D.ietf-tsvwg-sctp-ndata'/> SHOULD be used.</t>
 </section>
 
 <section title='Association Setup'
          anchor='sec-sctp-setup'>
 <t>The SCTP association will be set up when the two endpoints of the WebRTC
 PeerConnection agree on opening it, as negotiated by JSEP (typically an
-exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>. Additionally,
-the negotiation SHOULD include some type of congestion control selection.
+exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>.
+<!-- FIXME: How will the CC be negotiated. There is no other CC right now... -->
+Additionally, the negotiation SHOULD include some type of congestion
+control selection.
 It will use the DTLS connection selected via ICE; typically this will be
 shared via BUNDLE or equivalent with DTLS connections used to key the
-DTLS-SRTP media streams.</t>
+SRTP media streams.</t>
 <!-- FIXME: Negotiation of CC. -->
 <!-- FIXME: Bundle Issue. -->
 
@@ -510,7 +522,7 @@ direction.</t>-->
 
 <section title='SCTP Streams'>
 <t>SCTP defines a stream as a unidirectional logical channel existing within
-an SCTP association one to another SCTP endpoint. The streams are used to
+an SCTP association to another SCTP endpoint. The streams are used to
 provide the notion of in-sequence delivery and for multiplexing.
 Each user message is sent on a particular stream, either order or unordered.
 Ordering is preserved only for ordered messages sent on the same stream.</t>
@@ -523,14 +535,16 @@ out-of-sequence, reliable and unreliable as properties of Channels. One strong
 wish is for the application-level API to be close to the API for WebSockets,
 which implies bidirectional streams of data and waiting for onopen to fire
 before sending, a textual label used to identify the meaning of the stream,
-among other things. Each data channel also has a priority. These priorities
-MUST NOT be strict priorities.</t>
+among other things.
+<!-- FIXME: This needs a more specific statement -->
+Each data channel also has a priority. These priorities MUST NOT be
+strict priorities.</t>
 
 <t>The realization of a bidirectional Data Channel is a pair of one
 incoming stream and one outgoing SCTP stream having the same stream SCTP
 identifier.</t>
 
-<!--<t>Note that there's no requirement for the SCTP streams used to create	
+<!--<t>Note that there's no requirement for the SCTP streams used to create
 a bidirectional channel have the same number in each direction. -->
 <t>How stream values are selected is protocol and implementation dependent.</t>
 </section>
@@ -539,21 +553,24 @@ a bidirectional channel have the same number in each direction. -->
 <t>Data channels can be opened by using internal or external negotiation.
 The details are out of scope of this document.</t>
 
+<!-- FIXME: Is MUST the correct in the following paragraph? -->
 <t>A simple protocol for internal negotiation is specified in
 <xref target='I-D.ietf-rtcweb-data-protocol'/> and MUST be supported.</t>
 
 <t>When one side wants to open a channel using external negotiation, it
-picks a stream. This can be based on the DTLS role (the client picks even
-stream identifiers, the server odd stream identifiers) or done in a different
-way. However, the application is responsible for avoiding collisions with
+picks a stream.
+Unless otherwise defined or negotiated, the streams are picked based on
+the DTLS role (the client picks even stream identifiers,
+the server odd stream identifiers).
+However, the application is responsible for avoiding collisions with
 existing streams.
 If it attempts to re-use a stream which is part of an existing Channel,
 the addition SHOULD fail.
-In addition to choosing a stream, the application SHOULD also inform the
-protocol of the options to use for sending messages.
+In addition to choosing a stream, the application SHOULD also determine the
+the options to use for sending messages.
 The application MUST ensure in an application-specific manner that
-the other side will also inform the protocol that the selected stream is to
-be used, and the parameters for sending data from that side.</t>
+the application at the peer will also know selected stream to
+be used, and the options for sending data from that side.</t>
 </section>
 
 <section title='Transferring User Data on a Channel'>
@@ -577,10 +594,10 @@ of user messages belonging to reliable and ordered data channels.</t>
 
 <t>The SCTP base protocol specified in <xref target='RFC4960'/> does not
 support the interleaving of user messages. Therefore sending a large user
-message can monopolize the SCTP association. To overcome this limitation,
-<xref target='I-D.ietf-tsvwg-sctp-ndata'/>  defines an extension to
-support message interleaving. Once this extension is available, it MUST
-be used. As long as message interleaving is not supported, the sender
+message can monopolize the SCTP association.
+To overcome this limitation, <xref target='I-D.ietf-tsvwg-sctp-ndata'/>
+defines an extension to support message interleaving, which SHOULD be used.
+As long as message interleaving is not supported, the sender
 SHOULD limit the maximum message size to 16 KB to avoid monopolization.</t>
 
 <t>It is recommended that message size be kept within certain size bounds
