@@ -298,14 +298,6 @@ the Data Channel Establishment Protocol defined in
 <xref target='I-D.ietf-rtcweb-data-protocol'/>.
 Please note that the PPID is not accessable via the Javascript API.</t>
 
-Please note that this PPID is not accessible by the JavaScript
-program
-The PPID is used to distinguish UTF-8 encoded user data and binary encoded
-userdata. The Data Channel Establishment Protocol defined in
-<xref target='I-D.ietf-rtcweb-data-protocol'/> uses also a specific PPID to
-be distinguished from user data.
-Please note that the PPID is not accessable from the Javascript application.</t>
-
 <!--
 <t>Moreover SCTP provides the possibility to transport different "protocols"
 over multiple streams and associations using the PPID
