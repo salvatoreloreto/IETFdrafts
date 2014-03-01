@@ -13,21 +13,13 @@
 <front>
 <title>WebRTC Data Channels</title>
 
-<!--
-Open Issues:
-* Overhead of DTLS.
-* Message size limits for the data channel: Upper limits, lower limits for
-  the upper limits?
-* Disabling of the Nagle algorithm.
--->
-
 <author initials='R.' surname='Jesup' fullname='Randell Jesup'>
 <organization>Mozilla</organization>
 <address>
 <postal>
 <street></street>
-<code></code> 
-<city></city> 
+<code></code>
+<city></city>
 <country>US</country>
 </postal>
 <email>randell-ietf@jesup.org</email>
@@ -39,8 +31,8 @@ Open Issues:
 <address>
 <postal>
 <street>Hirsalantie 11</street>
-<code>02420</code> 
-<city>Jorvas</city> 
+<code>02420</code>
+<city>Jorvas</city>
 <country>FI</country>
 </postal>
 <email>salvatore.loreto@ericsson.com</email>
@@ -53,8 +45,8 @@ Open Issues:
 <address>
 <postal>
 <street>Stegerwaldstrasse 39</street>
-<code>48565</code> 
-<city> Steinfurt</city> 
+<code>48565</code>
+<city> Steinfurt</city>
 <country>DE</country>
 </postal>
 <email>tuexen@fh-muenster.de</email>
@@ -95,7 +87,7 @@ peer.</t>
 </figure>
 
 <t>The encapsulation of SCTP over DTLS
-(see <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>) over ICE/UDP 
+(see <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>) over ICE/UDP
 (see <xref target='RFC5245'/>) provides a NAT traversal
 solution together with confidentiality, source authentication, and
 integrity protected transfers.
@@ -105,7 +97,7 @@ and all of them can eventually share a single transport-layer port number.</t>
 <t>SCTP as specified in <xref target='RFC4960'/> with the partial reliability
 extension defined in <xref target='RFC3758'/> and the additional policies
 defined in <xref target='I-D.ietf-tsvwg-sctp-prpolicies'/>
-provides multiple streams natively with reliable, and the relevant 
+provides multiple streams natively with reliable, and the relevant
 partially-reliable delivery modes for user messages.
 Using the reconfiguration extension defined in <xref target='RFC6525'/>
 allows to increase the number of streams during the lifetime of an SCTP
@@ -133,7 +125,7 @@ in this document are to be interpreted as described in
 <section title='Use Cases'
          anchor='sec-use-cases'>
 
-<t>This section defined use cases specific to data channels.
+<t>This section defines use cases specific to data channels.
 For general use cases see
 <xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>.</t>
 
@@ -188,7 +180,7 @@ two browsers.</t>
 
 <t><list style='format Req. %d:'>
 <t>Multiple simultaneous data channels MUST be supported.
-Note that there may 0 or more (S)RTP media streams in parallel with the data
+Note that there may be 0 or more (S)RTP media streams in parallel with the data
 channels in the same PeerConnection, and the number and state (active/inactive)
 of these (S)RTP media streams may change at any time.</t>
 
@@ -200,14 +192,14 @@ of the PeerConnection, to ensure that data channels don't cause congestion
 problems for these (S)RTP media streams, and that the WebRTC PeerConnection as
 a whole is fair with competing traffic such as TCP.</t>
 
-<t>The application SHOULD be able to provide guidance as to the 
+<t>The application SHOULD be able to provide guidance as to the
 relative priority of each data channel relative to each other,
 and relative to the (S)RTP media streams.
 This will interact with the congestion control algorithms.</t>
 
 <t>Data channels MUST be secured; allowing for confidentiality,
 integrity and source authentication.
-See <xref target='I-D.ietf-rtcweb-security'/> and 
+See <xref target='I-D.ietf-rtcweb-security'/> and
 <xref target='I-D.ietf-rtcweb-security-arch'/> for detailed info.</t>
 
 <!--<t>Consent and NAT traversal mechanism: These are handled by the
@@ -260,7 +252,7 @@ application space.</t>
 <t>Support of multiple unidirectional streams, each providing its own
    notion of ordered message delivery.</t>
 <t>Support of ordered and out-of-order message delivery.</t>
-<t>Supporting arbitrary large user message by providing fragmentation
+<t>Supporting arbitrary large user messages by providing fragmentation
    and reassembly.</t>
 <t>Support of PMTU-discovery.</t>
 <t>Support of reliable or partially reliable message transport.</t>
@@ -277,11 +269,11 @@ source authenticated, and integrity protected transfers.
 Using DTLS over UDP in combination with ICE enables middlebox traversal
 in IPv4 and IPv6 based networks.
 SCTP as specified in <xref target='RFC4960'/> MUST be used in
-combination with the extension defined in <xref target='RFC3758'/> and 
+combination with the extension defined in <xref target='RFC3758'/> and
 provides the following interesting features for transporting non (S)RTP media
 data between browsers:
 <list style='symbols'>
-<t>Support of multiple unidirectional streams.</t> 
+<t>Support of multiple unidirectional streams.</t>
 <t>Ordered and unordered delivery of user messages.</t>
 <t>Reliable and partial-reliable transport of user messages.</t>
 </list></t>
@@ -296,14 +288,14 @@ UTF-8 encoded user data,
 binary encoded userdata and
 the Data Channel Establishment Protocol defined in
 <xref target='I-D.ietf-rtcweb-data-protocol'/>.
-Please note that the PPID is not accessable via the Javascript API.</t>
+Please note that the PPID is not accessible via the Javascript API.</t>
 
 <!--
 <t>Moreover SCTP provides the possibility to transport different "protocols"
 over multiple streams and associations using the PPID
 (Payload Protocol Identifier).
 An application can set a different PPID with each send call.
-This allows the receiving application to look at this information 
+This allows the receiving application to look at this information
 (as well as the stream id/seq) on receiving to know what type of protocol
 the data payload has.</t>
 -->
@@ -317,8 +309,8 @@ above satisfies all the requirements listed in <xref target='sec-req'/>.</t>
 <list style='empty'>
 <t>Linux (mainline kernel 2.6.36)</t>
 <t>FreeBSD (release kernel 8.2)</t>
-<t>Mac OS X</t> 
-<t>Windows (SctpDrv4)</t> 
+<t>Mac OS X</t>
+<t>Windows (SctpDrv4)</t>
 <t>Solaris (OpenSolaris 2009.06)</t>
 <t>and a user-land SCTP implementation (based on the FreeBSD implementation).</t>
 </list>
@@ -339,7 +331,7 @@ they run on mobile and desktop operating systems,
 and they are highly portable to new operating systems.
 This is achieved by having a fairly narrow portability layer to minimize
 what needs to be supported on old operating systems and ported to new ones.
-This creates a need to implement as much functionality as possible 
+This creates a need to implement as much functionality as possible
 inside the application instead of relying on the operating system.</t>
 
 <t>As a user-land implementation of SCTP is available, this meets
@@ -392,16 +384,7 @@ layer.
 The ICE/UDP layer can handle IP address changes during a session without needing
 to notify the DTLS and SCTP layers, though it would be advantageous to retest
 Path MTU on an IP address change.</t>
-
-<!-- FIXME: Remove the following paragraph after adding the DSCP
-            text to I-D.ietf-tsvwg-sctp-dtls-encaps. -->
-<t>DTLS implementations used for this stack SHOULD support controlling fields of
-the IP layer like the Don't Fragment (DF)-bit in case of IPv4 and the
-Differentiated Services Code Point (DSCP) field required for supporting
-<xref target='I-D.ietf-rtcweb-qos'/>.
-Being able to set the (DF)-bit in case of IPv4 is required for performing
-path MTU discovery. The DTLS implementation SHOULD also support sending
-user messages exceeding the Path MTU.</t>
+<!-- FIXME: Slow Start, initial CWND??? -->
 
 <t>Incoming ICMP or ICMPv6 messages can't be processed by
 the SCTP layer, since there is no way to identify the corresponding	
@@ -414,7 +397,7 @@ and 1280 for IPv6.</t>
 adapted to address the differences between IPv4 and IPv6 (being connection-less)
 or DTLS (being connection-oriented).</t>
 
-<t>When protocol stack of <xref target='fig-sctp-layering'/> is used, DTLS
+<t>When the protocol stack of <xref target='fig-sctp-layering'/> is used, DTLS
 protects the complete SCTP packet, so it provides confidentiality, integrity and
 source authentication of the complete SCTP packet.</t>
 
@@ -435,12 +418,12 @@ and delivered in the order received.</t>
 that all SCTP streams within a single SCTP association share the same
 congestion window. Traffic not being sent over SCTP is not covered by
 the SCTP congestion control.
-Using a congestion control different other than the standard one might improve
+Using a congestion control different from than the standard one might improve
 the impact on the parallel (S)RTP media streams.
 Since SCTP does not support the negotiation of a congestion control algorithm
 yet, alternate congestion controls SHOULD either only require a different
 sender side behavior using existing information carried in the association or
-need also specify a negotiation of of a congestion control algorithm.</t>
+need to specify a negotiation of a congestion control algorithm.</t>
 </section>
 
 <section title='The Usage of SCTP in the WebRTC Context'
@@ -481,7 +464,7 @@ shared via BUNDLE or equivalent with DTLS connections used to key the
 <!-- FIXME: Negotiation of CC. -->
 <!-- FIXME: Bundle Issue. -->
 
-<!-- From the protocol ID 
+<!-- From the protocol ID
 <section title='Opening Handshake'>
 <t>The opening handshake is based on the multimedia session description
 exchange that happens between the browsers, typically through a Web Server
@@ -516,7 +499,7 @@ direction.</t>-->
 <t>SCTP defines a stream as a unidirectional logical channel existing within
 an SCTP association to another SCTP endpoint. The streams are used to
 provide the notion of in-sequence delivery and for multiplexing.
-Each user message is sent on a particular stream, either order or unordered.
+Each user message is sent on a particular stream, either ordered or unordered.
 Ordering is preserved only for ordered messages sent on the same stream.</t>
 </section>
 
@@ -558,10 +541,10 @@ However, the application is responsible for avoiding collisions with
 existing streams.
 If it attempts to re-use a stream which is part of an existing Channel,
 the addition SHOULD fail.
-In addition to choosing a stream, the application SHOULD also determine the
+In addition to choosing a stream, the application SHOULD also determine
 the options to use for sending messages.
 The application MUST ensure in an application-specific manner that
-the application at the peer will also know selected stream to
+the application at the peer will also know the selected stream to
 be used, and the options for sending data from that side.</t>
 </section>
 
@@ -574,14 +557,14 @@ by a higher level.</t>
 
 <t>No more than one message should be put into an SCTP user message.</t>
 
-<t>The SCTP Payload Protocol Identifiers (PPIDs) are used to signal the 
+<t>The SCTP Payload Protocol Identifiers (PPIDs) are used to signal the
 interpretation of the "Payload data". For identifying a JavaScript string
 encoded in UTF-8 the PPID "WebRTC String" MUST be used,
 for JavaScript binary data (ArrayBuffer or Blob) the PPID
 "WebRTC Binary" MUST be used (see <xref target='sec-IANA'/>).</t>
 
 <t>The usage of the PPIDs "WebRTC String Partial" and "WebRTC Binary Partial"
-is deprecated. They were used for a PPID based fragmentation and reassembly
+is deprecated. They were used for a PPID-based fragmentation and reassembly
 of user messages belonging to reliable and ordered data channels.</t>
 
 <t>The SCTP base protocol specified in <xref target='RFC4960'/> does not
@@ -592,11 +575,11 @@ defines an extension to support message interleaving, which SHOULD be used.
 As long as message interleaving is not supported, the sender
 SHOULD limit the maximum message size to 16 KB to avoid monopolization.</t>
 
-<t>It is recommended that message size be kept within certain size bounds
+<t>It is recommended that the message size be kept within certain size bounds
 as applications will not be able to support arbitrarily-large single
 messages. This limit has to be negotiated, for example by using
-<xref target='I-D.ietf-mmusic-sctp-sdp'/>.
-</t>
+<xref target='I-D.ietf-mmusic-sctp-sdp'/>.</t>
+<!-- FIXME: How does the above paragraph relate to Req. 8? -->
 
 <t>The sender SHOULD disable the Nagle algorithm to minimize the latency.</t>
 </section>
@@ -604,7 +587,7 @@ messages. This limit has to be negotiated, for example by using
 <section title='Closing a Channel'>
 <t>Closing of a Data Channel MUST be signaled by resetting the corresponding
 outgoing streams <xref target='RFC6525'/>.
-Resetting a stream set the Stream Sequence Numbers (SSNs) of the stream back to
+Resetting a stream sets the Stream Sequence Numbers (SSNs) of the stream back to
 'zero' with a corresponding notification to the application layer
 that the reset has been performed. Streams are available to reuse after a reset
 has been performed.</t>
@@ -680,6 +663,7 @@ Adam Bergkvist,
 Christer Holmberg,
 Cullen Jennings,
 Eric Rescorla,
+Irene Ruengeler,
 Randall Stewart,
 Justin Uberti,
 and Magnus Westerlund.</t>
@@ -703,7 +687,6 @@ and Magnus Westerlund.</t>
 <?rfc include='reference.I-D.ietf-rtcweb-security'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security-arch'?>
 <?rfc include='reference.I-D.ietf-rtcweb-jsep'?>
-<?rfc include='reference.I-D.ietf-rtcweb-qos'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-prpolicies'?>
 <?rfc include='reference.I-D.ietf-mmusic-sctp-sdp'?>
 </references>
