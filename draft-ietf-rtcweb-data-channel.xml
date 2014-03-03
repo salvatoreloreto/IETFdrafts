@@ -525,14 +525,18 @@ a bidirectional channel have the same number in each direction. -->
 </section>
 
 <section title='Opening a Channel'>
-<t>Data channels can be opened by using internal or external negotiation.
+
+<t>Data channels can be opened by using negotiation within the SCTP association,
+called in-band negotiation, or out-of-band negotiation.
+Out-of-band negotiation is defined as any method which results in an agreement
+as to the parameters of a channel and the creation thereof.
 The details are out of scope of this document.</t>
 
 <!-- FIXME: Is MUST the correct in the following paragraph? -->
-<t>A simple protocol for internal negotiation is specified in
+<t>A simple protocol for negotiation within the SCTP association is specified in
 <xref target='I-D.ietf-rtcweb-data-protocol'/> and MUST be supported.</t>
 
-<t>When one side wants to open a channel using external negotiation, it
+<t>When one side wants to open a channel using out-of-band negotiation, it
 picks a stream.
 Unless otherwise defined or negotiated, the streams are picked based on
 the DTLS role (the client picks even stream identifiers,
