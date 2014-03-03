@@ -60,7 +60,7 @@
 <t>The Real-Time Communication in WEB-browsers working group is charged
 to provide protocol support for direct interactive rich communication using
 audio, video, and data between two peers' web-browsers.
-This document specifies the non (S)RTP media data transport aspects of the WebRTC
+This document specifies the non-(S)RTP media data transport aspects of the WebRTC
 framework. It provides an architectural overview of how the Stream Control
 Transmission Protocol (SCTP) is used in the WebRTC context as a generic
 transport service allowing WEB-browsers to exchange generic data from peer to
@@ -70,7 +70,7 @@ peer.</t>
 
 <middle>
 <section title='Introduction'>
-<t>Non (S)RTP media data types in the context of WebRTC are handled by using SCTP
+<t>Non-(S)RTP media data types in the context of WebRTC are handled by using SCTP
 <xref target='RFC4960'/> encapsulated in DTLS <xref target='RFC6347'/>.</t>
 
 <figure title='Basic stack diagram'
@@ -111,7 +111,7 @@ prioritising of SCTP streams.</t>
 and requirements for both unreliable and reliable peer to peer data channels;
 <xref target='sec-p-a-2'/> discusses SCTP over DTLS over UDP;
 <xref target='sec-sctp-usage'/> provides the specification of how SCTP should be
-used by the WebRTC protocol framework for transporting non (S)RTP media data
+used by the WebRTC protocol framework for transporting non-(S)RTP media data
 between WEB-browsers.</t>
 </section>
 
@@ -270,7 +270,7 @@ Using DTLS over UDP in combination with ICE enables middlebox traversal
 in IPv4 and IPv6 based networks.
 SCTP as specified in <xref target='RFC4960'/> MUST be used in
 combination with the extension defined in <xref target='RFC3758'/> and
-provides the following interesting features for transporting non (S)RTP media
+provides the following features for transporting non-(S)RTP media
 data between browsers:
 <list style='symbols'>
 <t>Support of multiple unidirectional streams.</t>
@@ -344,18 +344,18 @@ requirement 12.</t>
 <figure title='WebRTC protocol layers'
         anchor='fig-sctp-layering'>
 <artwork align='center'>
-              +------+
-              |WEBRTC|
-              | DATA |
-              +------+
-              | SCTP |
-+--------------------+
-| STUN | SRTP | DTLS |
-+--------------------+
-|         ICE        |
-+--------------------+
-| UDP1 | UDP2 | ...  |
-+--------------------+
+              +------+------+------+
+              | DCEP | UTF-8|Binary|
+              |      | data | data |
+              +------+------+------+
+              |        SCTP        |
++----------------------------------+
+| STUN | SRTP |        DTLS        |
++----------------------------------+
+|         ICE                      |
++----------------------------------+
+| UDP1 | UDP2 | ...                |
++----------------------------------+
 </artwork>
 </figure>
 <t>This stack (especially in contrast to DTLS over SCTP <xref target='RFC6083'/>
@@ -426,7 +426,7 @@ sender side behavior using existing information carried in the association or
 need to specify a negotiation of a congestion control algorithm.</t>
 </section>
 
-<section title='The Usage of SCTP in the WebRTC Context'
+<section title='The Usage of SCTP for Data Channels'
          anchor='sec-sctp-usage'>
 
 <section title='SCTP Protocol Considerations'>
@@ -662,6 +662,7 @@ Harald Alvestrand,
 Adam Bergkvist,
 Christer Holmberg,
 Cullen Jennings,
+Paul Kyzivat,
 Eric Rescorla,
 Irene Ruengeler,
 Randall Stewart,
