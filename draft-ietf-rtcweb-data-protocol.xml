@@ -142,10 +142,11 @@ client using even stream identifiers.</t>
 Channel labeled "x" at the same time, there will be two Channels labeled "x" -
 one on an even Stream pair, one on an odd pair.</t>
 
-<t>The protocol field is to ease cross-application interoperation
-("federation") by identifying the user data being passed with an IANA-registered
-string (see <xref target='iana_protocol'/>), and may be useful for homogenous
-applications which may create more than one type of Channel.</t>
+<t>The protocol field is to ease cross-application interoperation ("federation")
+by identifying the user data being passed with an IANA-registered string
+('WebSocket Subprotocol Name Registry' defined in <xref target='RFC6455'/>),
+and may be useful for homogenous applications which may create more than one
+type of Channel.</t>
 </section>
 
 
@@ -266,10 +267,11 @@ This may be an empty string.</t>
 
 <t hangText='Protocol: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
-The protocol for the channel as a UTF-8 encoded string.
+The sub-protocol for the channel as a UTF-8 encoded string.
 If this is an empty string the protocol is unspecified.
-If it is a non-empty string, it specifies an IANA-registered protocol
-(see <xref target='iana_protocol'/>).</t>
+If it is a non-empty string, it specifies an protocol registered in the
+'WebSocket Subprotocol Name Registry' created in
+<xref target='RFC6455'/>.</t>
 </list></t>
 </section>
 
@@ -369,7 +371,7 @@ SCTP stream, a new DATA_CHANNEL_OPEN message can be sent on the stream.</t>
 </list>
 ]</t>
 <t>IANA is asked to update the reference of an already existing SCTP PPID
-assignment and to create three new registries for the Data Channel
+assignment and to create two new registries for the Data Channel
 Establishment Protocol.</t>
 
 <section title='SCTP Payload Protocol Identifier'
@@ -454,22 +456,6 @@ delivery is unordered or not.</t>
 </texttable>
 </section>
 
-<section title='New Protocol Registry'
-         anchor='iana_protocol'>
-<t>IANA is requested to create a new registration table "Protocol Registry"
-for the Data Channel Establishment Protocol to manage the "Protocol" field of
-type string in DATA_CHANNEL_OPEN messages
-(see <xref target='open_msg_format'/>).</t>
-<t>The assignment of new message types is done through a First Come First
-Served action, as defined in <xref target='RFC5226'/>.
-Documentation of the new protocol MUST contain the following information:
-<list style="numbers">
-<t>A name for the protocol;</t>
-<t>A reference for the protocol indicated by the registered string.</t>
-</list></t>
-<t>Initially this registry is empty.</t>
-</section>
-
 </section>
 
 
@@ -502,6 +488,7 @@ and many others for their invaluable comments.</t>
 </references>
 
 <references title='Informational References'>
+<?rfc include='reference.RFC.6455'?>
 <?rfc include='reference.I-D.ietf-rtcweb-data-channel' ?>
 <?rfc include='reference.I-D.ietf-rtcweb-security'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security-arch'?>
