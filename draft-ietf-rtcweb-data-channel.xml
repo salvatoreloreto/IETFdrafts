@@ -532,9 +532,8 @@ Out-of-band negotiation is defined as any method which results in an agreement
 as to the parameters of a channel and the creation thereof.
 The details are out of scope of this document.</t>
 
-<!-- FIXME: Is MUST the correct in the following paragraph? -->
-<t>A simple protocol for negotiation within the SCTP association is specified in
-<xref target='I-D.ietf-rtcweb-data-protocol'/> and MUST be supported.</t>
+<t>A simple protocol for in-band negotiation is specified in
+<xref target='I-D.ietf-rtcweb-data-protocol'/>.</t>
 
 <t>When one side wants to open a channel using out-of-band negotiation, it
 picks a stream.
