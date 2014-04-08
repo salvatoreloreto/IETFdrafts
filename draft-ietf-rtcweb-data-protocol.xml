@@ -111,7 +111,7 @@ Channels over an SCTP association with a consistent set of properties.</t>
 <t>whether the messages are transmitted reliable or unreliable. In case
    of unreliable transmissions, the same level of unreliability is used.</t>
 <t>whether the messages are delivered in-order or out-of order.</t>
-<t>the priority of the data Channel.</t>
+<t>the priority of the Channel.</t>
 <t>an optional label for the Channel.</t>
 <t>an optional protocol for the Channel.</t>
 <t>the SCTP streams.</t>
@@ -146,9 +146,9 @@ one on an even Stream pair, one on an odd pair.</t>
 by identifying the user data being passed with an IANA-registered string
 ('WebSocket Subprotocol Name Registry' defined in <xref target='RFC6455'/>),
 and may be useful for homogenous applications which may create more than one
-type of Channel.</t>
+type of Channel.
+Please note that there is also no attempt to resolve protocol glare.</t>
 </section>
-
 
 <section title='Message Formats'
          anchor='msg_format'>
@@ -303,8 +303,8 @@ message. The suggested value of this field for IANA is 0x02.</t>
 
 <section title='Procedures'>
 
-<t>All Data Channel Establishment Protocol messages MUST be sent requesting
-ordered delivery and using reliable transmission.
+<t>All Data Channel Establishment Protocol messages MUST be sent using
+ordered delivery and reliable transmission.
 They MUST be sent on the same outgoing SCTP stream as the user messages
 belonging to the corresponding data channel.
 Multiplexing and demultiplexing is done by using the SCTP payload protocol
