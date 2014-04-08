@@ -218,11 +218,6 @@ and leads to failure if the address is depended upon.</t>
 (i.e., a virtual socket stream) at the application layer, for such things as
 image-file-transfer; Implementations might enforce a reasonable message size
 limit.</t>
-<!-- FIXME: Why this limit? Is it enough?-->
-<!-- FIXME: If there is a limit, does this need to be exposed to the other
-side and application so it can adapt (and application-layer-fragment if
-need be)? Or do we want to provide a partial-delivery option to help
-remove memory limitations on message size? -->
 
 <!-- Mooted by running over DTLS:
 <t>The data channel packet format/encoding MUST be such
@@ -576,7 +571,6 @@ SHOULD limit the maximum message size to 16 KB to avoid monopolization.</t>
 as applications will not be able to support arbitrarily-large single
 messages. This limit has to be negotiated, for example by using
 <xref target='I-D.ietf-mmusic-sctp-sdp'/>.</t>
-<!-- FIXME: How does the above paragraph relate to Req. 8? -->
 
 <t>The sender SHOULD disable the Nagle algorithm to minimize the latency.</t>
 </section>
