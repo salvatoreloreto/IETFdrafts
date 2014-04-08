@@ -382,9 +382,13 @@ needs to be a user-land stack.</t>
 are supported, since DTLS does not expose any address management to its upper
 layer.
 The ICE/UDP layer can handle IP address changes during a session without needing
-to notify the DTLS and SCTP layers, though it would be advantageous to retest
-Path MTU on an IP address change.</t>
-<!-- FIXME: Slow Start, initial CWND??? -->
+interaction with the DTLS and SCTP layers.
+However, SCTP SHOULD be notified when an address changes has happend.
+In this case SCTP SHOULD retest the Path MTU and reset the congestion
+state to the initial state.
+In case of a window based congestion control like the one specified in
+<xref target='RFC4960'/>, this means setting the congestion window and
+slow start threshold to its initial values.</t>
 
 <t>Incoming ICMP or ICMPv6 messages can't be processed by
 the SCTP layer, since there is no way to identify the corresponding	
