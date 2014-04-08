@@ -453,13 +453,9 @@ the impact on the parallel (S)RTP media streams.</t>
 <t>The SCTP association will be set up when the two endpoints of the WebRTC
 PeerConnection agree on opening it, as negotiated by JSEP (typically an
 exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>.
-<!-- FIXME: How will the CC be negotiated. There is no other CC right now... -->
-Additionally, the negotiation SHOULD include some type of congestion
-control selection.
 It will use the DTLS connection selected via ICE; typically this will be
 shared via BUNDLE or equivalent with DTLS connections used to key the
 (S)RTP media streams.</t>
-<!-- FIXME: Negotiation of CC. -->
 <!-- FIXME: Bundle Issue. -->
 
 <!-- From the protocol ID
