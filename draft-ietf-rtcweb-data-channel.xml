@@ -164,8 +164,6 @@ or with multiple people in a conference.</t>
 
 <t>Renegotiation of the configuration of the PeerConnection.</t>
 
-<!-- FIXME: This needs either to be removed or addressed appropriately in
-            the security considerations section. -->
 <t>Proxy browsing, where a browser uses data channels of a PeerConnection
 to send and receive HTTP/HTTPS requests and data, for example to avoid local
 Internet filtering or monitoring.</t>
