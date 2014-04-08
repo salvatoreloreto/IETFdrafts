@@ -423,11 +423,7 @@ that all SCTP streams within a single SCTP association share the same
 congestion window. Traffic not being sent over SCTP is not covered by
 the SCTP congestion control.
 Using a congestion control different from than the standard one might improve
-the impact on the parallel (S)RTP media streams.
-Since SCTP does not support the negotiation of a congestion control algorithm
-yet, alternate congestion controls SHOULD either only require a different
-sender side behavior using existing information carried in the association or
-need to specify a negotiation of a congestion control algorithm.</t>
+the impact on the parallel (S)RTP media streams.</t>
 </section>
 
 <section title='The Usage of SCTP for Data Channels'
