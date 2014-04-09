@@ -60,7 +60,7 @@
 <t>The Real-Time Communication in WEB-browsers working group is charged
 to provide protocol support for direct interactive rich communication using
 audio, video, and data between two peers' web-browsers.
-This document specifies the non-(S)RTP media data transport aspects of the WebRTC
+This document specifies the non-SRTP media data transport aspects of the WebRTC
 framework. It provides an architectural overview of how the Stream Control
 Transmission Protocol (SCTP) is used in the WebRTC context as a generic
 transport service allowing WEB-browsers to exchange generic data from peer to
@@ -70,7 +70,7 @@ peer.</t>
 
 <middle>
 <section title='Introduction'>
-<t>Non-(S)RTP media data types in the context of WebRTC are handled by using SCTP
+<t>Non-SRTP media data types in the context of WebRTC are handled by using SCTP
 <xref target='RFC4960'/> encapsulated in DTLS <xref target='RFC6347'/>.</t>
 
 <figure title='Basic stack diagram'
@@ -91,7 +91,7 @@ peer.</t>
 (see <xref target='RFC5245'/>) provides a NAT traversal
 solution together with confidentiality, source authentication, and
 integrity protected transfers.
-This data transport service operates in parallel to the (S)RTP media transports,
+This data transport service operates in parallel to the SRTP media transports,
 and all of them can eventually share a single transport-layer port number.</t>
 
 <t>SCTP as specified in <xref target='RFC4960'/> with the partial reliability
@@ -111,7 +111,7 @@ prioritizing of SCTP streams.</t>
 and requirements for both unreliable and reliable peer to peer data channels;
 <xref target='sec-p-a-2'/> discusses SCTP over DTLS over UDP;
 <xref target='sec-sctp-usage'/> provides the specification of how SCTP should be
-used by the WebRTC protocol framework for transporting non-(S)RTP media data
+used by the WebRTC protocol framework for transporting non-SRTP media data
 between WEB-browsers.</t>
 </section>
 
@@ -136,7 +136,7 @@ For general use cases see
 
 <t>A real-time game where position and object state information is
 sent via one or more unreliable data channels.
-Note that at any time there may be no (S)RTP media channels, or all (S)RTP media
+Note that at any time there may be no SRTP media channels, or all SRTP media
 channels may be inactive, and that there may also be reliable data channels
 in use.</t>
 	
@@ -152,7 +152,7 @@ update in a video chat or conference, such as mute state.</t>
 
 <t> A real-time game where critical state information needs to be
 transferred, such as control information.
-Such a game may have no (S)RTP media channels, or they may be inactive at any
+Such a game may have no SRTP media channels, or they may be inactive at any
 given time, or may only be added due to in-game actions.</t>
 
 <t>Non-realtime file transfers between people chatting.
@@ -178,21 +178,21 @@ two browsers.</t>
 
 <t><list style='format Req. %d:'>
 <t>Multiple simultaneous data channels MUST be supported.
-Note that there may be 0 or more (S)RTP media streams in parallel with the data
+Note that there may be 0 or more SRTP media streams in parallel with the data
 channels in the same PeerConnection, and the number and state (active/inactive)
-of these (S)RTP media streams may change at any time.</t>
+of these SRTP media streams may change at any time.</t>
 
 <t>Both reliable and unreliable data channels MUST be supported.</t>
 
 <t>Data channels of a PeerConnection MUST be congestion controlled;
-either individually, as a class, or in conjunction with the (S)RTP media streams
+either individually, as a class, or in conjunction with the SRTP media streams
 of the PeerConnection, to ensure that data channels don't cause congestion
-problems for these (S)RTP media streams, and that the WebRTC PeerConnection as
+problems for these SRTP media streams, and that the WebRTC PeerConnection as
 a whole is fair with competing traffic such as TCP.</t>
 
 <t>The application SHOULD be able to provide guidance as to the
 relative priority of each data channel relative to each other,
-and relative to the (S)RTP media streams.
+and relative to the SRTP media streams.
 This will interact with the congestion control algorithms.</t>
 
 <t>Data channels MUST be secured; allowing for confidentiality,
@@ -241,7 +241,7 @@ application space.</t>
 <list style='symbols'>
 <t>Usage of a TCP-friendly congestion control.</t>
 <t>The congestion control is modifiable for integration with the
-   (S)RTP media stream congestion control.</t>
+   SRTP media stream congestion control.</t>
 <t>Support of multiple unidirectional streams, each providing its own
    notion of ordered message delivery.</t>
 <t>Support of ordered and out-of-order message delivery.</t>
@@ -263,7 +263,7 @@ Using DTLS over UDP in combination with ICE enables middlebox traversal
 in IPv4 and IPv6 based networks.
 SCTP as specified in <xref target='RFC4960'/> MUST be used in
 combination with the extension defined in <xref target='RFC3758'/> and
-provides the following features for transporting non-(S)RTP media
+provides the following features for transporting non-SRTP media
 data between browsers:
 <list style='symbols'>
 <t>Support of multiple unidirectional streams.</t>
@@ -356,7 +356,7 @@ in combination with SCTP over UDP <xref target='RFC6951'/>)
 has been chosen because it
 <list style='symbols'>
 <t>supports the transmission of arbitrary large user messages.</t>
-<t>shares the DTLS connection with the (S)RTP media channels of the PeerConnection.</t>
+<t>shares the DTLS connection with the SRTP media channels of the PeerConnection.</t>
 <t>provides privacy for the SCTP control information.</t>
 </list></t>
 
@@ -364,7 +364,7 @@ has been chosen because it
 usage of DTLS over UDP is specified in <xref target='RFC6347'/>, while the
 usage of SCTP on top of DTLS is specified in
 <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>.
-Please note that the demultiplexing STUN vs. (S)RTP vs. DTLS is done
+Please note that the demultiplexing STUN vs. SRTP vs. DTLS is done
 as described in Section 5.1.2 of <xref target='RFC5764'/> and SCTP
 is the only payload of DTLS.</t>
 
@@ -416,7 +416,7 @@ that all SCTP streams within a single SCTP association share the same
 congestion window. Traffic not being sent over SCTP is not covered by
 the SCTP congestion control.
 Using a congestion control different from than the standard one might improve
-the impact on the parallel (S)RTP media streams.</t>
+the impact on the parallel SRTP media streams.</t>
 </section>
 
 <section title='The Usage of SCTP for Data Channels'
@@ -450,7 +450,7 @@ PeerConnection agree on opening it, as negotiated by JSEP (typically an
 exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>.
 It will use the DTLS connection selected via ICE; typically this will be
 shared via BUNDLE or equivalent with DTLS connections used to key the
-(S)RTP media streams.</t>
+SRTP media streams.</t>
 <!-- FIXME: Bundle Issue. -->
 
 <!-- From the protocol ID
