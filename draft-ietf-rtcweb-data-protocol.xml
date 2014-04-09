@@ -332,8 +332,8 @@ After the DATA_CHANNEL_ACK or any other message has been received on the data
 channel, messages containing user data MUST be send ordered on ordered data
 channels and MUST be sent unordered on unordered data channels.
 Therefore receiving a message containing user data on an unused SCTP stream
-indicates an error. The corresponding outgoing SCTP stream MUST be reset
-using <xref target='RFC6525'/>.</t>
+indicates an error. The corresponding channel MUST be closed as described in
+<xref target='I-D.ietf-rtcweb-data-channel'/>.</t>
 
 <t>If a DATA_CHANNEL_OPEN message is received on an unused stream,
 the stream identifier corresponds to the role of the peer and
@@ -346,14 +346,15 @@ on.</t>
 is received on an already used SCTP stream or
 there are any problems with parameters within the DATA_CHANNEL_OPEN message or
 the DATA_CHANNEL_OPEN message itself is not well-formed,
-the receiver MUST reset the corresponding outgoing SCTP stream using
-<xref target='RFC6525'/> and MUST NOT send a DATA_CHANNEL_ACK message in
-response to the received message.
+the receiver MUST close the corresponding channel using the procedure described
+in <xref target='I-D.ietf-rtcweb-data-channel'/> and MUST NOT send a
+DATA_CHANNEL_ACK message in response to the received message.
 Therefore, receiving an SCTP stream reset request for a stream on which
 no DATA_CHANNEL_ACK message has been received indicates to the sender of the
 corresponding DATA_CHANNEL_OPEN message the failure of the data channel
 setup procedure. After also successfully resetting the corresponding outgoing
-SCTP stream, a new DATA_CHANNEL_OPEN message can be sent on the stream.</t>
+SCTP stream, which concludes the channel closing initiated by the peer,
+a new DATA_CHANNEL_OPEN message can be sent on the stream.</t>
 </section>
 
 <section title='Security Considerations'

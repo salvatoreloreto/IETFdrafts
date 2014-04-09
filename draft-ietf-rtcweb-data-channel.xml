@@ -559,6 +559,10 @@ for JavaScript binary data (ArrayBuffer or Blob) the PPID
 is deprecated. They were used for a PPID-based fragmentation and reassembly
 of user messages belonging to reliable and ordered data channels.</t>
 
+<t>If a message with an unsupported PPID is received or some error
+is detected by the receiver (for example, illegal ordering), the receiver
+SHOULD close the corresponding channel.</t>
+ 
 <t>The SCTP base protocol specified in <xref target='RFC4960'/> does not
 support the interleaving of user messages. Therefore sending a large user
 message can monopolize the SCTP association.
@@ -577,7 +581,10 @@ messages. This limit has to be negotiated, for example by using
 
 <section title='Closing a Channel'>
 <t>Closing of a Data Channel MUST be signaled by resetting the corresponding
-outgoing streams <xref target='RFC6525'/>.
+outgoing streams <xref target='RFC6525'/>. This means that if one side
+decides to close the channel, it resets the corresponding outgoing stream.
+When the peer sees that an incoming stream was reset, it also resets its
+corresponding outgoing stream. Once this is completed, the channel is closed.
 Resetting a stream sets the Stream Sequence Numbers (SSNs) of the stream back to
 'zero' with a corresponding notification to the application layer
 that the reset has been performed. Streams are available to reuse after a reset
