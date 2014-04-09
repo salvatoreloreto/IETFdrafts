@@ -121,8 +121,8 @@ Channels over an SCTP association with a consistent set of properties.</t>
 a data channel by combining two SCTP streams, one in each direction, with
 the same SCTP stream identifier.
 The side wanting to open a data channel selects an SCTP stream identifier
-for which the corresponding incoming and outgoing SCTP stream is unused
-and sends a DATA_CHANNEL_OPEN message on this outgoing SCTP stream.
+for which the corresponding incoming and outgoing SCTP streams are unused
+and sends a DATA_CHANNEL_OPEN message on the outgoing SCTP stream.
 The peer responds with a DATA_CHANNEL_ACK message on its corresponding
 outgoing SCTP stream. Then the data channel is open.
 Please note that the opening side can send user messages before the
