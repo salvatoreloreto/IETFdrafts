@@ -145,7 +145,7 @@ one on an even Stream pair, one on an odd pair.</t>
 <t>The protocol field is to ease cross-application interoperation ("federation")
 by identifying the user data being passed with an IANA-registered string
 ('WebSocket Subprotocol Name Registry' defined in <xref target='RFC6455'/>),
-and may be useful for homogenous applications which may create more than one
+and may be useful for homogeneous applications which may create more than one
 type of Channel.
 Please note that there is also no attempt to resolve protocol glare.</t>
 </section>

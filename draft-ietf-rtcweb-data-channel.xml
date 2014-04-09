@@ -104,7 +104,7 @@ allows to increase the number of streams during the lifetime of an SCTP
 association and to reset individual SCTP streams.
 Using <xref target='I-D.ietf-tsvwg-sctp-ndata'/> allows to interleave
 large messages to avoid the monopolization and adds the support of
-prioritising of SCTP streams.</t>
+prioritizing of SCTP streams.</t>
 
 <t>The remainder of this document is organized as follows:
 <xref target='sec-use-cases'/> and <xref target='sec-req'/> provide use cases
@@ -376,7 +376,7 @@ are supported, since DTLS does not expose any address management to its upper
 layer.
 The ICE/UDP layer can handle IP address changes during a session without needing
 interaction with the DTLS and SCTP layers.
-However, SCTP SHOULD be notified when an address changes has happend.
+However, SCTP SHOULD be notified when an address changes has happened.
 In this case SCTP SHOULD retest the Path MTU and reset the congestion
 state to the initial state.
 In case of a window based congestion control like the one specified in
