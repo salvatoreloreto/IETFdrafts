@@ -469,7 +469,9 @@ which implies bidirectional streams of data and waiting for onopen to fire
 before sending, a textual label used to identify the meaning of the stream,
 among other things.</t>
 
-<t>Each data channel also has a priority, which is an unsigned 2 byte value.  These priorities MUST be interpreted as weighted-fair-queuing scheduling priorities per the definition in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.</t>
+<t>Each data channel also has a priority, which is an 2 byte unsigned integer
+value. These priorities MUST be interpreted as weighted-fair-queuing scheduling
+priorities per the definition in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.</t>
 
 <t>The realization of a bidirectional Data Channel is a pair of one
 incoming stream and one outgoing SCTP stream having the same stream SCTP
