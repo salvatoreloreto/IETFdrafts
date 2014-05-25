@@ -219,12 +219,6 @@ and leads to failure if the address is depended upon.</t>
 image-file-transfer; Implementations might enforce a reasonable message size
 limit.</t>
 
-<!-- Mooted by running over DTLS:
-<t>The data channel packet format/encoding MUST be such
-that it is impossible for a malicious JavaScript to generate an
-application message crafted such that it could be interpreted as a native
-protocol over UDP - such as UPnP, RTP, SNMP, STUN, etc.</t> -->
-
 <t>The data channel transport protocol SHOULD avoid IP fragmentation. It
 MUST support PMTU (Path MTU) discovery and MUST NOT rely on ICMP or ICMPv6
 being generated or being passed back, especially for PMTU discovery.</t>
@@ -453,35 +447,9 @@ shared via BUNDLE or equivalent with DTLS connections used to key the
 SRTP media streams.</t>
 <!-- FIXME: Bundle Issue. -->
 
-<!-- From the protocol ID
-<section title='Opening Handshake'>
-<t>The opening handshake is based on the multimedia session description
-exchange that happens between the browsers, typically through a Web Server
-acting as the signaling service.</t>
-
-<t><xref target='I-D.ietf-mmusic-sctp-sdp'/> defines the protocol
-identifier, 'DTLS/SCTP', and defines how to establish an SCTP association
-over DTLS using the Session Description Protocol (SDP).</t>
-
-<t>The SCTP association is created with the number of streams specified by
-the application, and if not specified, then it SHOULD default to 16
-streams.</t>
-
-<t>It is recommended that additional streams be available dynamically based
-on <xref target='RFC6525'/>.</t>
-</section>
--->
-
 <t>The number of streams negotiated during SCTP association setup SHOULD
 be 65535, which is the maximum number of streams that can negotiated during
 the association setup.</t>
-<!--<t>The application SHOULD indicate the initial number of streams
-required when opening the association, and if no value is supplied, the
-implementation SHOULD provide an appropriate default.
-If more simultaneous streams are needed, <xref target='RFC6525'/> allows
-adding additional (but not removing) streams to an existing association.
-Note there can be up to 65536 SCTP streams per SCTP association in each
-direction.</t>-->
 </section>
 
 <section title='SCTP Streams'>
@@ -499,10 +467,9 @@ out-of-sequence, reliable and unreliable as properties of Channels. One strong
 wish is for the application-level API to be close to the API for WebSockets,
 which implies bidirectional streams of data and waiting for onopen to fire
 before sending, a textual label used to identify the meaning of the stream,
-among other things.
-<!-- FIXME: This needs a more specific statement -->
-Each data channel also has a priority. These priorities MUST NOT be
-strict priorities.</t>
+among other things.</t>
+
+<t>Each data channel also has a priority, which is an unsigned 2 byte value.  These priorities MUST be interpreted as weighted-fair-queuing scheduling priorities per the definition in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.</t>
 
 <t>The realization of a bidirectional Data Channel is a pair of one
 incoming stream and one outgoing SCTP stream having the same stream SCTP
@@ -594,31 +561,6 @@ has been performed.</t>
 </section>
 
 </section>
-
-<!--
-<t>TBD not sure if we want discuss here or in the actual protocol draft:
-<list style='empty'>
-<t>the fact that all the control message will be transported on stream 0
-   and usage of stream "0" as 'control stream' vs using PPID to include the
-   control information directly in the stream. Reliable, unreliable etc. staff
-   is something that will be set only on the sending side via PPID.</t>
-<t>how to get the out-of-order and loss data for unreliable data from
-   the stack if the JS API is designed to provide those feedback. -
-   it is expected to be available for non-reliable channels (Randell)</t>
-</list>
-</t>
--->
-
-<!--
-<section title='Minor Protocol and Message Format'
-         anchor='sec-mes-format'>
-<t>A separate draft (<xref target='I-D.ietf-rtcweb-data-protocol'/>) proposes
-the minor protocol to set up and manage the bidirectional data channels
-needed to satisfy the requirements in this document for WebRTC.</t>
-<t> Masking of the protocol is not needed if the lower layer always encrypts
-with DTLS.</t>
-</section>
--->
 
 <section title='Security Considerations'
          anchor='sec-security'>

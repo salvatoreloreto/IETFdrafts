@@ -229,7 +229,11 @@ message to the protocol stack.</t>
 
 <t hangText='Priority: 2 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
-<!-- FIXME: Should this be unsigned? -->
+The priority of the channel as described in <xref
+target='I-D.ietf-rtcweb-data-channel'/>. The higher the number, the higher
+the priority.  For use in WebRTC, the values used should be one of 128
+("below normal"), 256 ("normal"), 512 ("high") or 1024 ("extra high").
+
 The priority of the channel as described in
 <xref target='I-D.ietf-rtcweb-data-channel'/>.
 The higher the number, the lower the priority.</t>
