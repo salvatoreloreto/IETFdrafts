@@ -103,23 +103,24 @@ which are managed together.</t>
 </section>
 
 <section title='Protocol Overview'>
-<t>This protocol is a simple, low-overhead way to establish bidirectional
-Channels over an SCTP association with a consistent set of properties.</t>
+<t>The Data Channel Establishment Protocol is a simple, low-overhead way
+to establish bidirectional Channels over an SCTP association with a
+consistent set of properties.</t>
 
 <t>The set of consistent properties includes:
 <list style='symbols'>
-<t>whether the messages are transmitted reliable or unreliable. In case
-   of unreliable transmissions, the same level of unreliability is used.</t>
-<t>whether the messages are delivered in-order or out-of order.</t>
+<t>reliable or unreliable message transmission. In case of unreliable
+   transmissions, the same level of unreliability is used.</t>
+<t>in-order or out-of-order message delivery.</t>
 <t>the priority of the Channel.</t>
 <t>an optional label for the Channel.</t>
 <t>an optional protocol for the Channel.</t>
 <t>the SCTP streams.</t>
 </list></t>
 
-<t>The Data Channel Establishment Protocol uses a two way handshake to open
-a data channel by combining two SCTP streams, one in each direction, with
-the same SCTP stream identifier.
+<t>This protocol uses a two way handshake to open a data channel.
+The handshake pairs one incoming and one outgoing SCTP stream, both having the
+same SCTP stream identifier, into a single bidirectional channel.
 The side wanting to open a data channel selects an SCTP stream identifier
 for which the corresponding incoming and outgoing SCTP streams are unused
 and sends a DATA_CHANNEL_OPEN message on the outgoing SCTP stream.
@@ -135,9 +136,10 @@ since the Data Channel Establishment Protocol uses a specific PPID.</t>
 <t>To avoid glare in opening Channels, each side MUST use Streams with 
 either even or odd SCTP stream identifiers when sending a DATA_CHANNEL_OPEN
 message.
-When using <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>, the method used to
-determine which side uses odd or even is based on the underlying DTLS
-connection role: the side acting as the DTLS client MUST use Streams with even
+When using SCTP over DTLS <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>,
+the method used to determine which side uses odd or even is based on the
+underlying DTLS connection role:
+the side acting as the DTLS client MUST use Streams with even
 SCTP stream identifiers, the side acting as the DTLS server MUST use Streams
 with odd SCTP stream identifiers.</t>
 
