@@ -470,8 +470,10 @@ before sending, a textual label used to identify the meaning of the stream,
 among other things.</t>
 
 <t>Each data channel also has a priority, which is an 2 byte unsigned integer
-value. These priorities MUST be interpreted as weighted-fair-queuing scheduling
-priorities per the definition in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.
+value.
+These priorities MUST be interpreted as weighted-fair-queuing scheduling
+priorities per the definition of the corresponding stream scheduler
+supporting interleaving in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.
 For use in WebRTC, the values used SHOULD be one of 128 ("below normal"),
 256 ("normal"), 512 ("high") or 1024 ("extra high").</t>
 
