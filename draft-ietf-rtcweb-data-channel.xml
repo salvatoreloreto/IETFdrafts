@@ -471,7 +471,9 @@ among other things.</t>
 
 <t>Each data channel also has a priority, which is an 2 byte unsigned integer
 value. These priorities MUST be interpreted as weighted-fair-queuing scheduling
-priorities per the definition in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.</t>
+priorities per the definition in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.
+For use in WebRTC, the values used SHOULD be one of 128 ("below normal"),
+256 ("normal"), 512 ("high") or 1024 ("extra high").</t>
 
 <t>The realization of a bidirectional Data Channel is a pair of one
 incoming stream and one outgoing SCTP stream having the same stream SCTP
