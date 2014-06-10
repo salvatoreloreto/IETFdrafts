@@ -232,7 +232,7 @@ message to the protocol stack.</t>
 <t hangText='Priority: 2 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
 The priority of the channel as described in
-<xref target='I-D.ietf-rtcweb-data-channel'/>.
+<xref target='I-D.ietf-rtcweb-data-channel'/>.</t>
 
 <t hangText='Reliability Parameter: 4 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
