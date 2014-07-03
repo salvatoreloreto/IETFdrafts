@@ -134,7 +134,7 @@
   <keyword>Certificate</keyword>
 
   <abstract>
-    <t>This document proposes the definition of an Explicitly Authenticated Proxy as intermediary of normally unprotected "http://" URI scheme requests and responses of HTTP2 traffic.</t>
+    <t>This document proposes the definition of an Explicitly Authenticated Proxy as intermediary of normally unprotected "http" URI scheme requests and responses of HTTP2 traffic.</t>
     <t>An Explicitly Authenticated Proxy is a message forwarding agent that is selected, with explicit user's consent, and configured by the user agent to receive exclusively "http" URI scheme requests
     and attempt to satisfy those requests on behalf of the user agent. A client is connected to an Explicitly Authenticated Proxy through an authenticated TLS secured connection.</t>
     <t>This document describes a method for a user agent to automatically discover and authenticate, and for an user to provide consent for an Explicitly Authenticated Proxy. This enables proxied    communication to be encrypted and authenticated, explicitly acknowledged by the user agent and visible to the server end point.</t>
@@ -176,6 +176,12 @@ and analysed in a matrix form in <eref target="https://github.com/bizzbyster/Tru
 
 <t>This draft explicitly narrows down the general discussion to the role of Proxy as intermediary of "http" scheme URIs of HTTP2 traffic.</t>
 
+<section title="Goals and non Goals">
+<t>The primary goal is to define an intermediary to 'http' traffic, that is TLS connected to the browser, operates with the knowledge and explicit consent of the user.</t>
+
+<t>Non goal is to define an intermediary for 'https' URI. However the intermediary's expected behaviour for this case is listed for completeness.</t>
+
+</section>
 
 <section title="Explicitly Authenticated Proxy">
 
@@ -183,7 +189,9 @@ and analysed in a matrix form in <eref target="https://github.com/bizzbyster/Tru
 acknowledged and connected to over a TLS encrypted (and possibly integrity protected) connection. An Explicitly Authenticated Proxy is configured by the user agent to exclusively receive "http" URI scheme requests and attempt to
 satisfy those requests on behalf of the user agent.</t>
 
-   <t>The presence of a configured Explicitly Authenticated Proxy MUST NOT change the user agent behaviour for the "https" URI scheme requests. To distinguish between an HTTP2 connection meant to transport "https" URIs resources and an HTTP2 connection meant to transport "http" URIs resource, this document defines the ALPN <xref target="I-D.ietf-tls-applayerprotoneg"/> identifier "h2c" to signal that HTTP2 transports "http://" URI requests and resources over TLS.</t> 
+   <t>The presence of a configured Explicitly Authenticated Proxy MUST NOT change the user agent behaviour for the "https" URI scheme requests.</t>
+
+<t>To distinguish between an HTTP2 connection meant to transport "https" URIs resources and an HTTP2 connection meant to transport "http" URIs resource, this document defines the ALPN <xref target="I-D.ietf-tls-applayerprotoneg"/> identifier "h2c" to signal that HTTP2 transports "http" URI requests and resources over TLS.</t> 
 
    <t>This document describes a method for an user agent to automatically discover and then for an user to accept or reject (i.e. to provide consent for) an Explicitly Authenticated Proxy to be securely involved when a request to an "http" URI resource is made.</t>
 
@@ -195,6 +203,8 @@ satisfy those requests on behalf of the user agent.</t>
 
 </section>
 
+
+
 <section title="Terminology" anchor="terminology">  
   <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -202,9 +212,10 @@ satisfy those requests on behalf of the user agent.</t>
 
     <t>This document defines the following terms:
       <list style="hanging">
-          <t hangText="Explicit proxy: "> an intercepting proxy that communicates its presence to the user agent and destination server.</t>
-          <t hangText="Explicitly Authenticated Proxy:"> a message forwarding agent that is certificate authenticated, user acknowledged and connected to over a TLS encrypted connection. 
-           A Explicitly Authenticated Proxy is configured by the user agent to exclusively receive "http" URI scheme request and attempt to satisfy those request on behalf of the user agent.</t>
+          <t hangText="Explicit proxy: "> an intercepting proxy (see section 2.3 <xref target="I-D.ietf-httpbis-p1-messaging"/>) that communicates its presence to the user agent and destination server..</t>
+
+          <t hangText="Explicitly Authenticated Proxy:"> an HTTP Proxy that is certificate authenticated, user acknowledged and connected to over a TLS encrypted (and possibly integrity protected) connection. An Explicitly Authenticated Proxy is configured by the user agent to exclusively receive "http" URI scheme requests and attempt to satisfy
+those requests on behalf of the user agent. The presence of a configured Explicitly Authenticated Proxy MUST NOT change the user agent behaviour for the "https" URI scheme requests.</t>
       </list>
     </t>
 
@@ -286,10 +297,10 @@ the consent applies to all proxy certificates with the same name.</t>
 </section>
 
 <section anchor="PriorKnowledge" title="Connection with prior knowledge ">
-<t>The HTTP2 user agent can discover the presence of a HTTP2 proxy for http:// resources before it starts the creation of the TLS connection. 
+<t>The HTTP2 user agent can discover the presence of a HTTP2 proxy for "http" resources before it starts the creation of the TLS connection. 
 As an example, for a mobile handset, the discovery might occur at the network attachment.</t>
 
-<t>Then the user agent validates the proxy certificate as per Appendix <xref target="ProxyCertificate"/> and requests "http://" resources as per <xref target="ExplicitProxy"/>.</t>
+<t>Then the user agent validates the proxy certificate as per Appendix <xref target="ProxyCertificate"/> and requests "http" resources as per <xref target="ExplicitProxy"/>.</t>
 
 </section>
 
