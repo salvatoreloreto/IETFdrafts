@@ -6,7 +6,7 @@
   <!ENTITY RFC5280 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml">
   <!ENTITY RFC6455 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6455.xml">
   <!ENTITY I-D.ietf-httpbis-p1-messaging SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-httpbis-p1-messaging-26.xml">
-  <!ENTITY I-D.ietf-httpbis-http2 SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-httpbis-http2-12.xml">
+  <!ENTITY I-D.ietf-httpbis-http2 SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-httpbis-http2-13.xml">
   <!ENTITY I-D.nottingham-http-proxy-problem SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-nottingham-http-proxy-problem-00.xml">
   <!ENTITY I-D.vidya-httpbis-explicit-proxy-ps SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-vidya-httpbis-explicit-proxy-ps-00.xml">
   <!ENTITY I-D.rpeon-httpbis-exproxy SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-rpeon-httpbis-exproxy-00.xml">
@@ -231,8 +231,6 @@ those requests on behalf of the user agent. The presence of a configured Explici
 
 <t>When a (TLS and HTTP) user agent receives a Server Certificate message, it checks whether the certificate contains an Extended Key Usage extension and if so whether the "proxyAuthentication" key purpose id is included. If it is included, the user agent concludes that the certificate belongs to a proxy. The user agent then SHOULD ensure user consent.</t> 
 
-<t>The user selection can be cached by the user agent. A consent SHOULD however be limited to the specific network access (such as APN or SSID) and may be limited to a single connection to that access or limited in time. How the consent information is stored is implementation specific, but as a network may have several proxies (for network resilience) it is RECOMMENDED that the consent is only tied to the Subject field of the proxy certificate so that
-the consent applies to all proxy certificates with the same name.</t>
 
 
 <t>If the user provides consent, the user agent continues the TLS handshake with the proxy.</t>
@@ -269,38 +267,18 @@ the consent applies to all proxy certificates with the same name.</t>
 </figure>
 </section>
 
-<section  anchor="CertOptOut" title="Opt Out"> 
-<t>If the user does not give consent, or decides to opt out from the proxy for a specific connection, the user agent will negotiate HTTP2 connection using "h2" value in the ALPN extension field. The proxy will then treat the connection as an "https" connection and will forward the ClientHello message to the Server, establishing an end-to-end TLS connection between the user agent and the destination server.</t>
-
-<figure anchor="fig.TLShandshakeoptout" title="Opt Out">
-<artwork><![CDATA[
-+--------------+              +------------+                 +-------------+
-|  User agent  |              |   Proxy    |                 |   Server    |
-+--------------+              +------------+                 +-------------+
-        |                                                           |
-        |  (1) ClientHello                                          |
-        |---------------------------------------------------------->|
-        | (ALPN ProtocolName: h2)                                   |
-        |                                                           |
-        |  (2) ServerHello, ServerCert                              |
-        |<----------------------------------------------------------|
-        |  (3) Rest of TLS handshake                                |
-        |<--------------------------------------------------------->|
-        |                                                           |
-        |  (4) HTTP2  over TLS                                      |
-        |<--------------------------------------------------------->|
-        |                                                           |
-
-]]></artwork>
-</figure>
 
 </section>
 
-<section anchor="PriorKnowledge" title="Connection with prior knowledge ">
-<t>The HTTP2 user agent can discover the presence of a HTTP2 proxy for "http" resources before it starts the creation of the TLS connection. 
-As an example, for a mobile handset, the discovery might occur at the network attachment.</t>
+<section anchor="PriorKnowledge" title="Connection to a mobile network">
 
-<t>Then the user agent validates the proxy certificate as per Appendix <xref target="ProxyCertificate"/> and requests "http" resources as per <xref target="ExplicitProxy"/>.</t>
+<t>When a handset connects to a mobile network it is desirable to preserve the integrity of its exchange with the servers which host the services of this network entity. These use cases are described in <xref target="I-D.nottingham-http-proxy-problem"/> and in the [Proxy-User-Stories].</t> 
+
+<t>This section proposes a solution for such use cases. The proposal is inspired on the connection management specified in the section 9.1 of  <xref target="I-D.ietf-httpbis-http2"/>. The connection with this proxy is used for all the servers' names listed in the "subjectAltName" field (http://tools.ietf.org/html/rfc5280#page-35) of the certificate of this proxy.</t>
+
+<section title="proxy discovery in a mobile network">
+<t>At the network attachment, as usual, the network entity provides the handset with an IP address and with other pieces of information like DNS resolvers IP addresses. The network entity additionally provides the handset with the server name (e.g. pr.example.com) of the Explicitly Authenticated Proxy in charge of the domain names this network entity is authoritative on. These pieces of information are provided to the handset through a secure channel which preserves the integrity of the information.</t>
+
 
 </section>
 
@@ -323,7 +301,7 @@ As an example, for a mobile handset, the discovery might occur at the network at
 |  User agent  |              |    Proxy     |              |    Server    |
 +--------------+              +--------------+              +--------------+
         |                            |                              |
-    (TLS Proxy certificate )         |                              |
+    (TLS Proxy announcement)         |                              |
     (mechanism has taken place)      |                              |
         |                            |                              |
         |    (1) ClientHello         |                              |
@@ -374,8 +352,7 @@ As an example, for a mobile handset, the discovery might occur at the network at
 
 <section anchor="B2B1" title="Explicitly Authenticated Forward Proxy towards HTTP/1.1 Origin Server">
 
-<t>In the case the "http" URI resources requested by the user agent will be only available over HTTP/1.1 or the proxy does not
-   have a previous knowledge about it, the proxy will then attempt to contact the resource based on its knowledge.</t>
+<t>In the case the proxy has a privies knowledge about the fact that the "http" URI resources requested by the user agent will be only available over HTTP/1.1 or the proxy does not have a previous knowledge about it, the proxy will then attempt to contact the resource based on its knowledge.</t>
 
 <figure anchor="fig.2" title="Origin server with only HTTP/1.1 support">
 <artwork><![CDATA[
@@ -384,7 +361,7 @@ As an example, for a mobile handset, the discovery might occur at the network at
 |  User agent  |              |    Proxy     |              |    Server    |
 +--------------+              +--------------+              +--------------+
         |                            |                              |
-    (TLS Proxy announcement )        |                              |
+    (TLS Proxy announcement)         |                              |
     (mechanism has taken place)      |                              |
         |                            |                              |
         |    (1) TLS ClientHello     |                              |
@@ -448,6 +425,39 @@ it does not do anything and lets the TLS handshake continue and the TLS session 
 </section>
 </section>
 
+<section title="User Consent">
+<t>This document proposes an approach to making the presence of proxy explicit, explaining the functions it provides to users and letting them decide whether they accept that. A user can opt out and choose to bypass the proxy. This ensures that a proxy never acts as intermediary for HTTP2 traffic unless authorised by the user.</t>
+
+<t>The user selection can be cached by the user agent. A consent SHOULD however be limited to the specific network access (such as APN or SSID) and may be limited to a single connection to that access or limited in time. How the consent information is stored is implementation specific, but as a network may have several proxies (for network resilience) it is RECOMMENDED that the consent is only tied to the Subject field of the proxy certificate so that the consent applies to all proxy certificates with the same name.</t>
+
+<section  anchor="CertOptOut" title="Expected behaviour if the user opts out/revokes consent"> 
+<t>If the user does not give consent, or decides to opt out from the proxy for a specific connection, the user agent will negotiate HTTP2 connection using "h2" value in the ALPN extension field. The proxy will then treat the connection as an "https" connection and will forward the ClientHello message to the Server, establishing an end-to-end TLS connection between the user agent and the destination server.</t>
+
+<figure anchor="fig.TLShandshakeoptout" title="Opt Out">
+<artwork><![CDATA[
++--------------+              +------------+                 +-------------+
+|  User agent  |              |   Proxy    |                 |   Server    |
++--------------+              +------------+                 +-------------+
+        |                                                           |
+        |  (1) ClientHello                                          |
+        |---------------------------------------------------------->|
+        | (ALPN ProtocolName: h2)                                   |
+        |                                                           |
+        |  (2) ServerHello, ServerCert                              |
+        |<----------------------------------------------------------|
+        |  (3) Rest of TLS handshake                                |
+        |<--------------------------------------------------------->|
+        |                                                           |
+        |  (4) HTTP2  over TLS                                      |
+        |<--------------------------------------------------------->|
+        |                                                           |
+
+]]></artwork>
+</figure>
+
+</section>
+
+</section>
 
 
 <section title="Signalling the presence of a Proxy in between">
@@ -468,8 +478,7 @@ it does not do anything and lets the TLS handshake continue and the TLS session 
 
 <t>When negotiating ciphersuite with the server, the Explicitly Authenticated proxy SHALL offer the ciphersuite negotiated between the user-agent and the proxy. Ciphersuites with a higher security level that the ciphersuite negotiated between the user-agent and proxy MAY be given a higher preference than the ciphersuite negotiated between the user-agent and proxy. Ciphersuites with a lower security level that the ciphersuite negotiated between the user-agent and proxy SHALL NOT be given a higher preference than the ciphersuite negotiated between the user-agent and proxy. While AES-256 is no weaker (an most probably much stronger) than AES-128, the relative security between different algorithm e.g SHA-256 vs Keccak-256 is not that clear. With security level we mean the complexity of the best known attack on that ciphersuite. The Explicitly Authenticated proxy SHOULD therefore be up to date with the best current practices regarding TLS.</t>
 
-<t>This document proposes an approach to making the presence of proxy explicit to users and letting them decide whether they accept that.  A user can opt out and choose to bypass the proxy.
-This ensures that a proxy never acts as intermediary for HTTP2 traffic unless authorised by the user.</t>
+<t>This document proposes an approach to making the presence of proxy explicit to users and letting them decide whether they accept that.  A user can opt out and choose to bypass the proxy. This ensures that a proxy never acts as intermediary for HTTP2 traffic unless authorised by the user.</t>
 
 <t>When the user has given consent to the presence of the proxy, the user agent switches to a Proxy mode in which it does not check the hostname of the origin server against the server's identity as presented in the Server Certificate message. However if any of the following checks fails the user agent should immediately exit this Proxy mode:   
     <list style='numbers'>
