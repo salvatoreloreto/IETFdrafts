@@ -128,7 +128,7 @@ in this document are to be interpreted as described in
          anchor='sec-use-cases'>
 
 <t>This section defines use cases specific to data channels.
-For general use cases see
+For WebRTC use cases see
 <xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>.</t>
 
 <section title='Use Cases for Unreliable Data Channels'
@@ -247,7 +247,7 @@ application space.</t>
 <t>Support of reliable or partially reliable message transport.</t>
 </list></t>
 
-<t>SCTP multihoming will not be used in WebRTC.
+<t>The WebRTC Data Channel mechanism does not support SCTP multihoming.
 The SCTP layer will simply act as if it were running on a single-homed host,
 since that is the abstraction that the DTLS layer (a connection oriented,
 unreliable datagram service) exposes.</t>
@@ -432,9 +432,9 @@ reliability.</t>
 
 <section title='Association Setup'
          anchor='sec-sctp-setup'>
-<t>The SCTP association will be set up when the two endpoints of the WebRTC
-PeerConnection agree on opening it, as negotiated by JSEP (typically an
-exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>.
+<t>In the WebRTC context, the SCTP association will be set up when the
+two endpoints of the WebRTC PeerConnection agree on opening it, as negotiated
+by JSEP (typically an exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>.
 It will use the DTLS connection selected via ICE; typically this will be
 shared via BUNDLE or equivalent with DTLS connections used to key the
 SRTP media streams.</t>
@@ -462,14 +462,6 @@ WebSockets, which implies bidirectional streams of data and waiting for
 onopen to fire before sending, a textual label used to identify the meaning
 of the streams.</t>
 
-<t>Each data channel also has a priority, which is an 2 byte unsigned integer
-value.
-These priorities MUST be interpreted as weighted-fair-queuing scheduling
-priorities per the definition of the corresponding stream scheduler
-supporting interleaving in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.
-For use in WebRTC, the values used SHOULD be one of 128 ("below normal"),
-256 ("normal"), 512 ("high") or 1024 ("extra high").</t>
-
 <t>The realization of a bidirectional Data Channel is a pair of one
 incoming stream and one outgoing SCTP stream having the same stream SCTP
 identifier.</t>
@@ -477,6 +469,14 @@ identifier.</t>
 <!--<t>Note that there's no requirement for the SCTP streams used to create
 a bidirectional channel have the same number in each direction. -->
 <t>How stream values are selected is protocol and implementation dependent.</t>
+
+<t>Each data channel also has a priority, which is an 2 byte unsigned integer
+value.
+These priorities MUST be interpreted as weighted-fair-queuing scheduling
+priorities per the definition of the corresponding stream scheduler
+supporting interleaving in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.
+For use in WebRTC, the values used SHOULD be one of 128 ("below normal"),
+256 ("normal"), 512 ("high") or 1024 ("extra high").</t>
 </section>
 
 <section title='Opening a Channel'>

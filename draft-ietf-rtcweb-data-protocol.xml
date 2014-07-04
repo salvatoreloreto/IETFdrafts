@@ -269,11 +269,11 @@ This may be an empty string.</t>
 
 <t hangText='Protocol: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
-The sub-protocol for the Data Channel as a UTF-8 encoded string.
 If this is an empty string the protocol is unspecified.
-If it is a non-empty string, it specifies an protocol registered in the
+If it is a non-empty string, it specifies a protocol registered in the
 'WebSocket Subprotocol Name Registry' created in
-<xref target='RFC6455'/>.</t>
+<xref target='RFC6455'/>. This string is UTF-8 encoded.
+</t>
 </list></t>
 </section>
 
