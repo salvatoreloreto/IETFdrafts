@@ -9,7 +9,7 @@
 
 <rfc category='std'
      ipr='trust200902'
-     docName='draft-ietf-rtcweb-data-channel-10.txt'>
+     docName='draft-ietf-rtcweb-data-channel-11.txt'>
 <front>
 <title>WebRTC Data Channels</title>
 
@@ -454,15 +454,15 @@ Ordering is preserved only for ordered messages sent on the same stream.</t>
 </section>
 
 <section title='WebRTC Data Channel Definition'>
-<t>The WebRTC DataChannels are bidirectional.
+<t>The WebRTC Data Channels are bidirectional.
 They also consider the notions of in-sequence, out-of-sequence, reliable
-and unreliable as properties of Channels.
+and unreliable as properties of channels.
 One strong wish is for the application-level API to be close to the API for
 WebSockets, which implies bidirectional streams of data and waiting for
 onopen to fire before sending, a textual label used to identify the meaning
 of the streams.</t>
 
-<t>The realization of a bidirectional Data Channel is a pair of one
+<t>The realization of a bidirectional data channel is a pair of one
 incoming stream and one outgoing SCTP stream having the same stream SCTP
 identifier.</t>
 
@@ -497,7 +497,7 @@ the DTLS role (the client picks even stream identifiers,
 the server odd stream identifiers).
 However, the application is responsible for avoiding collisions with
 existing streams.
-If it attempts to re-use a stream which is part of an existing Channel,
+If it attempts to re-use a stream which is part of an existing data channel,
 the addition SHOULD fail.
 In addition to choosing a stream, the application SHOULD also determine
 the options to use for sending messages.
@@ -508,8 +508,8 @@ be used, and the options for sending data from that side.</t>
 
 <section title='Transferring User Data on a Channel'>
 
-<t>All data sent on a Channel in both directions MUST be sent over the
-underlying stream using the reliability defined when the Channel was
+<t>All data sent on a data channel in both directions MUST be sent over the
+underlying stream using the reliability defined when the data channel was
 opened unless the options are changed, or per-message options are specified
 by a higher level.</t>
 
@@ -527,7 +527,7 @@ of user messages belonging to reliable and ordered data channels.</t>
 
 <t>If a message with an unsupported PPID is received or some error
 is detected by the receiver (for example, illegal ordering), the receiver
-SHOULD close the corresponding channel.</t>
+SHOULD close the corresponding data channel.</t>
  
 <t>The SCTP base protocol specified in <xref target='RFC4960'/> does not
 support the interleaving of user messages. Therefore sending a large user
@@ -546,11 +546,11 @@ messages. This limit has to be negotiated, for example by using
 </section>
 
 <section title='Closing a Channel'>
-<t>Closing of a Data Channel MUST be signaled by resetting the corresponding
+<t>Closing of a data channel MUST be signaled by resetting the corresponding
 outgoing streams <xref target='RFC6525'/>. This means that if one side
-decides to close the channel, it resets the corresponding outgoing stream.
+decides to close the data channel, it resets the corresponding outgoing stream.
 When the peer sees that an incoming stream was reset, it also resets its
-corresponding outgoing stream. Once this is completed, the channel is closed.
+corresponding outgoing stream. Once this is completed, the data channel is closed.
 Resetting a stream sets the Stream Sequence Numbers (SSNs) of the stream back to
 'zero' with a corresponding notification to the application layer
 that the reset has been performed. Streams are available for reuse after a reset
