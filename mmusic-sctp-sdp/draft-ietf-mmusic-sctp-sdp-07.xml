@@ -11,19 +11,19 @@
 
 <front>
     <title abbrev="The SCTP protocol identifier for SDP">
-        Stream Control Transmission Protocol (SCTP)-Based Media
-        Transport in the Session Description Protocol (SDP)
+	Stream Control Transmission Protocol (SCTP)-Based Media
+	Transport in the Session Description Protocol (SDP)
     </title>
 
     <author initials="S." surname="Loreto" fullname="Salvatore Loreto">
       <organization>Ericsson</organization>
       <address>
 	<postal>
-          <street>Hirsalantie 11</street>
-	  <code>02420</code> 
-	  <city>Jorvas</city> 
+	  <street>Hirsalantie 11</street>
+	  <code>02420</code>
+	  <city>Jorvas</city>
 	  <country>Finland</country>
- 	</postal>
+	</postal>
 	<email>Salvatore.Loreto@ericsson.com</email>
       </address>
     </author>
@@ -32,30 +32,28 @@
       <organization>Ericsson</organization>
       <address>
 	<postal>
-          <street>Hirsalantie 11</street>
-	  <code>02420</code> 
-	  <city>Jorvas</city> 
+	  <street>Hirsalantie 11</street>
+	  <code>02420</code>
+	  <city>Jorvas</city>
 	  <country>Finland</country>
- 	</postal>
+	</postal>
 	<email>Gonzalo.Camarillo@ericsson.com</email>
       </address>
     </author>
 
-        <date year="2014"/>
-        <area>RAI</area>
-        <workgroup>MMUSIC</workgroup>
-        <keyword>SCTP, SDP</keyword>
+	<date year="2014"/>
+	<area>RAI</area>
+	<workgroup>MMUSIC</workgroup>
+	<keyword>SCTP, SDP</keyword>
 
 
 	<abstract>
 	<t>
-SCTP (Stream Control Transmission Protocol) is a transport protocol
-used to establish associations between two endpoints. This document
-describes how to express media transport over SCTP in SDP (Session
-Description Protocol). This document defines the 'SCTP',
+SCTP (Stream Control Transmission Protocol) is a transport protocol used to establish associations between two endpoints. This document
+describes how to express media transport over SCTP in SDP (Session Description Protocol). This document defines the 'SCTP',
 'SCTP/DTLS' and 'DTLS/SCTP' protocol identifiers for SDP.
 	</t>
-        </abstract>
+	</abstract>
 </front>
 
 
@@ -63,33 +61,28 @@ Description Protocol). This document defines the 'SCTP',
 
 <section title="Introduction">
 <t>
-SDP (Session Description Protocol) <xref target="RFC4566"/> provides a
-general-purpose format for describing multimedia sessions in
-announcements or invitations. TCP-Based Media Transport in the Session Description Protocol (SDP)
-<xref target="RFC4145"/> specifies a general mechanism for describing and establishing TCP
-(Transmission Control Protocol) streams. Connection-Oriented Media Transport over the Transport Layer Security
+SDP (Session Description Protocol) <xref target="RFC4566"/> provides a general-purpose format for describing multimedia sessions in
+announcements or invitations. TCP-Based Media Transport in the Session Description Protocol (SDP) <xref target="RFC4145"/> specifies 
+a general mechanism for describing and establishing TCP (Transmission Control Protocol) streams. Connection-Oriented Media Transport over the Transport Layer Security
 (TLS) Protocol in the Session Description Protocol (SDP) <xref target="RFC4572"/> extends RFC4145 <xref target="RFC4145"/> for
-describing TCP-based media streams that are protected using TLS
-(Transport Layer Security) <xref target="RFC5246"/>.
+describing TCP-based media streams that are protected using TLS (Transport Layer Security) <xref target="RFC5246"/>.
 </t>
 
 <t>
 This document defines three new protocol identifiers:
 <list style='hanging'>
-<t hangText='SCTP :'> to
-describe SCTP-based <xref target="RFC4960"/> media
-streams. </t>
+<t hangText='SCTP :'> to describe SCTP-based <xref target="RFC4960"/> media streams. </t>
 
 <t hangText='SCTP/DTLS :'> to describe media streams transported using the Datagram Transport Layer
 Security (DTLS) <xref target="RFC4347"/> protocol over SCTP, as
-specified in <xref target="RFC6083"/>. 
+specified in <xref target="RFC6083"/>.
 DTLS over SCTP provides communications privacy for applications that
 use SCTP as their transport protocol.
 </t>
 
-<t hangText='DTLS/SCTP :'> to describe media streams transported using SCTP on top of 
+<t hangText='DTLS/SCTP :'> to describe media streams transported using SCTP on top of
 the Datagram Transport Layer Security (DTLS) protocol, as
-defined in <xref target="I-D.ietf-tsvwg-sctp-dtls-encaps"/>. 
+defined in <xref target="I-D.ietf-tsvwg-sctp-dtls-encaps"/>.
 </t>
 
 </list>
@@ -184,23 +177,23 @@ certificates are interpreted and validated as defined in <xref target="RFC4572"/
 
 <section title="Media Formats" anchor="media">
 <t>
-The SDP specification, <xref target="RFC4566"/>, states that specifications defining new proto values, 
+The SDP specification, <xref target="RFC4566"/>, states that specifications defining new proto values,
 like the SCTP, SCTP/DTLS and DTLS/SCTP proto values defined in this RFC, must define the rules by which their
-media format (fmt) namespace is managed.  
-Use of an existing MIME subtype for the format is encouraged. If no MIME subtype exists, it is RECOMMENDED 
-that a suitable one is registered through the IETF process <xref target="RFC4288"/> <xref target="RFC4289"/> 
+media format (fmt) namespace is managed.
+Use of an existing MIME subtype for the format is encouraged. If no MIME subtype exists, it is RECOMMENDED
+that a suitable one is registered through the IETF process <xref target="RFC4288"/> <xref target="RFC4289"/>
 by production of, or reference to, a standards-track RFC that defines the transport protocol for the format.
 </t>
 
 <t>An m-line with &lt;proto&gt; of 'SCTP', 'SCTP/DTLS' or 'DTLS/SCTP' always describe a single SCTP association.</t>
 
 <t>An 'm' line that specifies 'SCTP', 'SCTP/DTLS' or 'DTLS/SCTP' MUST further qualify the application-layer protocol using an 'fmt'
-   identifier. The &lt;fmtp&gt; sub-fields contain parameters specific for the SCTP association and it usage.</t>
+   identifier.</t>
 
 <figure><artwork><![CDATA[
 
  m=application 12345 DTLS/SCTP webrtc-datachannel \
-         sctp-port#4060 max-message-size#100000
+	 sctp-port#4060 max-message-size#100000
 
 ]]></artwork></figure>
 
@@ -215,7 +208,7 @@ by production of, or reference to, a standards-track RFC that defines the transp
 <figure><artwork><![CDATA[
 
     sctp-m-line = %x6d "="
-     ("application" SP sctp-port SP "SCTP"      SP sctp-fmt CRLF) /
+     ("application" SP sctp-port SP "SCTP"	SP sctp-fmt CRLF) /
      ("application" SP sctp-port SP "SCTP/DTLS" SP sctp-fmt CRLF) /
      ("application" SP udp-port  SP "DTLS/SCTP" SP sctp-fmt CRLF)
 
@@ -223,7 +216,7 @@ by production of, or reference to, a standards-track RFC that defines the transp
 
     udp-port = port
 
-    sctp-fmt = stream-behave *(SP sctp-param)
+    sctp-fmt = association-usage *(SP sctp-param)
 
     association-usage = token
 
@@ -246,11 +239,11 @@ token as defined in <xref target="RFC4566"/> section 9.</t>
 <t>If the &lt;proto&gt; sub-field is 'DTLS/SCTP', the &lt;port&gt; is the UDP transport port (udp-port).</t>
 </list></t>
 
-<t>The &lt;fmt&gt; sub-field carries the actual SCTP port number (sctp-port), the requested streams behaviour (stream-behave) and the maximum message size, in byte, the endpoint
+<t>The &lt;fmt&gt; sub-field carries the actual SCTP port number (sctp-port), the requested streams behaviour (association-usage) and the maximum message size, in byte, the endpoint
 is willing to accept (maxmsg). All these &lt;fmt&gt; sub-fields are optional and are only needed when a non-default value is desired.</t>
 <t><list style='hanging'>
 
-<t hangText="max-message-size:"> 
+<t hangText="max-message-size:">
  <vspace />the max-message-size parameter indicates the maximum message size, in bytes, the endpoint is willing to accept.
  <vspace />The peer should assume that larger message will be rejected by the endpoint, though it is up to the endpoint decide the appropriate behaviour.
  <vspace />A parameter with value of '0' will signal a best effort attempt, subject to the current endpoint memory capacity, to handle messages of any size.
@@ -258,16 +251,16 @@ is willing to accept (maxmsg). All these &lt;fmt&gt; sub-fields are optional and
  </t>
 
 <t hangText="association-usage:">
- <vspace />The stream-behave token indicates the conventional usage of an entire sctp association including its streams (e.g. the pairing of certain streams, the protocol carried over certain streams, etc). This parameter is optional, if it is not present the usage is generic as defined in RFC 4960 <xref target="RFC4960"/>.</t>
+ <vspace />The association-usage token indicates the conventional usage of an entire sctp association including its streams (e.g. the pairing of certain streams, the protocol carried over certain streams, etc). This parameter is a required parameter. [TBD a value for the generic usage as defined in RFC 4960 <xref target="RFC4960"/>].</t>
 
 <t hangText="sctp-port-param:">
  <vspace />The sctp-port-param parameter specify the sctp port. This parameter is only meaningful and required if the the &lt;proto&gt; sub-field is 'DTLS/SCTP'.
  <vspace />If the parameter is not present, the default value is 5000.
-</t> 
+</t>
 </list></t>
 
-<t>Any offered association MAY be rejected in the answer, for any reason.  If an association offer is rejected, 
-the offerer and answerer MUST NOT establish an SCTP association for it.  To reject an SCTP association, the &lt;port&gt;  
+<t>Any offered association MAY be rejected in the answer, for any reason.  If an association offer is rejected,
+the offerer and answerer MUST NOT establish an SCTP association for it.  To reject an SCTP association, the &lt;port&gt;
 in the answer MUST be set to zero.</t>
 
 </section>
@@ -275,7 +268,7 @@ in the answer MUST be set to zero.</t>
 
 
 
- 
+
 
 <section title="The Setup and Connection Attributes and Association
 		Management"
@@ -324,7 +317,7 @@ In some environments, intermediaries performing firewall control use
 the addresses in offer/answer exchanges to perform media
 authorization. That is, policy-enforcement network elements do not
 let media through unless it is sent to the address in the 'c'
-line. 
+line.
 </t>
 <t>
 In such network environments, the SCTP endpoints can only exchange
@@ -335,7 +328,7 @@ that it contains the new IP address.
 </t>
 
 <t>It is worth to underline that when using SCTP on top of DTLS,
-only single homed SCTP associations can be used, since DTLS does 
+only single homed SCTP associations can be used, since DTLS does
 not expose any address management to its upper layer.</t>
 </section>
 
@@ -378,29 +371,29 @@ only show 'm' lines and their attributes (including 'c' lines).
 </t>
 
 <section title="Actpass/Passive" anchor="actpass-pass">
-<t>   
+<t>
 An offerer at 192.0.2.2 signals its availability for an SCTP
 association at SCTP port 54111. Additionally, this offerer is also
 willing to initiate the SCTP association:
 </t>
 <figure anchor="exemple1.1" title="">
 <artwork><![CDATA[
-           m=application 54111 SCTP 54111
-           c=IN IP4 192.0.2.2
-           a=setup:actpass
-           a=connection:new
-           a=sctpmap:54111 t38 1
+	   m=application 54111 SCTP 54111
+	   c=IN IP4 192.0.2.2
+	   a=setup:actpass
+	   a=connection:new
+	   a=sctpmap:54111 t38 1
 ]]></artwork></figure>
 <t>
 The endpoint at 192.0.2.1 responds with the following description:
 </t>
 <figure anchor="exemple1.2" title="">
 <artwork><![CDATA[
-           m=application 54321 SCTP 54321
-           c=IN IP4 192.0.2.1
-           a=setup:passive
-           a=connection:new
-           a=sctpmap:t54321 t38 1
+	   m=application 54321 SCTP 54321
+	   c=IN IP4 192.0.2.1
+	   a=setup:passive
+	   a=connection:new
+	   a=sctpmap:t54321 t38 1
 ]]></artwork></figure>
 <t>
 This will cause the offerer (at 192.0.2.2) to initiate an SCTP
@@ -417,24 +410,24 @@ endpoint at 192.0.2.1, which now acts as the offerer, wishes to
 continue using the existing association:
 </t>
 <figure anchor="exemple2.1" title=""><artwork><![CDATA[
-           m=application 54321 SCTP *
-           c=IN IP4 192.0.2.1
-           a=setup:passive
-           a=connection:existing
+	   m=application 54321 SCTP *
+	   c=IN IP4 192.0.2.1
+	   a=setup:passive
+	   a=connection:existing
 ]]></artwork></figure>
 <t>
 The endpoint at 192.0.2.2 also wishes to use the existing SCTP
 association and responds with the following description:
 </t>
 <figure anchor="exemple2.2" title=""><artwork><![CDATA[
-           m=application 54111 SCTP *
-           c=IN IP4 192.0.2.2
-           a=setup:active
-           a=connection:existing 
+	   m=application 54111 SCTP *
+	   c=IN IP4 192.0.2.2
+	   a=setup:active
+	   a=connection:existing
 ]]></artwork></figure>
 <t>
 The existing SCTP association between 192.0.2.2 and 192.0.2.1 will be
-reused. 
+reused.
 </t>
 
 </section>
@@ -450,13 +443,13 @@ The maximum message size, in bytes, the endpoint is willing to accept is 100000 
 
 <figure anchor="exemple3.1" title="">
 <artwork><![CDATA[
-           m=application 54111 DTLS/SCTP webrtc-datachannel \
-              sctp-port#5000 max-message-size#100000
-           c=IN IP4 192.0.2.2
-           a=setup:actpass
-           a=connection:new
-           a=fingerprint:SHA-1 \
-             4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
+	   m=application 54111 DTLS/SCTP webrtc-datachannel \
+	      sctp-port#5000 max-message-size#100000
+	   c=IN IP4 192.0.2.2
+	   a=setup:actpass
+	   a=connection:new
+	   a=fingerprint:SHA-1 \
+	     4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
 
 
 ]]></artwork>
@@ -468,13 +461,13 @@ The endpoint at 192.0.2.1 responds with the following description:
 
 <figure anchor="exemple3.2" title="">
 <artwork><![CDATA[
-           m=application 62442 DTLS/SCTP webrtc-datachannel \
-            sctp-port#5000 max-message-size#100000
-           c=IN IP4 192.0.2.1
-           a=setup:actpass
-           a=connection:new
-           a=fingerprint:SHA-1 \
-             4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
+	   m=application 62442 DTLS/SCTP webrtc-datachannel \
+	    sctp-port#5000 max-message-size#100000
+	   c=IN IP4 192.0.2.1
+	   a=setup:actpass
+	   a=connection:new
+	   a=fingerprint:SHA-1 \
+	     4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
 
 
 ]]></artwork>
@@ -482,26 +475,26 @@ The endpoint at 192.0.2.1 responds with the following description:
 </section>
 
 
-<section title="SDP description for SCTP over DTLS Connection using fmtp default values" anchor="fmtp-default">
+<section title="SDP description for SCTP over DTLS Connection using default values" anchor="fmtp-default">
 
-<t>This example shows the usage of SCTP over DTLS when fmtp default values are used.</t>
+<t>This example shows the usage of SCTP over DTLS when default values are used.</t>
 
 <t>An offerer at 192.0.2.2 signals the availability of a webrtc-DataChannel session over SCTP/DTLS.
 The DTLS connection runs on top of port 54111. As the sctp association runs on the default sct-port number 5000 over DTLS
 ant the  maximum message size, in bytes, the endpoint is willing to accept is equal to the default value of 64K both
 the parameters may be omitted.</t>
 
-<t>Note that as the sctp association is meant to be used to transport webrtc data channel, the association-usage fmtp parameter
+<t>Note that as the sctp association is meant to be used to transport webrtc data channel, the association-usage parameter
 is present with the webrtc-datachannel value.</t>
 
 <figure anchor="exemple3.3" title="">
 <artwork><![CDATA[
-           m=application 54111 DTLS/SCTP webrtc-datachannel 
-           c=IN IP4 192.0.2.2
-           a=setup:actpass
-           a=connection:new
-           a=fingerprint:SHA-1 \
-             4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
+	   m=application 54111 DTLS/SCTP webrtc-datachannel
+	   c=IN IP4 192.0.2.2
+	   a=setup:actpass
+	   a=connection:new
+	   a=fingerprint:SHA-1 \
+	     4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
 
 
 
@@ -509,17 +502,17 @@ is present with the webrtc-datachannel value.</t>
 </figure>
 
 <t>
-The endpoint at 192.0.2.1 responds with the following description, with default value for the sctp-port and max-message-size fmtp parameters:
+The endpoint at 192.0.2.1 responds with the following description, with default value for the sctp-port and max-message-size parameters:
 </t>
 
 <figure anchor="exemple3.4" title="">
 <artwork><![CDATA[
-           m=application 62442 DTLS/SCTP webrtc-datachannel 
-           c=IN IP4 192.0.2.1
-           a=setup:actpass
-           a=connection:new
-           a=fingerprint:SHA-1 \
-             4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
+	   m=application 62442 DTLS/SCTP webrtc-datachannel
+	   c=IN IP4 192.0.2.1
+	   a=setup:actpass
+	   a=connection:new
+	   a=fingerprint:SHA-1 \
+	     4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
 
 
 ]]></artwork>
@@ -528,7 +521,7 @@ The endpoint at 192.0.2.1 responds with the following description, with default 
 
 
 </section>
-  	
+
 <section title="Security Considerations">
 <t>
 See RFC 4566 <xref target="RFC4566"/> for security considerations on
@@ -553,8 +546,13 @@ values should be registered by the IANA under "Session Description
 Protocol (SDP) Parameters" under "proto".
 </t>
 
-<t>TBD: Describe the fmt sub-fiel . . . </t>
+<t>The "fmt" value used with these "proto" values MUST obey the following rules:</t>
 
+<t><list style='symbols'>
+<t>the first "fmt" is required, and is defined in section <xref target="m-line"/> as "association-usage".</t>
+
+<t>additional "fmt" values are optional, and if present must conform to the definition of "sctp-param" defined in section <xref target="m-line"/>.</t>
+</list></t>
 
 </section>
 
@@ -579,15 +577,15 @@ and useful feedback.</t>
 		<?rfc include="reference.RFC.4347"?>
 		<?rfc include="reference.RFC.4566"?>
 		<?rfc include="reference.RFC.4572"?>
-		<?rfc include="reference.RFC.4960"?> 
-		<?rfc include="reference.RFC.5061"?> 
+		<?rfc include="reference.RFC.4960"?>
+		<?rfc include="reference.RFC.5061"?>
 		<?rfc include="reference.RFC.5246"?>
-        <?rfc include="reference.I-D.draft-ietf-tsvwg-sctp-dtls-encaps-04"?>
+	<?rfc include="reference.I-D.draft-ietf-tsvwg-sctp-dtls-encaps-04"?>
 	</references>
 
 	<references title="Informative References">
 		<?rfc include="reference.RFC.3436"?>
-                <?rfc include="reference.RFC.6083"?>
+		<?rfc include="reference.RFC.6083"?>
 		<?rfc include="reference.RFC.5768"?>
 		<?rfc include="reference.RFC.6951"?>
 	  <?rfc include="reference.I-D.draft-ietf-behave-sctpnat-09"?>
