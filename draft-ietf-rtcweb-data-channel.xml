@@ -57,10 +57,9 @@
 <area>RAI</area>
 
 <abstract>
-<t>The Real-Time Communication in WEB-browsers working group is charged
-to provide protocol support for direct interactive rich communication using
-audio, video, and data between two peers' web-browsers.
-This document specifies the non-SRTP media data transport aspects of the WebRTC
+<t>The WebRTC framework specifies protocol support for direct interactive
+rich communication using audio, video, and data between two peers' web-browsers.
+This document specifies the non-media data transport aspects of the WebRTC
 framework. It provides an architectural overview of how the Stream Control
 Transmission Protocol (SCTP) is used in the WebRTC context as a generic
 transport service allowing WEB-browsers to exchange generic data from peer to
@@ -70,8 +69,11 @@ peer.</t>
 
 <middle>
 <section title='Introduction'>
-<t>Non-SRTP media data types in the context of WebRTC are handled by using SCTP
-<xref target='RFC4960'/> encapsulated in DTLS <xref target='RFC6347'/>.</t>
+<t>In the WebRTC framework, communication between the parties consists of media
+(for example audio and video) and non-media data.
+Media is sent using SRTP, and is not specified further here.
+Non-media data is handled by using SCTP <xref target='RFC4960'/> encapsulated
+in DTLS <xref target='RFC4347'/>.</t>
 
 <figure title='Basic stack diagram'
         anchor='fig-stack'>
@@ -111,7 +113,7 @@ prioritizing of SCTP streams.</t>
 and requirements for both unreliable and reliable peer to peer data channels;
 <xref target='sec-p-a-2'/> discusses SCTP over DTLS over UDP;
 <xref target='sec-sctp-usage'/> provides the specification of how SCTP should be
-used by the WebRTC protocol framework for transporting non-SRTP media data
+used by the WebRTC protocol framework for transporting non-media data
 between WEB-browsers.</t>
 </section>
 
@@ -187,8 +189,8 @@ of these SRTP media streams may change at any time.</t>
 <t>Data channels of a PeerConnection MUST be congestion controlled;
 either individually, as a class, or in conjunction with the SRTP media streams
 of the PeerConnection, to ensure that data channels don't cause congestion
-problems for these SRTP media streams, and that the WebRTC PeerConnection as
-a whole is fair with competing traffic such as TCP.</t>
+problems for these SRTP media streams, and that the WebRTC PeerConnection does
+not cause excessive problems when run in parallel with TCP connections.</t>
 
 <t>The application SHOULD be able to provide guidance as to the
 relative priority of each data channel relative to each other,
@@ -247,7 +249,7 @@ application space.</t>
 
 <t>SCTP multihoming will not be used in WebRTC.
 The SCTP layer will simply act as if it were running on a single-homed host,
-since that is the abstraction that the lower layer (a connection oriented,
+since that is the abstraction that the DTLS layer (a connection oriented,
 unreliable datagram service) exposes.</t>
 
 <t>The encapsulation of SCTP over DTLS defined in
@@ -257,8 +259,8 @@ Using DTLS over UDP in combination with ICE enables middlebox traversal
 in IPv4 and IPv6 based networks.
 SCTP as specified in <xref target='RFC4960'/> MUST be used in
 combination with the extension defined in <xref target='RFC3758'/> and
-provides the following features for transporting non-SRTP media
-data between browsers:
+provides the following features for transporting non-media data between
+browsers:
 <list style='symbols'>
 <t>Support of multiple unidirectional streams.</t>
 <t>Ordered and unordered delivery of user messages.</t>
@@ -355,21 +357,18 @@ has been chosen because it
 </list></t>
 
 <t>Considering the protocol stack of <xref target='fig-sctp-layering'/> the
-usage of DTLS over UDP is specified in <xref target='RFC6347'/>, while the
+usage of DTLS over UDP is specified in <xref target='RFC4347'/>, while the
 usage of SCTP on top of DTLS is specified in
 <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>.
 Please note that the demultiplexing STUN vs. SRTP vs. DTLS is done
 as described in Section 5.1.2 of <xref target='RFC5764'/> and SCTP
 is the only payload of DTLS.</t>
 
-<t>Since DTLS is typically implemented in user-land, the SCTP stack also
-needs to be a user-land stack.</t>
+<t>Since DTLS is typically implemented in user application space, the SCTP
+stack also needs to be a user application space stack.</t>
 
-<t>When using DTLS as the lower layer, only single homed SCTP associations
-are supported, since DTLS does not expose any address management to its upper
-layer.
-The ICE/UDP layer can handle IP address changes during a session without needing
-interaction with the DTLS and SCTP layers.
+<t>The ICE/UDP layer can handle IP address changes during a session without
+needing interaction with the DTLS and SCTP layers.
 However, SCTP SHOULD be notified when an address changes has happened.
 In this case SCTP SHOULD retest the Path MTU and reset the congestion
 state to the initial state.
@@ -392,19 +391,6 @@ or DTLS (being connection-oriented).</t>
 protects the complete SCTP packet, so it provides confidentiality, integrity and
 source authentication of the complete SCTP packet.</t>
 
-<t>This SCTP stack and its upper layer MUST support the usage of multiple
-SCTP streams.
-A user message can be sent ordered or unordered and with partial or full
-reliability.
-The partial reliability extension MUST support policies to limit
-<list style='symbols'>
-<t>the transmission and retransmission by time.</t>
-<t>the number of retransmissions.</t>
-</list>
-Limiting the number of retransmissions to zero combined with unordered delivery
-provides a UDP-like service where each user message is sent exactly once
-and delivered in the order received.</t>
-
 <t>SCTP provides congestion control on a per-association base. This means
 that all SCTP streams within a single SCTP association share the same
 congestion window. Traffic not being sent over SCTP is not covered by
@@ -419,6 +405,10 @@ the impact on the parallel SRTP media streams.</t>
 <section title='SCTP Protocol Considerations'>
 <t>The DTLS encapsulation of SCTP packets as described in
 <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> MUST be used.</t>
+<t>This SCTP stack and its upper layer MUST support the usage of multiple
+SCTP streams.
+A user message can be sent ordered or unordered and with partial or full
+reliability.</t>
 <t>The following SCTP protocol extensions are required:
 <list style='symbols'>
 <t>The stream reset extension defined in <xref target='RFC6525'/> MUST
@@ -431,7 +421,10 @@ the impact on the parallel SRTP media streams.</t>
 <t>The partial reliability extension defined in <xref target='RFC3758'/> MUST
    be supported. In addition to the timed reliability PR-SCTP policy defined
    in <xref target='RFC3758'/>, the limited retransmission policy defined in
-   <xref target='I-D.ietf-tsvwg-sctp-prpolicies'/> MUST be supported.</t>
+   <xref target='I-D.ietf-tsvwg-sctp-prpolicies'/> MUST be supported.
+   Limiting the number of retransmissions to zero combined with unordered
+   delivery provides a UDP-like service where each user message is sent
+   exactly once and delivered in the order received.</t>
 </list></t>
 <t>The support for message interleaving as defined in
 <xref target='I-D.ietf-tsvwg-sctp-ndata'/> SHOULD be used.</t>
@@ -448,7 +441,7 @@ SRTP media streams.</t>
 <!-- FIXME: Bundle Issue. -->
 
 <t>The number of streams negotiated during SCTP association setup SHOULD
-be 65535, which is the maximum number of streams that can negotiated during
+be 65535, which is the maximum number of streams that can be negotiated during
 the association setup.</t>
 </section>
 
@@ -460,14 +453,14 @@ Each user message is sent on a particular stream, either ordered or unordered.
 Ordering is preserved only for ordered messages sent on the same stream.</t>
 </section>
 
-<section title='Channel Definition'>
-<t>The W3C has consensus on defining the application API for WebRTC DataChannels
-to be bidirectional. They also consider the notions of in-sequence,
-out-of-sequence, reliable and unreliable as properties of Channels. One strong
-wish is for the application-level API to be close to the API for WebSockets,
-which implies bidirectional streams of data and waiting for onopen to fire
-before sending, a textual label used to identify the meaning of the stream,
-among other things.</t>
+<section title='WebRTC Data Channel Definition'>
+<t>The WebRTC DataChannels are bidirectional.
+They also consider the notions of in-sequence, out-of-sequence, reliable
+and unreliable as properties of Channels.
+One strong wish is for the application-level API to be close to the API for
+WebSockets, which implies bidirectional streams of data and waiting for
+onopen to fire before sending, a textual label used to identify the meaning
+of the streams.</t>
 
 <t>Each data channel also has a priority, which is an 2 byte unsigned integer
 value.
@@ -560,10 +553,10 @@ When the peer sees that an incoming stream was reset, it also resets its
 corresponding outgoing stream. Once this is completed, the channel is closed.
 Resetting a stream sets the Stream Sequence Numbers (SSNs) of the stream back to
 'zero' with a corresponding notification to the application layer
-that the reset has been performed. Streams are available to reuse after a reset
+that the reset has been performed. Streams are available for reuse after a reset
 has been performed.</t>
 <t><xref target='RFC6525'/> also guarantees that all the messages are delivered
-(or abandoned) before resetting the stream.</t>
+(or abandoned) before the stream is reset.</t>
 </section>
 
 </section>
@@ -573,6 +566,8 @@ has been performed.</t>
 <t>This document does not add any additional considerations to the ones given in
 <xref target='I-D.ietf-rtcweb-security'/> and
 <xref target='I-D.ietf-rtcweb-security-arch'/>.</t>
+<t>I should be noted that a receiver must be prepared that the sender tries
+to send arbitrary large messages.</t>
 </section>
 
 <section title='IANA Considerations'
@@ -621,12 +616,12 @@ and Magnus Westerlund.</t>
 <references title='Normative References'>
 <?rfc include='reference.RFC.2119' ?>
 <?rfc include='reference.RFC.3758'?>
+<?rfc include='reference.RFC.4347'?>
 <?rfc include='reference.RFC.4820'?>
 <?rfc include='reference.RFC.4821'?>
 <?rfc include='reference.RFC.4960'?>
 <?rfc include='reference.RFC.5061'?>
 <?rfc include='reference.RFC.5245'?>
-<?rfc include='reference.RFC.6347'?>
 <?rfc include='reference.RFC.6525'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-ndata'?>
 <?rfc include='reference.I-D.ietf-rtcweb-data-protocol'?>
