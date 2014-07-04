@@ -411,8 +411,8 @@ A user message can be sent ordered or unordered and with partial or full
 reliability.</t>
 <t>The following SCTP protocol extensions are required:
 <list style='symbols'>
-<t>The stream reset extension defined in <xref target='RFC6525'/> MUST
-   be supported. It is used for closing channels.</t>
+<t>The stream reconfiguration extension defined in <xref target='RFC6525'/>
+   MUST be supported. It is used for closing channels.</t>
 <t>The dynamic address reconfiguration extension defined in
    <xref target='RFC5061'/> MUST be used to signal the support of the
    stream reset extension defined in <xref target='RFC6525'/>,
