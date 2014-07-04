@@ -10,7 +10,7 @@ Expires: January 5, 2015                                    July 4, 2014
 
 Stream Control Transmission Protocol (SCTP)-Based Media Transport in the
                    Session Description Protocol (SDP)
-                     draft-ietf-mmusic-sctp-sdp-06
+                     draft-ietf-mmusic-sctp-sdp-07
 
 Abstract
 
