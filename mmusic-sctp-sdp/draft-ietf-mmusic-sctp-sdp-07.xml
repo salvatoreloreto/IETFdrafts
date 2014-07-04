@@ -190,10 +190,16 @@ by production of, or reference to, a standards-track RFC that defines the transp
 <t>An 'm' line that specifies 'SCTP', 'SCTP/DTLS' or 'DTLS/SCTP' MUST further qualify the application-layer protocol using an 'fmt'
    identifier.</t>
 
+<t>The 'fmtp' attribute should be used to map from the 'association-usage' (as used in an "m=" line) to the max-message-size parameter indicating
+ the maximum message size, in bytes, the endpoint is willing to accept.</t>
+
+<t>The sctp-port attribute specifies the actual sctp port.</t>
+
 <figure><artwork><![CDATA[
 
- m=application 12345 DTLS/SCTP webrtc-datachannel \
-	 sctp-port#4060 max-message-size#100000
+ m=application 12345 DTLS/SCTP webrtc-datachannel 
+ a=fmtp:webrtc-datachannel max-message-size=100000
+ a=sctp-port 4060 
 
 ]]></artwork></figure>
 
@@ -203,34 +209,25 @@ by production of, or reference to, a standards-track RFC that defines the transp
 
 <section title="Media Descriptions" anchor="m-line">
 
-<t>An 'm' containing the 'SCTP', 'SCTP/DTLS' or 'DTLS/SCTP' protocol identifier has the following syntax:</t>
+<t>An 'm' line containing the 'SCTP', 'SCTP/DTLS' or 'DTLS/SCTP' protocol identifier has the following syntax:</t>
 
 <figure><artwork><![CDATA[
 
     sctp-m-line = %x6d "="
-     ("application" SP sctp-port SP "SCTP"	SP sctp-fmt CRLF) /
-     ("application" SP sctp-port SP "SCTP/DTLS" SP sctp-fmt CRLF) /
-     ("application" SP udp-port  SP "DTLS/SCTP" SP sctp-fmt CRLF)
+     ("application" space sctp-port space "SCTP"	space sctp-fmt CRLF) /
+     ("application" space sctp-port space "SCTP/DTLS" space sctp-fmt CRLF) /
+     ("application" space udp-port  space "DTLS/SCTP" space sctp-fmt CRLF)
 
     sctp-port = port
 
     udp-port = port
 
-    sctp-fmt = association-usage *(SP sctp-param)
+    sctp-fmt = association-usage 
 
     association-usage = token
 
-    sctp-param = maxmsg-param / sctp-port-param
-
-    maxmsg-param = "max-message-size#" port
-
-
-    sctp-port-param = "sctp-port#" sctp-port
-
 ]]></artwork></figure>
 
-<t>Note the choice of '#' as separator for the parameters, in the above syntax description, is due to conform with the generic SDP grammar for
-token as defined in <xref target="RFC4566"/> section 9.</t>
 
 <t>The media description change slightly depending on the actual &lt;proto&gt;.</t>
 <t><list style='hanging'>
@@ -239,29 +236,54 @@ token as defined in <xref target="RFC4566"/> section 9.</t>
 <t>If the &lt;proto&gt; sub-field is 'DTLS/SCTP', the &lt;port&gt; is the UDP transport port (udp-port).</t>
 </list></t>
 
-<t>The &lt;fmt&gt; sub-field carries the actual SCTP port number (sctp-port), the requested streams behaviour (association-usage) and the maximum message size, in byte, the endpoint
-is willing to accept (maxmsg). All these &lt;fmt&gt; sub-fields are optional and are only needed when a non-default value is desired.</t>
+<t>The &lt;fmt&gt; sub-field carries the parameter indicating the conventional usage of an entire sctp association (association-usage).</t>
 <t><list style='hanging'>
-
-<t hangText="max-message-size:">
- <vspace />the max-message-size parameter indicates the maximum message size, in bytes, the endpoint is willing to accept.
- <vspace />The peer should assume that larger message will be rejected by the endpoint, though it is up to the endpoint decide the appropriate behaviour.
- <vspace />A parameter with value of '0' will signal a best effort attempt, subject to the current endpoint memory capacity, to handle messages of any size.
- <vspace />If the parameter is not present, the implementation should provide a default, with a suggested value of 64K.
- </t>
 
 <t hangText="association-usage:">
  <vspace />The association-usage token indicates the conventional usage of an entire sctp association including its streams (e.g. the pairing of certain streams, the protocol carried over certain streams, etc). This parameter is a required parameter. [TBD a value for the generic usage as defined in RFC 4960 <xref target="RFC4960"/>].</t>
-
-<t hangText="sctp-port-param:">
- <vspace />The sctp-port-param parameter specify the sctp port. This parameter is only meaningful and required if the the &lt;proto&gt; sub-field is 'DTLS/SCTP'.
- <vspace />If the parameter is not present, the default value is 5000.
-</t>
 </list></t>
 
 <t>Any offered association MAY be rejected in the answer, for any reason.  If an association offer is rejected,
 the offerer and answerer MUST NOT establish an SCTP association for it.  To reject an SCTP association, the &lt;port&gt;
 in the answer MUST be set to zero.</t>
+
+<section title="sctp-port" anchor="sctp-port">
+
+<figure><artwork><![CDATA[
+
+    sctp-port-attr   =  "a=sctp-port=" portnumber
+    port-number      =  port
+
+]]></artwork></figure>
+
+<t>The sctp-port attribute specifies the actual sctp port. This attribute is optional and is only meaningful and required if the the &lt;proto&gt; sub-field is 'DTLS/SCTP'.
+If the attribute is not present, the default value is 5000.</t>
+
+</section>
+
+
+<section title="max-message-size" anchor="max-message-size">
+
+<figure><artwork><![CDATA[
+
+    sctpmap-attr        =  "a=fmtp:" association-usage [max-message-size]
+    max-message-size    =  "max-message-size" EQUALS 1*DIGIT
+
+]]></artwork></figure>
+
+<t>The 'fmtp' attribute may be used to map from the 'association-usage' (as used in an "m=" line) to the max-message-size parameter indicating
+ the maximum message size, in bytes, the endpoint is willing to accept.</t>
+
+
+
+<t>The max-message-size parameter indicates the maximum message size, in bytes, the endpoint is willing to accept.
+The peer should assume that larger message will be rejected by the endpoint, though it is up to the endpoint decide the appropriate behaviour.
+A parameter with value of '0' will signal a best effort attempt, subject to the current endpoint memory capacity, to handle messages of any size.
+If the parameter is not present, the implementation should provide a default, with a suggested value of 64K.
+</t>
+</section>
+
+
 
 </section>
 </section>
@@ -378,22 +400,20 @@ willing to initiate the SCTP association:
 </t>
 <figure anchor="exemple1.1" title="">
 <artwork><![CDATA[
-	   m=application 54111 SCTP 54111
+	   m=application 54111 SCTP t38
 	   c=IN IP4 192.0.2.2
 	   a=setup:actpass
 	   a=connection:new
-	   a=sctpmap:54111 t38 1
 ]]></artwork></figure>
 <t>
 The endpoint at 192.0.2.1 responds with the following description:
 </t>
 <figure anchor="exemple1.2" title="">
 <artwork><![CDATA[
-	   m=application 54321 SCTP 54321
+	   m=application 54321 SCTP t38
 	   c=IN IP4 192.0.2.1
 	   a=setup:passive
 	   a=connection:new
-	   a=sctpmap:t54321 t38 1
 ]]></artwork></figure>
 <t>
 This will cause the offerer (at 192.0.2.2) to initiate an SCTP
@@ -443,12 +463,13 @@ The maximum message size, in bytes, the endpoint is willing to accept is 100000 
 
 <figure anchor="exemple3.1" title="">
 <artwork><![CDATA[
-	   m=application 54111 DTLS/SCTP webrtc-datachannel \
-	      sctp-port#5000 max-message-size#100000
-	   c=IN IP4 192.0.2.2
-	   a=setup:actpass
-	   a=connection:new
-	   a=fingerprint:SHA-1 \
+	  m=application 54111 DTLS/SCTP webrtc-datachannel
+	  a=fmtp:webrtc-datachannel max-message-size=100000
+          a=sctp-port 5000 
+	  c=IN IP4 192.0.2.2
+	  a=setup:actpass
+	  a=connection:new
+	  a=fingerprint:SHA-1 \
 	     4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
 
 
@@ -461,12 +482,13 @@ The endpoint at 192.0.2.1 responds with the following description:
 
 <figure anchor="exemple3.2" title="">
 <artwork><![CDATA[
-	   m=application 62442 DTLS/SCTP webrtc-datachannel \
-	    sctp-port#5000 max-message-size#100000
-	   c=IN IP4 192.0.2.1
-	   a=setup:actpass
-	   a=connection:new
-	   a=fingerprint:SHA-1 \
+	  m=application 62442 DTLS/SCTP webrtc-datachannel
+          a=fmtp:webrtc-datachannel max-message-size=100000
+          a=sctp-port 5000 
+	  c=IN IP4 192.0.2.1
+	  a=setup:actpass
+	  a=connection:new
+	  a=fingerprint:SHA-1 \
 	     4A:AD:B9:B1:3F:82:18:3B:54:02:12:DF:3E:5D:49:6B:19:E5:7C:AB
 
 
@@ -546,14 +568,19 @@ values should be registered by the IANA under "Session Description
 Protocol (SDP) Parameters" under "proto".
 </t>
 
-<t>The "fmt" value used with these "proto" values MUST obey the following rules:</t>
+<t>The "fmt" value, "association-usage", used with these "proto" is required. It is defined in section <xref target="m-line"/>.</t>
 
-<t><list style='symbols'>
-<t>the first "fmt" is required, and is defined in section <xref target="m-line"/> as "association-usage".</t>
+<t>[Note] TBD whether a new registry is necessary to register the different possible "association-usage" values.</t> 
 
-<t>additional "fmt" values are optional, and if present must conform to the definition of "sctp-param" defined in section <xref target="m-line"/>.</t>
+<section title="sctp-port attribute">
+
+<t>This document defines a new SDP session and media-level attribute:</t>
+<t><list style='hanging'>
+<t hangText="sctp-port:"> Its format is define in section <xref target="m-line"/>.This attribute
+should be registered by IANA under "Session Description Protocol (SDP) Parameters" under "att-field" (both session and media level)".</t>
 </list></t>
 
+</section>
 </section>
 
 
