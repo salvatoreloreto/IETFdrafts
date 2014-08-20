@@ -107,7 +107,6 @@ which are managed together.</t>
 <t>The Data Channel Establishment Protocol is a simple, low-overhead way
 to establish bidirectional Data Channels over an SCTP association with a
 consistent set of properties.</t>
-
 <t>The set of consistent properties includes:
 <list style='symbols'>
 <t>reliable or unreliable message transmission. In case of unreliable
@@ -118,7 +117,6 @@ consistent set of properties.</t>
 <t>an optional protocol for the Data Channel.</t>
 <t>the Streams.</t>
 </list></t>
-
 <t>This protocol uses a two way handshake to open a Data Channel.
 The handshake pairs one incoming and one outgoing Stream, both having the
 same Stream Identifier, into a single bidirectional Data Channel.
@@ -133,7 +131,6 @@ The demultiplexing is based on the SCTP payload protocol identifier (PPID),
 since the Data Channel Establishment Protocol uses a specific PPID.</t>
 <t>Note: The opening side can send user messages before the DATA_CHANNEL_ACK
 is received.</t>
-
 <t>To avoid glare in opening Data Channels, each side MUST use Streams with 
 either even or odd Stream Identifiers when sending a DATA_CHANNEL_OPEN
 message.
@@ -143,11 +140,9 @@ underlying DTLS connection role:
 the side acting as the DTLS client MUST use Streams with even
 Stream Identifiers, the side acting as the DTLS server MUST use Streams
 with odd Stream Identifiers.</t>
-
 <t>Note: There is no attempt to resolve label glare; if both sides open a
 Data Channel labeled "x" at the same time, there will be two Data Channels
 labeled "x" - one on an even Stream pair, one on an odd pair.</t>
-
 <t>The protocol field is to ease cross-application interoperation ("federation")
 by identifying the user data being passed with an IANA-registered string
 ('WebSocket Subprotocol Name Registry' defined in <xref target='RFC6455'/>),
@@ -167,7 +162,6 @@ The corresponding values are managed by IANA
          anchor='open_msg_format'>
 <t>This message is sent initially on the Stream used for user messages
 using the Data Channel.</t>
-
 <figure>
 <artwork align='center'>
  0                   1                   2                   3
@@ -189,14 +183,11 @@ using the Data Channel.</t>
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 </artwork>
 </figure>
-
 <t><list style='hanging'>
-
 <t hangText='Message Type: 1 byte (unsigned integer)'>
 <vspace blankLines='0'/>
 This field holds the IANA defined message type for the DATA_CHANNEL_OPEN
 message. The suggested value of this field for IANA is 0x03.</t>
-
 <t hangText='Channel Type: 1 byte (unsigned integer)'>
 <vspace blankLines='0'/>
 This field specifies the type of the Data Channel to be opened and the
@@ -227,12 +218,10 @@ retransmitted after a specified life-time given in milli-seconds in the
 Reliability Parameter. This life-time starts when providing the user
 message to the protocol stack.</t>
 </list></t>
-
 <t hangText='Priority: 2 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
 The priority of the Data Channel as described in
 <xref target='I-D.ietf-rtcweb-data-channel'/>.</t>
-
 <t hangText='Reliability Parameter: 4 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
 For reliable Data Channels this field MUST be set to 0 on the sending side
@@ -252,28 +241,23 @@ the maximum lifetime in milliseconds. The following table summarizes this:</t>
 <c>DATA_CHANNEL_PARTIAL_RELIABLE_TIMED</c>           <c>Lifetime in ms</c>
 <c>DATA_CHANNEL_PARTIAL_RELIABLE_TIMED_UNORDERED</c> <c>Lifetime in ms</c>
 </texttable>
-
 <t><list style='hanging'>
 <t hangText='Label Length: 2 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
 The length of the label field in bytes.</t>
-
 <t hangText='Protocol Length: 2 bytes (unsigned integer)'>
 <vspace blankLines='0'/>
 The length of the protocol field in bytes.</t>
-
 <t hangText='Label: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
 The name of the Data Channel as a UTF-8 encoded string.
 This may be an empty string.</t>
-
 <t hangText='Protocol: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
 If this is an empty string the protocol is unspecified.
 If it is a non-empty string, it specifies a protocol registered in the
 'WebSocket Subprotocol Name Registry' created in
-<xref target='RFC6455'/>. This string is UTF-8 encoded.
-</t>
+<xref target='RFC6455'/>. This string is UTF-8 encoded.</t>
 </list></t>
 </section>
 
@@ -292,19 +276,15 @@ handshake is complete.</t>
 </artwork>
 </figure>
 <t><list style='hanging'>
-
 <t hangText='Message Type: 1 byte (unsigned integer)'>
 <vspace blankLines='0'/>
 This field holds the IANA defined message type for the DATA_CHANNEL_ACK
 message. The suggested value of this field for IANA is 0x02.</t>
-</list>
-</t>
+</list></t>
 </section>
-
 </section>
 
 <section title='Procedures'>
-
 <t>All Data Channel Establishment Protocol messages MUST be sent using
 ordered delivery and reliable transmission.
 They MUST be sent on the same outgoing Stream as the user messages
@@ -315,14 +295,12 @@ Therefore Data Channel Establishment Protocol message MUST be sent with the
 assigned PPID for the Data Channel Establishment Protocol
 (see <xref target='iana_ppid'/>).
 Other messages MUST NOT be sent using this PPID.</t>
-
 <t>If one side wants to open a Data Channel, it chooses an Stream
 identifier for which the corresponding incoming and outgoing Streams
 are free. If the side is the DTLS client, it MUST choose
 an even Stream Identifier, if the side is the DTLS server, it MUST
 choose an odd one. It fills in the parameters of the DATA_CHANNEL_OPEN message
 and sends it on the chosen Stream.</t>
-
 <t>After the DATA_CHANNEL_OPEN message has been sent, the sender of the
 DATA_CHANNEL_OPEN can start sending messages containing user data without
 waiting for the reception of the corresponding DATA_CHANNEL_ACK message.
@@ -336,14 +314,12 @@ Data Channels and MUST be sent unordered on unordered Data Channels.
 Therefore receiving a message containing user data on an unused Stream
 indicates an error. The corresponding Data Channel MUST be closed as described
 in <xref target='I-D.ietf-rtcweb-data-channel'/>.</t>
-
 <t>If a DATA_CHANNEL_OPEN message is received on an unused Stream,
 the Stream Identifier corresponds to the role of the peer and
 all parameters in the DATA_CHANNEL_OPEN message are valid,
 then a corresponding DATA_CHANNEL_ACK message is sent on the Stream with the
 same Stream Identifier as the one the DATA_CHANNEL_OPEN message was
 received on.</t>
-
 <t>If the DATA_CHANNEL_OPEN message doesn't satisfy the conditions above,
 for instance if a DATA_CHANNEL_OPEN message is received on an already used
 Stream or there are any problems with parameters within the DATA_CHANNEL_OPEN
@@ -375,7 +351,6 @@ Such a protocol suite is specified in
 <t>For general considerations see <xref target='I-D.ietf-rtcweb-security'/> and
 <xref target='I-D.ietf-rtcweb-security-arch'/>.</t>
 </section>
-
 
 <section title='IANA Considerations'>
 <t>[NOTE to RFC-Editor:
@@ -468,9 +443,7 @@ delivery is unordered or not.</t>
 <c>Unassigned</c>                                     <c>rest</c> <c>         </c>
 </texttable>
 </section>
-
 </section>
-
 
 <section title='Acknowledgments'>
 <t>The authors wish to thank
@@ -489,7 +462,6 @@ Justin Uberti,
 and many others for their invaluable comments.</t>
 </section>
 </middle>
-
 
 <back>
 <references title='Normative References'>
