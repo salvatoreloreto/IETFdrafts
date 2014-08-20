@@ -359,8 +359,10 @@ Such a protocol suite is specified in
 </list>
 ]</t>
 <t>IANA is asked to update the reference of an already existing SCTP PPID
-assignment and to create two new registries for the Data Channel
-Establishment Protocol.</t>
+assignment (<xref target='iana_ppid'/>) and to create a new standalone registry
+with its own URL for the DCEP (<xref target='iana_dcep_registry'/>) containing
+two new registration tables (<xref target='iana_msg_type'/> and
+<xref target='iana_channel_type'/>).</t>
 
 <section title='SCTP Payload Protocol Identifier'
          anchor='iana_ppid'>
@@ -369,21 +371,31 @@ Identifier (PPID) named "WebRTC Control".
 <xref target='RFC4960'/> creates the registry
 "SCTP Payload Protocol Identifiers" from which this identifier was assigned.
 IANA is requested to update the reference of this assignment to point to this
-document and to update the name.
-Therefore this assignment should be updated to read:</t>
+document and to update the name. The corresponding date should be kept.</t>
+<t>Therefore this assignment should be updated to read:</t>
 <texttable>
 <ttcol align='left'>Value</ttcol>
 <ttcol align='left'>SCTP PPID</ttcol>
 <ttcol align='left'>Reference</ttcol>
-<c>WebRTC DCEP</c> <c>50</c> <c>[RFCXXXX]</c>
+<ttcol align='left'>Date</ttcol>
+<c>WebRTC DCEP</c> <c>50</c> <c>[RFCXXXX]</c> <c>2013-09-20</c>
 </texttable>
 </section>
+
+<section title='New Standalone Registry for the DCEP'
+         anchor='iana_dcep_registry'>
+<t>IANA is requested to create a new standalone registry (aka a webpage) with
+its own URL for the Data Channel Establishment Protocol (DCEP). It will contain
+two tables as described in <xref target='iana_msg_type'/> and
+<xref target='iana_channel_type'/>.</t>
 
 <section title='New Message Type Registry'
          anchor ='iana_msg_type'>
 <t>IANA is requested to create a new registration table "Message Type Registry"
 for the Data Channel Establishment Protocol (DCEP) to manage the one byte
-"Message Type" field in DCEP messages (see <xref target='msg_format'/>).</t>
+"Message Type" field in DCEP messages (see <xref target='msg_format'/>).
+This registration table should be part of the registry described in
+<xref target='iana_dcep_registry'/>.</t>
 <t>The assignment of new message types is done through an RFC required action,
 as defined in <xref target='RFC5226'/>.
 Documentation of the new message type MUST contain the following information:
@@ -407,7 +419,8 @@ within the operation of the Data Channel Establishment Protocol.</t>
 <t>Please note that the values 0x00 and 0x01 are reserved to avoid
 interoperability problems, since they have been used in earlier versions
 of the document.
-The value 0xff has been reserved for future extensibility.</t>
+The value 0xff has been reserved for future extensibility.
+The range of possible values is from 0x00 to 0xff.</t>
 </section>
 
 <section title='New Channel Type Registry'
@@ -415,7 +428,9 @@ The value 0xff has been reserved for future extensibility.</t>
 <t>IANA is requested to create a new registration table "Channel Type Registry"
 for the Data Channel Establishment Protocol to manage the one byte
 "Channel Type" field in DATA_CHANNEL_OPEN messages
-(see <xref target='open_msg_format'/>).</t>
+(see <xref target='open_msg_format'/>).
+This registration table should be part of the registry described in
+<xref target='iana_dcep_registry'/>.</t>
 <t>The assignment of new message types is done through an RFC required action,
 as defined in <xref target='RFC5226'/>.
 Documentation of the new Channel Type MUST contain the following information:
@@ -442,6 +457,10 @@ delivery is unordered or not.</t>
 <c>Reserved</c>                                       <c>0xff</c> <c>[RFCXXXX]</c>
 <c>Unassigned</c>                                     <c>rest</c> <c>         </c>
 </texttable>
+<t>Please note that the values 0x7f and 0xff have been reserved for future
+extensibility.
+The range of possible values is from 0x00 to 0xff.</t>
+</section>
 </section>
 </section>
 

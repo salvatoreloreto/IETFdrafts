@@ -584,16 +584,18 @@ Identifiers (PPIDs):
 <xref target='RFC4960'/> creates the registry "SCTP Payload Protocol Identifiers"
 from which these identifiers were assigned.
 IANA is requested to update the reference of these four assignments to point
-to this document and change the names of the PPIDs.
-Therefore these four assignments should be updated to read:</t>
+to this document and change the names of the PPIDs. The corresponding dates
+should be kept.</t>
+<t>Therefore these four assignments should be updated to read:</t>
 <texttable>
 <ttcol align='left'>Value</ttcol>
 <ttcol align='left'>SCTP PPID</ttcol>
 <ttcol align='left'>Reference</ttcol>
-<c>WebRTC String</c>                      <c>51</c> <c>[RFCXXXX]</c>
-<c>WebRTC Binary Partial (Deprecated)</c> <c>52</c> <c>[RFCXXXX]</c>
-<c>WebRTC Binary</c>                      <c>53</c> <c>[RFCXXXX]</c>
-<c>WebRTC String Partial (Deprecated)</c> <c>54</c> <c>[RFCXXXX]</c>
+<ttcol align='left'>Date</ttcol>
+<c>WebRTC String</c>                      <c>51</c> <c>[RFCXXXX]</c> <c>2013-09-20</c>
+<c>WebRTC Binary Partial (Deprecated)</c> <c>52</c> <c>[RFCXXXX]</c> <c>2013-09-20</c>
+<c>WebRTC Binary</c>                      <c>53</c> <c>[RFCXXXX]</c> <c>2013-09-20</c>
+<c>WebRTC String Partial (Deprecated)</c> <c>54</c> <c>[RFCXXXX]</c> <c>2013-09-20</c>
 </texttable>
 </section>
 
