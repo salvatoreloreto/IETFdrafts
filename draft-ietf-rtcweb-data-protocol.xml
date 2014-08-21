@@ -120,7 +120,7 @@ consistent set of properties.</t>
 <t>This protocol uses a two way handshake to open a Data Channel.
 The handshake pairs one incoming and one outgoing Stream, both having the
 same Stream Identifier, into a single bidirectional Data Channel.
-The side wanting to open a Data Channel selects an Stream Identifier
+The side wanting to open a Data Channel selects a Stream Identifier
 for which the corresponding incoming and outgoing Streams are unused
 and sends a DATA_CHANNEL_OPEN message on the outgoing Stream.
 The peer responds with a DATA_CHANNEL_ACK message on its corresponding
@@ -131,24 +131,25 @@ The demultiplexing is based on the SCTP payload protocol identifier (PPID),
 since the Data Channel Establishment Protocol uses a specific PPID.</t>
 <t>Note: The opening side can send user messages before the DATA_CHANNEL_ACK
 is received.</t>
-<t>To avoid glare in opening Data Channels, each side MUST use Streams with 
-either even or odd Stream Identifiers when sending a DATA_CHANNEL_OPEN
-message.
+<t>To avoid collisions where both sides try to open a Data Channel with
+the same Stream Identifiers, each side MUST use Streams with either even or
+odd Stream Identifiers when sending a DATA_CHANNEL_OPEN message.
 When using SCTP over DTLS <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/>,
 the method used to determine which side uses odd or even is based on the
 underlying DTLS connection role:
 the side acting as the DTLS client MUST use Streams with even
 Stream Identifiers, the side acting as the DTLS server MUST use Streams
 with odd Stream Identifiers.</t>
-<t>Note: There is no attempt to resolve label glare; if both sides open a
-Data Channel labeled "x" at the same time, there will be two Data Channels
-labeled "x" - one on an even Stream pair, one on an odd pair.</t>
+<t>Note: There is no attempt to ensure uniqueness for the label;
+if both sides open a Data Channel labeled "x" at the same time, there will be
+two Data Channels labeled "x" - one on an even Stream pair, one on an odd pair.</t>
 <t>The protocol field is to ease cross-application interoperation ("federation")
 by identifying the user data being passed with an IANA-registered string
 ('WebSocket Subprotocol Name Registry' defined in <xref target='RFC6455'/>),
 and may be useful for homogeneous applications which may create more than one
 type of Data Channel.
-Please note that there is also no attempt to resolve protocol glare.</t>
+Please note that there is also no attempt to ensure uniqueness for the protocol
+field.</t>
 </section>
 
 <section title='Message Formats'
@@ -187,7 +188,8 @@ using the Data Channel.</t>
 <t hangText='Message Type: 1 byte (unsigned integer)'>
 <vspace blankLines='0'/>
 This field holds the IANA defined message type for the DATA_CHANNEL_OPEN
-message. The suggested value of this field for IANA is 0x03.</t>
+message. The value of this field is 0x03 as specified in
+<xref target='iana_msg_type'/>.</t>
 <t hangText='Channel Type: 1 byte (unsigned integer)'>
 <vspace blankLines='0'/>
 This field specifies the type of the Data Channel to be opened and the
@@ -279,7 +281,8 @@ handshake is complete.</t>
 <t hangText='Message Type: 1 byte (unsigned integer)'>
 <vspace blankLines='0'/>
 This field holds the IANA defined message type for the DATA_CHANNEL_ACK
-message. The suggested value of this field for IANA is 0x02.</t>
+message. The value of this field is 0x02 as specified in
+<xref target='iana_msg_type'/>.</t>
 </list></t>
 </section>
 </section>
@@ -295,12 +298,12 @@ Therefore Data Channel Establishment Protocol message MUST be sent with the
 assigned PPID for the Data Channel Establishment Protocol
 (see <xref target='iana_ppid'/>).
 Other messages MUST NOT be sent using this PPID.</t>
-<t>If one side wants to open a Data Channel, it chooses an Stream
-identifier for which the corresponding incoming and outgoing Streams
-are free. If the side is the DTLS client, it MUST choose
-an even Stream Identifier, if the side is the DTLS server, it MUST
-choose an odd one. It fills in the parameters of the DATA_CHANNEL_OPEN message
-and sends it on the chosen Stream.</t>
+<t>If one side wants to open a Data Channel, it chooses a Stream Identifier
+for which the corresponding incoming and outgoing Streams are free.
+If the side is the DTLS client, it MUST choose an even Stream Identifier,
+if the side is the DTLS server, it MUST choose an odd one.
+It fills in the parameters of the DATA_CHANNEL_OPEN message and sends it on
+the chosen Stream.</t>
 <t>After the DATA_CHANNEL_OPEN message has been sent, the sender of the
 DATA_CHANNEL_OPEN can start sending messages containing user data without
 waiting for the reception of the corresponding DATA_CHANNEL_ACK message.
@@ -385,9 +388,10 @@ document and to update the name. The corresponding date should be kept.</t>
 <section title='New Standalone Registry for the DCEP'
          anchor='iana_dcep_registry'>
 <t>IANA is requested to create a new standalone registry (aka a webpage) with
-its own URL for the Data Channel Establishment Protocol (DCEP). It will contain
-two tables as described in <xref target='iana_msg_type'/> and
-<xref target='iana_channel_type'/>.</t>
+its own URL for the Data Channel Establishment Protocol (DCEP).
+The title should be "Data Channel Establishment Protocol (DCEP) Parameters".
+It will contain the two tables as described in <xref target='iana_msg_type'/>
+and <xref target='iana_channel_type'/>.</t>
 
 <section title='New Message Type Registry'
          anchor ='iana_msg_type'>
@@ -489,11 +493,11 @@ and many others for their invaluable comments.</t>
 <?rfc include='reference.RFC.4960'?>
 <?rfc include='reference.RFC.5226'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-dtls-encaps'?>
+<?rfc include='reference.I-D.ietf-rtcweb-data-channel' ?>
 </references>
 
 <references title='Informational References'>
 <?rfc include='reference.RFC.6455'?>
-<?rfc include='reference.I-D.ietf-rtcweb-data-channel' ?>
 <?rfc include='reference.I-D.ietf-rtcweb-security'?>
 <?rfc include='reference.I-D.ietf-rtcweb-security-arch'?>
 </references>
