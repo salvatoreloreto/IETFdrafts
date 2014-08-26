@@ -355,6 +355,9 @@ congestion window. Traffic not being sent over SCTP is not covered by
 the SCTP congestion control.
 Using a congestion control different from than the standard one might improve
 the impact on the parallel SRTP media streams.</t>
+<t>SCTP uses the same port number concept as TCP and UDP do.
+Therefore an SCTP association uses two port numbers, one at each SCTP
+end-point.</t>
 </section>
 
 <section title='The Usage of SCTP for Data Channels'
@@ -411,26 +414,35 @@ Ordering is preserved only for ordered messages sent on the same stream.</t>
 </section>
 
 <section title='WebRTC Data Channel Definition'>
-<t>The WebRTC Data Channels are bidirectional.
-They also consider the notions of in-sequence, out-of-sequence, reliable
-and unreliable as properties of channels.
-One strong wish is for the application-level API to be close to the API for
-WebSockets, which implies bidirectional streams of data and waiting for
-onopen to fire before sending, a textual label used to identify the meaning
-of the streams.</t>
-<t>The realization of a bidirectional data channel is a pair of one
-incoming stream and one outgoing SCTP stream having the same stream SCTP
-identifier.</t>
-<!--<t>Note that there's no requirement for the SCTP streams used to create
-a bidirectional channel have the same number in each direction. -->
-<t>How stream values are selected is protocol and implementation dependent.</t>
-<t>Each data channel also has a priority, which is an 2 byte unsigned integer
-value.
+<t>One strong wish is for the application-level API to be close to the API for
+WebSockets, which implies bidirectional streams of data and a textual field
+called 'label' used to identify the meaning of the data channel.</t>
+<t>The realization of a data channel is a pair of one incoming stream and
+one outgoing SCTP stream having the same SCTP stream identifier.
+How these SCTP stream identifiers are selected is protocol and implementation
+dependent. This allows a bidirectional communication.</t>
+<t>Additionally, each data channel has the following properties in each
+direction:
+<list style='symbols'>
+<t>reliable or unreliable message transmission.
+In case of unreliable transmissions, the same level of unreliability is used.
+Please note that in SCTP this is a property of an SCTP user message and not
+of an SCTP stream.</t>
+<t>in-order or out-of-order message delivery for message sent.
+Please note that in SCTP this is a property of an SCTP user message and not
+of an SCTP stream.</t>
+<t>A priority, which is a 2 byte unsigned integer.
 These priorities MUST be interpreted as weighted-fair-queuing scheduling
 priorities per the definition of the corresponding stream scheduler
 supporting interleaving in <xref target='I-D.ietf-tsvwg-sctp-ndata'/>.
 For use in WebRTC, the values used SHOULD be one of 128 ("below normal"),
 256 ("normal"), 512 ("high") or 1024 ("extra high").</t>
+<t>an optional label.</t>
+<t>an optional protocol.</t>
+</list></t>
+<t>Please note that for a data channel being negotiated with the protocol
+specified in <xref target='I-D.ietf-rtcweb-data-protocol'/> all of the above
+properties are the same in both directions.</t>
 </section>
 
 <section title='Opening a Channel'>
@@ -438,7 +450,8 @@ For use in WebRTC, the values used SHOULD be one of 128 ("below normal"),
 called in-band negotiation, or out-of-band negotiation.
 Out-of-band negotiation is defined as any method which results in an agreement
 as to the parameters of a channel and the creation thereof.
-The details are out of scope of this document.</t>
+The details are out of scope of this document. Applications using data
+channels need to use the negotiation methods consistently on both end-points.</t>
 <t>A simple protocol for in-band negotiation is specified in
 <xref target='I-D.ietf-rtcweb-data-protocol'/>.</t>
 <t>When one side wants to open a channel using out-of-band negotiation, it
@@ -463,11 +476,23 @@ underlying stream using the reliability defined when the data channel was
 opened unless the options are changed, or per-message options are specified
 by a higher level.</t>
 <t>No more than one message should be put into an SCTP user message.</t>
+
 <t>The SCTP Payload Protocol Identifiers (PPIDs) are used to signal the
-interpretation of the "Payload data". For identifying a JavaScript string
-encoded in UTF-8 the PPID "WebRTC String" MUST be used,
-for JavaScript binary data (ArrayBuffer or Blob) the PPID
-"WebRTC Binary" MUST be used (see <xref target='sec-IANA'/>).</t>
+interpretation of the "Payload data". The following PPIDs MUST be used
+(see <xref target='sec-IANA'/>):
+<list style="hanging">
+<t hangText='WebRTC String:'>
+to identify a non-empty JavaScript string encoded in UTF-8.</t>
+<t hangText='WebRTC String Empty:'>
+to identify an empty JavaScript string encoded in UTF-8.</t>
+<t hangText='WebRTC Binary:'>
+to identify a non-empty JavaScript binary data
+(ArrayBuffer, ArrayBufferView or Blob).</t>
+<t hangText='WebRTC Binary Empty:'>
+to identify an empty JavaScript binary data
+(ArrayBuffer, ArrayBufferView or Blob).</t>
+</list></t>
+
 <t>The usage of the PPIDs "WebRTC String Partial" and "WebRTC Binary Partial"
 is deprecated. They were used for a PPID-based fragmentation and reassembly
 of user messages belonging to reliable and ordered data channels.</t>
@@ -485,7 +510,8 @@ SHOULD limit the maximum message size to 16 KB to avoid monopolization.</t>
 as applications will not be able to support arbitrarily-large single
 messages. This limit has to be negotiated, for example by using
 <xref target='I-D.ietf-mmusic-sctp-sdp'/>.</t>
-<t>The sender SHOULD disable the Nagle algorithm to minimize the latency.</t>
+<t>The sender SHOULD disable the Nagle algorithm (see <xref target='RFC1122'/>)
+to minimize the latency.</t>
 </section>
 
 <section title='Closing a Channel'>
@@ -519,16 +545,20 @@ to send arbitrary large messages.</t>
 <t>"RFCXXXX" is to be replaced by the RFC number you assign this document.</t>
 </list>
 ]</t>
-<t>This document uses four already registered SCTP Payload Protocol
+<t>This document uses six already registered SCTP Payload Protocol
 Identifiers (PPIDs):
-"DOMString Last", "Binary Data Partial", "Binary Data Last", and
-"DOMString Partial".
+"DOMString Last",
+"Binary Data Partial",
+"Binary Data Last",
+"DOMString Partial",
+"WebRTC String Empty", and
+"WebRTC Binary Empty".
 <xref target='RFC4960'/> creates the registry "SCTP Payload Protocol Identifiers"
 from which these identifiers were assigned.
-IANA is requested to update the reference of these four assignments to point
-to this document and change the names of the PPIDs. The corresponding dates
-should be kept.</t>
-<t>Therefore these four assignments should be updated to read:</t>
+IANA is requested to update the reference of these six assignments to point
+to this document and change the names of the first four PPIDs.
+The corresponding dates should be kept.</t>
+<t>Therefore these six assignments should be updated to read:</t>
 <texttable>
 <ttcol align='left'>Value</ttcol>
 <ttcol align='left'>SCTP PPID</ttcol>
@@ -538,16 +568,15 @@ should be kept.</t>
 <c>WebRTC Binary Partial (Deprecated)</c> <c>52</c> <c>[RFCXXXX]</c> <c>2013-09-20</c>
 <c>WebRTC Binary</c>                      <c>53</c> <c>[RFCXXXX]</c> <c>2013-09-20</c>
 <c>WebRTC String Partial (Deprecated)</c> <c>54</c> <c>[RFCXXXX]</c> <c>2013-09-20</c>
-<!--
-<c>WebRTC String Empty</c>                <c>??</c> <c>[RFCXXXX]</c> <c>2014-08-??</c>
-<c>WebRTC Binary Empty</c>                <c>??</c> <c>[RFCXXXX]</c> <c>2014-08-??</c>
--->
+<c>WebRTC String Empty</c>                <c>56</c> <c>[RFCXXXX]</c> <c>2014-08-22</c>
+<c>WebRTC Binary Empty</c>                <c>57</c> <c>[RFCXXXX]</c> <c>2014-08-22</c>
 </texttable>
 </section>
 
 <section title='Acknowledgments'>
 <t>Many thanks for comments, ideas, and text from
 Harald Alvestrand,
+Richard Barnes,
 Adam Bergkvist,
 Christer Holmberg,
 Cullen Jennings,
@@ -581,6 +610,7 @@ and Magnus Westerlund.</t>
 <?rfc include='reference.I-D.ietf-mmusic-sctp-sdp'?>
 </references>
 <references title='Informative References'>
+<?rfc include='reference.RFC.1122'?>
 <?rfc include='reference.RFC.5764'?>
 <?rfc include='reference.RFC.6083'?>
 <?rfc include='reference.RFC.6951'?>

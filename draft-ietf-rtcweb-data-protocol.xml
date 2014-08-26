@@ -471,6 +471,7 @@ The range of possible values is from 0x00 to 0xff.</t>
 <section title='Acknowledgments'>
 <t>The authors wish to thank
 Harald Alvestrand,
+Richard Barnes,
 Adam Bergkvist,
 Barry Dingle,
 Stefan Håkansson,
