@@ -496,9 +496,10 @@ to identify an empty JavaScript binary data
 <t>The usage of the PPIDs "WebRTC String Partial" and "WebRTC Binary Partial"
 is deprecated. They were used for a PPID-based fragmentation and reassembly
 of user messages belonging to reliable and ordered data channels.</t>
-<t>If a message with an unsupported PPID is received or some error
-is detected by the receiver (for example, illegal ordering), the receiver
-SHOULD close the corresponding data channel.</t>
+<t>If a message with an unsupported PPID is received or some error condition
+related to the received message is detected by the receiver
+(for example, illegal ordering),
+the receiver SHOULD close the corresponding data channel.</t>
 <t>The SCTP base protocol specified in <xref target='RFC4960'/> does not
 support the interleaving of user messages. Therefore sending a large user
 message can monopolize the SCTP association.
