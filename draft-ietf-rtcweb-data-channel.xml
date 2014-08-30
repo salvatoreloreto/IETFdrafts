@@ -476,7 +476,6 @@ underlying stream using the reliability defined when the data channel was
 opened unless the options are changed, or per-message options are specified
 by a higher level.</t>
 <t>No more than one message should be put into an SCTP user message.</t>
-
 <t>The SCTP Payload Protocol Identifiers (PPIDs) are used to signal the
 interpretation of the "Payload data". The following PPIDs MUST be used
 (see <xref target='sec-IANA'/>):
@@ -492,7 +491,11 @@ to identify a non-empty JavaScript binary data
 to identify an empty JavaScript binary data
 (ArrayBuffer, ArrayBufferView or Blob).</t>
 </list></t>
-
+<t>SCTP does not support the sending of empty user messages. Therefore, if an
+empty message has to be sent, the appropriate PPID (WebRTC String Empty or
+WebRTC Binary Empty) is used and the SCTP user message of one zero byte is
+sent. When receiving an SCTP user message with one of these PPIDs, the receiver
+MUST ignore the SCTP user message and process it as an empty message.</t>
 <t>The usage of the PPIDs "WebRTC String Partial" and "WebRTC Binary Partial"
 is deprecated. They were used for a PPID-based fragmentation and reassembly
 of user messages belonging to reliable and ordered data channels.</t>
