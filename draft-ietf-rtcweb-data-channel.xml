@@ -305,9 +305,9 @@ requirement 12.</t>
 +----------------------------------+
 | STUN | SRTP |        DTLS        |
 +----------------------------------+
-|         ICE                      |
+|                ICE               |
 +----------------------------------+
-| UDP1 | UDP2 | ...                |
+| UDP1 | UDP2 | UDP3 | ...         |
 +----------------------------------+
 </artwork>
 </figure>
@@ -391,8 +391,8 @@ reliability.</t>
 <xref target='I-D.ietf-tsvwg-sctp-ndata'/> SHOULD be used.</t>
 </section>
 
-<section title='Association Setup'
-         anchor='sec-sctp-setup'>
+<section title='SCTP Association Management'
+         anchor='sec-sctp-management'>
 <t>In the WebRTC context, the SCTP association will be set up when the
 two endpoints of the WebRTC PeerConnection agree on opening it, as negotiated
 by JSEP (typically an exchange of SDP) <xref target='I-D.ietf-rtcweb-jsep'/>.
@@ -403,6 +403,20 @@ SRTP media streams.</t>
 <t>The number of streams negotiated during SCTP association setup SHOULD
 be 65535, which is the maximum number of streams that can be negotiated during
 the association setup.</t>
+
+<t>SCTP supports two ways of terminating an SCTP association.
+A graceful one, using a procedure which ensures that no messages are lost
+during the shutdown of the association.
+The second method is a non-graceful one, where one side can just abort the
+association.</t>
+<t>Each SCTP end-point supervises continuously the reachability of its peer by
+monitoring the number of retransmissions of user messages and test messages.
+In case of excessive retransmissions, the association is terminated in a
+non-graceful way.</t>
+<t>If an SCTP association is closed in a graceful way, all of its data channels
+are closed.
+In case of a non-graceful teardown, all data channels are also closed,
+but an error indication SHOULD be provided if possible.</t>
 </section>
 
 <section title='SCTP Streams'>
@@ -413,7 +427,7 @@ Each user message is sent on a particular stream, either ordered or unordered.
 Ordering is preserved only for ordered messages sent on the same stream.</t>
 </section>
 
-<section title='WebRTC Data Channel Definition'>
+<section title='Data Channel Definition'>
 <t>One strong wish is for the application-level API to be close to the API for
 WebSockets, which implies bidirectional streams of data and a textual field
 called 'label' used to identify the meaning of the data channel.</t>
@@ -445,7 +459,7 @@ specified in <xref target='I-D.ietf-rtcweb-data-protocol'/> all of the above
 properties are the same in both directions.</t>
 </section>
 
-<section title='Opening a Channel'>
+<section title='Opening a Data Channel'>
 <t>Data channels can be opened by using negotiation within the SCTP association,
 called in-band negotiation, or out-of-band negotiation.
 Out-of-band negotiation is defined as any method which results in an agreement
@@ -470,7 +484,7 @@ the application at the peer will also know the selected stream to
 be used, and the options for sending data from that side.</t>
 </section>
 
-<section title='Transferring User Data on a Channel'>
+<section title='Transferring User Data on a Data Channel'>
 <t>All data sent on a data channel in both directions MUST be sent over the
 underlying stream using the reliability defined when the data channel was
 opened unless the options are changed, or per-message options are specified
@@ -519,7 +533,7 @@ messages. This limit has to be negotiated, for example by using
 to minimize the latency.</t>
 </section>
 
-<section title='Closing a Channel'>
+<section title='Closing a Data Channel'>
 <t>Closing of a data channel MUST be signaled by resetting the corresponding
 outgoing streams <xref target='RFC6525'/>. This means that if one side
 decides to close the data channel, it resets the corresponding outgoing stream.
@@ -583,6 +597,7 @@ The corresponding dates should be kept.</t>
 Harald Alvestrand,
 Richard Barnes,
 Adam Bergkvist,
+Gunnar Hellstrom,
 Christer Holmberg,
 Cullen Jennings,
 Paul Kyzivat,
