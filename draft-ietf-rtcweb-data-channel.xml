@@ -9,7 +9,7 @@
 
 <rfc category='std'
      ipr='trust200902'
-     docName='draft-ietf-rtcweb-data-channel-12.txt'>
+     docName='draft-ietf-rtcweb-data-channel-13.txt'>
 <front>
 <title>WebRTC Data Channels</title>
 
@@ -428,7 +428,7 @@ Ordering is preserved only for ordered messages sent on the same stream.</t>
 </section>
 
 <section title='Data Channel Definition'>
-<t>One strong wish is for the application-level API to be close to the API for
+<t>It is advantageous for the application-level API to be close to the API for
 WebSockets, which implies bidirectional streams of data and a textual field
 called 'label' used to identify the meaning of the data channel.</t>
 <t>The realization of a data channel is a pair of one incoming stream and
