@@ -444,7 +444,7 @@ Documentation of the new Channel Type MUST contain the following information:
 Data Channels using this new Channel Type.</t>
 </list>
 Please note that if new Channel Types support ordered and unordered message
-delivery, the high order bit SHOULD be used to indicate whether the message
+delivery, the high order bit MUST be used to indicate whether the message
 delivery is unordered or not.</t>
 <t>Initially the following values need to be registered:</t>
 <texttable>
