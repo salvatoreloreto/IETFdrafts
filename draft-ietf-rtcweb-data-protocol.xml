@@ -120,16 +120,16 @@ consistent set of properties.</t>
 <t>This protocol uses a two way handshake to open a Data Channel.
 The handshake pairs one incoming and one outgoing Stream, both having the
 same Stream Identifier, into a single bidirectional Data Channel.
-The side wanting to open a Data Channel selects a Stream Identifier
-for which the corresponding incoming and outgoing Streams are unused
-and sends a DATA_CHANNEL_OPEN message on the outgoing Stream.
+The peer that initiates opening a Data Channel selects a Stream
+Identifier for which the corresponding incoming and outgoing Streams
+are unused and sends a DATA_CHANNEL_OPEN message on the outgoing Stream.
 The peer responds with a DATA_CHANNEL_ACK message on its corresponding
 outgoing Stream. Then the Data Channel is open.
 Data Channel Establishment Protocol messages are sent on the same Stream as
 the user messages belonging to the Data Channel.
 The demultiplexing is based on the SCTP payload protocol identifier (PPID),
 since the Data Channel Establishment Protocol uses a specific PPID.</t>
-<t>Note: The opening side can send user messages before the DATA_CHANNEL_ACK
+<t>Note: The opening side MAY send user messages before the DATA_CHANNEL_ACK
 is received.</t>
 <t>To avoid collisions where both sides try to open a Data Channel with
 the same Stream Identifiers, each side MUST use Streams with either even or
@@ -252,14 +252,15 @@ The length of the label field in bytes.</t>
 The length of the protocol field in bytes.</t>
 <t hangText='Label: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
-The name of the Data Channel as a UTF-8 encoded string.
-This may be an empty string.</t>
+The name of the Data Channel as a UTF-8 encoded string as specified in
+<xref target='RFC3629'>. This may be an empty string.</t>
 <t hangText='Protocol: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
 If this is an empty string the protocol is unspecified.
 If it is a non-empty string, it specifies a protocol registered in the
 'WebSocket Subprotocol Name Registry' created in
-<xref target='RFC6455'/>. This string is UTF-8 encoded.</t>
+<xref target='RFC6455'/>. This string is UTF-8 encoded as specified in
+<xref target='RFC3629'></t>
 </list></t>
 </section>
 
@@ -298,25 +299,12 @@ Therefore Data Channel Establishment Protocol message MUST be sent with the
 assigned PPID for the Data Channel Establishment Protocol
 (see <xref target='iana_ppid'/>).
 Other messages MUST NOT be sent using this PPID.</t>
-<t>If one side wants to open a Data Channel, it chooses a Stream Identifier
-for which the corresponding incoming and outgoing Streams are free.
+<t>The peer that initiates opening a Data Channel selects a Stream Identifier
+for which the corresponding incoming and outgoing Streams are unused.
 If the side is the DTLS client, it MUST choose an even Stream Identifier,
 if the side is the DTLS server, it MUST choose an odd one.
 It fills in the parameters of the DATA_CHANNEL_OPEN message and sends it on
 the chosen Stream.</t>
-<t>After the DATA_CHANNEL_OPEN message has been sent, the sender of the
-DATA_CHANNEL_OPEN can start sending messages containing user data without
-waiting for the reception of the corresponding DATA_CHANNEL_ACK message.
-However, before the DATA_CHANNEL_ACK message or any other message has been
-received on a Data Channel, all other messages containing user data and
-belonging to this Data Channel MUST be sent ordered, no matter whether the
-Data Channel is ordered or not.
-After the DATA_CHANNEL_ACK or any other message has been received on the
-Data Channel, messages containing user data MUST be send ordered on ordered
-Data Channels and MUST be sent unordered on unordered Data Channels.
-Therefore receiving a message containing user data on an unused Stream
-indicates an error. The corresponding Data Channel MUST be closed as described
-in <xref target='I-D.ietf-rtcweb-data-channel'/>.</t>
 <t>If a DATA_CHANNEL_OPEN message is received on an unused Stream,
 the Stream Identifier corresponds to the role of the peer and
 all parameters in the DATA_CHANNEL_OPEN message are valid,
@@ -336,6 +324,19 @@ corresponding DATA_CHANNEL_OPEN message the failure of the Data Channel
 setup procedure. After also successfully resetting the corresponding outgoing
 Stream, which concludes the Data Channel closing initiated by the peer,
 a new DATA_CHANNEL_OPEN message can be sent on the Stream.</t>
+<t>After the DATA_CHANNEL_OPEN message has been sent, the sender of the
+DATA_CHANNEL_OPEN MAY start sending messages containing user data without
+waiting for the reception of the corresponding DATA_CHANNEL_ACK message.
+However, before the DATA_CHANNEL_ACK message or any other message has been
+received on a Data Channel, all other messages containing user data and
+belonging to this Data Channel MUST be sent ordered, no matter whether the
+Data Channel is ordered or not.
+After the DATA_CHANNEL_ACK or any other message has been received on the
+Data Channel, messages containing user data MUST be sent ordered on ordered
+Data Channels and MUST be sent unordered on unordered Data Channels.
+Therefore receiving a message containing user data on an unused Stream
+indicates an error. The corresponding Data Channel MUST be closed as described
+in <xref target='I-D.ietf-rtcweb-data-channel'/>.</t>
 </section>
 
 <section title='Security Considerations'
@@ -473,11 +474,14 @@ The range of possible values is from 0x00 to 0xff.</t>
 Harald Alvestrand,
 Richard Barnes,
 Adam Bergkvist,
+Spencer Dawkins,
 Barry Dingle,
 Stefan Håkansson,
 Cullen Jennings,
 Paul Kyzivat,
 Doug Leonard,
+Alexey Melnikov,
+Pete Resnick,
 Irene Ruengeler,
 Randall Stewart,
 Peter Thatcher,
@@ -490,6 +494,7 @@ and many others for their invaluable comments.</t>
 <back>
 <references title='Normative References'>
 <?rfc include='reference.RFC.2119'?>
+<?rfc include='reference.RFC.3629'?>
 <?rfc include='reference.RFC.4347'?>
 <?rfc include='reference.RFC.4960'?>
 <?rfc include='reference.RFC.5226'?>
