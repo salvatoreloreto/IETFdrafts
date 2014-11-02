@@ -253,14 +253,14 @@ The length of the protocol field in bytes.</t>
 <t hangText='Label: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
 The name of the Data Channel as a UTF-8 encoded string as specified in
-<xref target='RFC3629'>. This may be an empty string.</t>
+<xref target='RFC3629'/>. This may be an empty string.</t>
 <t hangText='Protocol: Variable Length (sequence of characters)'>
 <vspace blankLines='0'/>
 If this is an empty string the protocol is unspecified.
 If it is a non-empty string, it specifies a protocol registered in the
 'WebSocket Subprotocol Name Registry' created in
 <xref target='RFC6455'/>. This string is UTF-8 encoded as specified in
-<xref target='RFC3629'></t>
+<xref target='RFC3629'/>.</t>
 </list></t>
 </section>
 
