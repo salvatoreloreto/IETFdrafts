@@ -553,7 +553,7 @@ has been performed.</t>
 <t>This document does not add any additional considerations to the ones given in
 <xref target='I-D.ietf-rtcweb-security'/> and
 <xref target='I-D.ietf-rtcweb-security-arch'/>.</t>
-<t>I should be noted that a receiver must be prepared that the sender tries
+<t>It should be noted that a receiver must be prepared that the sender tries
 to send arbitrary large messages.</t>
 </section>
 
