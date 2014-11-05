@@ -93,7 +93,7 @@ in DTLS <xref target='RFC4347'/>.</t>
 solution together with confidentiality, source authentication, and
 integrity protected transfers.
 This data transport service operates in parallel to the SRTP media transports,
-and all of them can eventually share a single transport-layer port number.</t>
+and all of them can eventually share a single UDP port number.</t>
 <t>SCTP as specified in <xref target='RFC4960'/> with the partial reliability
 extension defined in <xref target='RFC3758'/> and the additional policies
 defined in <xref target='I-D.ietf-tsvwg-sctp-prpolicies'/>
@@ -244,7 +244,7 @@ that is passed to SCTP by its upper layer on the sending side and
 provided to its upper layer on the receiving side.
 The PPID can be used to multiplex/demultiplex multiple upper layers over
 a single SCTP association.
-In the WebRTP context, the PPID is used to distinguish between
+In the WebRTC context, the PPID is used to distinguish between
 UTF-8 encoded user data,
 binary encoded userdata and
 the Data Channel Establishment Protocol defined in
@@ -343,7 +343,7 @@ without relying on ICMP or ICMPv6 as specified in <xref target='RFC4821'/>
 using probing messages specified in <xref target='RFC4820'/>.
 The initial Path MTU at the IP layer SHOULD NOT exceed 1200 bytes for IPv4
 and 1280 for IPv6.</t>
-<t>In general, the lower layer interface of an SCTP implementation SHOULD be
+<t>In general, the lower layer interface of an SCTP implementation should be
 adapted to address the differences between IPv4 and IPv6 (being connection-less)
 or DTLS (being connection-oriented).</t>
 <t>When the protocol stack of <xref target='fig-sctp-layering'/> is used, DTLS
