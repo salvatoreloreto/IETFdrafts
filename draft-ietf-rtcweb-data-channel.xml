@@ -477,7 +477,7 @@ the server odd stream identifiers).
 However, the application is responsible for avoiding collisions with
 existing streams.
 If it attempts to re-use a stream which is part of an existing data channel,
-the addition SHOULD fail.
+the addition MUST fail.
 In addition to choosing a stream, the application SHOULD also determine
 the options to use for sending messages.
 The application MUST ensure in an application-specific manner that
@@ -490,7 +490,10 @@ be used, and the options for sending data from that side.</t>
 underlying stream using the reliability defined when the data channel was
 opened unless the options are changed, or per-message options are specified
 by a higher level.</t>
-<t>No more than one message should be put into an SCTP user message.</t>
+<t>The message orientation of SCTP is used to preserve the message boundaries
+of user messages. Therefore, no more than one message MUST be put into an
+SCTP user message. If the deprecated PPID-based fragmentation and reassembly
+is not used, exactly one message MUST be put into an SCTP user message.</t>
 <t>The SCTP Payload Protocol Identifiers (PPIDs) are used to signal the
 interpretation of the "Payload data". The following PPIDs MUST be used
 (see <xref target='sec-IANA'/>):
