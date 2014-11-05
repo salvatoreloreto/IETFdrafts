@@ -124,7 +124,7 @@ in this document are to be interpreted as described in
 <section title='Use Cases'
          anchor='sec-use-cases'>
 <t>This section defines use cases specific to data channels.
-For WebRTC use cases see
+For generic WebRTC use cases see
 <xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>.</t>
 
 <section title='Use Cases for Unreliable Data Channels'
@@ -163,7 +163,8 @@ Internet filtering or monitoring.</t>
 <section title='Requirements'
          anchor='sec-req'>
 <t>This section lists the requirements for P2P data channels between
-two browsers.</t>
+two browsers. See <xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>
+for WebRTC requirements not related to data channels.</t>
 <t><list style='format Req. %d:'>
 <t>Multiple simultaneous data channels MUST be supported.
 Note that there may be 0 or more SRTP media streams in parallel with the data
@@ -376,9 +377,8 @@ reliability.</t>
    MUST be supported. It is used for closing channels.</t>
 <t>The dynamic address reconfiguration extension defined in
    <xref target='RFC5061'/> MUST be used to signal the support of the
-   stream reset extension defined in <xref target='RFC6525'/>,
-   other features of <xref target='RFC5061'/> are not REQUIRED to be
-   implemented.</t>
+   stream reset extension defined in <xref target='RFC6525'/>.
+   Other features of <xref target='RFC5061'/> are OPTIONAL.</t>
 <t>The partial reliability extension defined in <xref target='RFC3758'/> MUST
    be supported. In addition to the timed reliability PR-SCTP policy defined
    in <xref target='RFC3758'/>, the limited retransmission policy defined in
@@ -428,9 +428,10 @@ Ordering is preserved only for ordered messages sent on the same stream.</t>
 </section>
 
 <section title='Data Channel Definition'>
-<t>It is advantageous for the application-level API to be close to the API for
-WebSockets, which implies bidirectional streams of data and a textual field
-called 'label' used to identify the meaning of the data channel.</t>
+<t>Data channels are defined such that their accompanying application-level API
+can closely mirror the API for WebSockets, which implies bidirectional streams
+of data and a textual field called 'label' used to identify the meaning of the
+data channel.</t>
 <t>The realization of a data channel is a pair of one incoming stream and
 one outgoing SCTP stream having the same SCTP stream identifier.
 How these SCTP stream identifiers are selected is protocol and implementation
