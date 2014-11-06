@@ -125,7 +125,8 @@ in this document are to be interpreted as described in
          anchor='sec-use-cases'>
 <t>This section defines use cases specific to data channels.
 For generic WebRTC use cases see
-<xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>.</t>
+<xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>.
+Please note that this section is informational only.</t>
 
 <section title='Use Cases for Unreliable Data Channels'
          anchor='sec-use-cases-unreliable'>
@@ -164,45 +165,46 @@ Internet filtering or monitoring.</t>
          anchor='sec-req'>
 <t>This section lists the requirements for P2P data channels between
 two browsers. See <xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>
-for WebRTC requirements not related to data channels.</t>
+for WebRTC requirements not related to data channels.
+Please note that this section is informational only.</t>
 <t><list style='format Req. %d:'>
-<t>Multiple simultaneous data channels MUST be supported.
+<t>Multiple simultaneous data channels must be supported.
 Note that there may be 0 or more SRTP media streams in parallel with the data
 channels in the same PeerConnection, and the number and state (active/inactive)
 of these SRTP media streams may change at any time.</t>
-<t>Both reliable and unreliable data channels MUST be supported.</t>
-<t>Data channels of a PeerConnection MUST be congestion controlled;
+<t>Both reliable and unreliable data channels must be supported.</t>
+<t>Data channels of a PeerConnection must be congestion controlled;
 either individually, as a class, or in conjunction with the SRTP media streams
 of the PeerConnection, to ensure that data channels don't cause congestion
 problems for these SRTP media streams, and that the WebRTC PeerConnection does
 not cause excessive problems when run in parallel with TCP connections.</t>
-<t>The application SHOULD be able to provide guidance as to the
+<t>The application should be able to provide guidance as to the
 relative priority of each data channel relative to each other,
 and relative to the SRTP media streams.
 This will interact with the congestion control algorithms.</t>
-<t>Data channels MUST be secured; allowing for confidentiality,
+<t>Data channels must be secured; allowing for confidentiality,
 integrity and source authentication.
 See <xref target='I-D.ietf-rtcweb-security'/> and
 <xref target='I-D.ietf-rtcweb-security-arch'/> for detailed info.</t>
 <!--<t>Consent and NAT traversal mechanism: These are handled by the
 PeerConnection's ICE <xref target='RFC5245'/> connectivity checks and
 optional TURN servers.</t>-->
-<t>Data channels MUST provide message fragmentation support such that
+<t>Data channels must provide message fragmentation support such that
 IP-layer fragmentation can be avoided no matter how large a message the
-JavaScript application passes to be sent. It also MUST ensure that large
+JavaScript application passes to be sent. It also must ensure that large
 data channel transfers don't unduly delay traffic on other data
 channels.</t>
-<t>The data channel transport protocol MUST NOT encode local IP addresses
+<t>The data channel transport protocol must not encode local IP addresses
 inside its protocol fields; doing so reveals potentially private information,
 and leads to failure if the address is depended upon.</t>
-<t>The data channel transport protocol SHOULD support unbounded-length "messages"
+<t>The data channel transport protocol should support unbounded-length "messages"
 (i.e., a virtual socket stream) at the application layer, for such things as
 image-file-transfer; Implementations might enforce a reasonable message size
 limit.</t>
-<t>The data channel transport protocol SHOULD avoid IP fragmentation. It
-MUST support PMTU (Path MTU) discovery and MUST NOT rely on ICMP or ICMPv6
+<t>The data channel transport protocol should avoid IP fragmentation. It
+must support PMTU (Path MTU) discovery and must not rely on ICMP or ICMPv6
 being generated or being passed back, especially for PMTU discovery.</t>
-<t>It MUST be possible to implement the protocol stack in the user
+<t>It must be possible to implement the protocol stack in the user
 application space.</t>
 </list></t>
 </section>
