@@ -72,10 +72,12 @@ WebRTC Data Channel context <xref target='I-D.ietf-rtcweb-data-channel'/>,
 a simple in-band method to open symmetric Data Channels.
 As discussed in <xref target='I-D.ietf-rtcweb-data-channel'/>, the protocol uses
 the Stream Control Transmission Protocol (SCTP) <xref target='RFC4960'/>
-encapsulated in the Datagram Transport Layer Security (DTLS)
-<xref target='RFC4347'/> as described in
+encapsulated in the Datagram Transport Layer Security (DTLS) as described in
 <xref target='I-D.ietf-tsvwg-sctp-dtls-encaps'/> to benefit
-from their already standardized transport and security features.</t>
+from their already standardized transport and security features.
+DTLS 1.0 is defined in <xref target='RFC4347'/> and the present
+latest version, DTLS 1.2, is defined in <xref target='RFC6347'/>.
+</t>
 </section>
 
 <section title='Conventions'>
@@ -498,6 +500,7 @@ and many others for their invaluable comments.</t>
 <?rfc include='reference.RFC.4347'?>
 <?rfc include='reference.RFC.4960'?>
 <?rfc include='reference.RFC.5226'?>
+<?rfc include='reference.RFC.6347'?>
 <?rfc include='reference.I-D.ietf-tsvwg-sctp-dtls-encaps'?>
 <?rfc include='reference.I-D.ietf-rtcweb-data-channel' ?>
 </references>
