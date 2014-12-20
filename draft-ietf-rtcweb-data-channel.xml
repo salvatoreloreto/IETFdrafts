@@ -492,10 +492,11 @@ be used, and the options for sending data from that side.</t>
 underlying stream using the reliability defined when the data channel was
 opened unless the options are changed, or per-message options are specified
 by a higher level.</t>
-<t>The message orientation of SCTP is used to preserve the message boundaries
-of user messages. Therefore, no more than one message MUST be put into an
-SCTP user message. If the deprecated PPID-based fragmentation and reassembly
-is not used, exactly one message MUST be put into an SCTP user message.</t>
+<t>The message-orientation of SCTP is used to preserve the message boundaries
+of user messages. Therefore, senders MUST NOT put more than one application
+message into an SCTP user message. Unless the deprecated PPID-based
+fragmentation and reassembly is used, the sender MUST include exactly one
+application message in each SCTP user message.</t>
 <t>The SCTP Payload Protocol Identifiers (PPIDs) are used to signal the
 interpretation of the "Payload data". The following PPIDs MUST be used
 (see <xref target='sec-IANA'/>):
@@ -611,6 +612,7 @@ Christer Holmberg,
 Cullen Jennings,
 Paul Kyzivat,
 Eric Rescorla,
+Adam Roach,
 Irene Ruengeler,
 Randall Stewart,
 Martin Stiemerling,
