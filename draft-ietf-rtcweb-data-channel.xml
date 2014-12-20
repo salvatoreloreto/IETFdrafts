@@ -125,8 +125,6 @@ in this document are to be interpreted as described in
 <section title='Use Cases'
          anchor='sec-use-cases'>
 <t>This section defines use cases specific to data channels.
-For generic WebRTC use cases see
-<xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>.
 Please note that this section is informational only.</t>
 
 <section title='Use Cases for Unreliable Data Channels'
@@ -165,8 +163,7 @@ Internet filtering or monitoring.</t>
 <section title='Requirements'
          anchor='sec-req'>
 <t>This section lists the requirements for P2P data channels between
-two browsers. See <xref target='I-D.ietf-rtcweb-use-cases-and-requirements'/>
-for WebRTC requirements not related to data channels.
+two browsers.
 Please note that this section is informational only.</t>
 <t><list style='format Req. %d:'>
 <t>Multiple simultaneous data channels must be supported.
@@ -649,7 +646,6 @@ and Magnus Westerlund.</t>
 <?rfc include='reference.RFC.5764'?>
 <?rfc include='reference.RFC.6083'?>
 <?rfc include='reference.RFC.6951'?>
-<?rfc include='reference.I-D.ietf-rtcweb-use-cases-and-requirements'?>
 </references>
 </back>
 
