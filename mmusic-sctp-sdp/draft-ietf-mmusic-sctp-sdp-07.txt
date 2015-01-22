@@ -305,7 +305,7 @@ Internet-Draft    The SCTP protocol identifier for SDP         July 2014
 4.1.2.  max-message-size
 
 
-    sctpmap-attr        =  "a=fmtp:" association-usage [max-message-size]
+    fmtp-attr        =  "a=fmtp:" association-usage [max-message-size]
     max-message-size    =  "max-message-size" EQUALS 1*DIGIT
 
 
